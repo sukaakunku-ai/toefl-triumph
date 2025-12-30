@@ -23,8 +23,7 @@ export const getQuestionsByCategory = async (category: string): Promise<Question
   try {
     const q = query(
       collection(db, QUESTIONS_COLLECTION),
-      where("category", "==", category),
-      orderBy("id")
+      where("category", "==", category)
     );
     const querySnapshot = await getDocs(q);
 
@@ -33,7 +32,7 @@ export const getQuestionsByCategory = async (category: string): Promise<Question
       return [];
     }
 
-    return querySnapshot.docs.map(doc => ({
+    const questions = querySnapshot.docs.map(doc => ({
       id: doc.data().id,
       category: doc.data().category,
       question_text: doc.data().question_text,
@@ -41,6 +40,8 @@ export const getQuestionsByCategory = async (category: string): Promise<Question
       correct_answer: doc.data().correct_answer,
       explanation: doc.data().explanation,
     })) as Question[];
+
+    return questions.sort((a, b) => a.id - b.id);
   } catch (error) {
     console.error("Error fetching questions:", error);
     return [];

@@ -39,8 +39,7 @@ export const getPackagesByCategory = async (
   try {
     const q = query(
       collection(db, PACKAGES_COLLECTION),
-      where("category", "==", category),
-      orderBy("name")
+      where("category", "==", category)
     );
     const querySnapshot = await getDocs(q);
 
@@ -48,11 +47,13 @@ export const getPackagesByCategory = async (
       return [];
     }
 
-    return querySnapshot.docs.map((doc) => ({
+    const packages = querySnapshot.docs.map((doc) => ({
       ...doc.data(),
       id: doc.id,
       createdAt: doc.data().createdAt?.toDate() || new Date(),
     })) as QuestionPackage[];
+
+    return packages.sort((a, b) => a.name.localeCompare(b.name));
   } catch (error) {
     console.error("Error fetching packages by category:", error);
     return [];
