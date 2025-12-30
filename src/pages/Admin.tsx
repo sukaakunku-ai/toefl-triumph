@@ -556,6 +556,25 @@ export default function Admin() {
     });
   };
 
+  // Toggle all questions in package dialog
+  const toggleAllQuestionsInPackage = () => {
+    const allVisibleIds = filteredQuestionsForPackage.map(q => q.id);
+    const areAllSelected = allVisibleIds.length > 0 && allVisibleIds.every(id => packageForm.questionIds.includes(id));
+
+    if (areAllSelected) {
+      setPackageForm(prev => ({
+        ...prev,
+        questionIds: prev.questionIds.filter(id => !allVisibleIds.includes(id))
+      }));
+    } else {
+      setPackageForm(prev => ({
+        ...prev,
+        questionIds: Array.from(new Set([...prev.questionIds, ...allVisibleIds]))
+      }));
+    }
+  };
+
+
   const filteredQuestionsForPackage = questions.filter((q) => {
     const isCorrectCategory = packageForm.category === "full" || q.category === packageForm.category;
 
@@ -1026,7 +1045,16 @@ export default function Admin() {
                     {t("admin.noQuestions")}
                   </p>
                 ) : (
-                  <div className="divide-y">
+                  <div className="divide-y relative">
+                    {filteredQuestionsForPackage.length > 0 && (
+                      <div className="flex items-center gap-3 p-3 bg-muted/40 sticky top-0 z-10 border-b">
+                        <Checkbox
+                          checked={filteredQuestionsForPackage.length > 0 && filteredQuestionsForPackage.every(q => packageForm.questionIds.includes(q.id))}
+                          onCheckedChange={toggleAllQuestionsInPackage}
+                        />
+                        <span className="text-sm font-semibold">Pilih Semua</span>
+                      </div>
+                    )}
                     {filteredQuestionsForPackage.map((q) => (
                       <div
                         key={q.id}
