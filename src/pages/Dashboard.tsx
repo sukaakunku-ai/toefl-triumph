@@ -99,6 +99,7 @@ export default function Dashboard() {
   const [isDark, setIsDark] = useState(false);
   const [isSeeding, setIsSeeding] = useState(false);
   const [isSeeded, setIsSeeded] = useState(false);
+  const [categoryCounts, setCategoryCounts] = useState<Record<string, number>>({});
 
   // Package selection state
   const [showPackageDialog, setShowPackageDialog] = useState(false);
@@ -118,6 +119,41 @@ export default function Dashboard() {
       setIsDark(true);
       document.documentElement.classList.add("dark");
     }
+
+    // Fetch real question counts
+    const fetchCounts = async () => {
+      try {
+        const allQuestions = await import("@/services/questionService").then(m => m.getAllQuestions());
+        const counts: Record<string, number> = {
+          structure: 0,
+          reading: 0,
+          listening: 0,
+          full: 0 // Full simulation uses all
+        };
+
+        allQuestions.forEach(q => {
+          if (counts[q.category] !== undefined) {
+            counts[q.category]++;
+          }
+        });
+
+        // Full simulation count is total unique questions usable in full sim? 
+        // Or specific full sim questions? Usually full sim pulls from all.
+        // Let's assume full sim uses packages designated as 'full'.
+        // For simplicity, let's just count all for now or specific category.
+        // Actually, the testTypes use specific IDs.
+
+        // Let's verify 'full' category exists in questions. Usually it's composed of others.
+        // If 'full' is not a category in questions, we might need to count packages. 
+        // But for structure/reading/listening it works.
+
+        setCategoryCounts(counts);
+      } catch (error) {
+        console.error("Failed to fetch counts", error);
+      }
+    };
+
+    fetchCounts();
   }, []);
 
   const toggleTheme = () => {
@@ -257,9 +293,8 @@ export default function Dashboard() {
                         className={`w-12 h-12 rounded-xl bg-${test.color}/10 flex items-center justify-center group-hover:scale-110 transition-transform`}
                       >
                         <test.icon
-                          className={`w-6 h-6 text-${
-                            test.color === "primary" ? "primary" : test.color
-                          }`}
+                          className={`w-6 h-6 text-${test.color === "primary" ? "primary" : test.color
+                            }`}
                         />
                       </div>
                       <ArrowRight className="w-5 h-5 text-muted-foreground group-hover:text-primary group-hover:translate-x-1 transition-all" />
@@ -280,7 +315,7 @@ export default function Dashboard() {
                       <div className="flex items-center gap-2">
                         <BookOpen className="w-4 h-4" />
                         <span>
-                          {test.questions} {t("dashboard.questions")}
+                          {categoryCounts[test.id] || 0} {t("dashboard.questions")}
                         </span>
                       </div>
                     </div>

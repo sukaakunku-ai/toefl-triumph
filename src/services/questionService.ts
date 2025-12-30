@@ -1,10 +1,10 @@
-import { 
-  collection, 
-  getDocs, 
-  doc, 
-  setDoc, 
+import {
+  collection,
+  getDocs,
+  doc,
+  setDoc,
   deleteDoc,
-  query, 
+  query,
   where,
   orderBy,
   writeBatch
@@ -27,12 +27,12 @@ export const getQuestionsByCategory = async (category: string): Promise<Question
       orderBy("id")
     );
     const querySnapshot = await getDocs(q);
-    
+
     if (querySnapshot.empty) {
-      console.log(`No questions found in Firebase for ${category}, using mock data`);
-      return testConfigs[category as keyof typeof testConfigs]?.questions || [];
+      console.log(`No questions found in Firebase for ${category}`);
+      return [];
     }
-    
+
     return querySnapshot.docs.map(doc => ({
       id: doc.data().id,
       category: doc.data().category,
@@ -43,7 +43,7 @@ export const getQuestionsByCategory = async (category: string): Promise<Question
     })) as Question[];
   } catch (error) {
     console.error("Error fetching questions:", error);
-    return testConfigs[category as keyof typeof testConfigs]?.questions || [];
+    return [];
   }
 };
 
@@ -51,7 +51,7 @@ export const getQuestionsByCategory = async (category: string): Promise<Question
 export const seedQuestions = async (): Promise<void> => {
   try {
     const batch = writeBatch(db);
-    
+
     Object.entries(testConfigs).forEach(([category, config]) => {
       config.questions.forEach((question) => {
         const docRef = doc(db, QUESTIONS_COLLECTION, `${category}_${question.id}`);
@@ -61,7 +61,7 @@ export const seedQuestions = async (): Promise<void> => {
         });
       });
     });
-    
+
     await batch.commit();
     console.log("Questions seeded successfully!");
   } catch (error) {
@@ -75,12 +75,12 @@ export const getAllQuestions = async (): Promise<FirebaseQuestion[]> => {
   try {
     const querySnapshot = await getDocs(collection(db, QUESTIONS_COLLECTION));
     if (querySnapshot.empty) {
-      return allQuestions as FirebaseQuestion[];
+      return [];
     }
     return querySnapshot.docs.map(doc => doc.data() as FirebaseQuestion);
   } catch (error) {
     console.error("Error fetching all questions:", error);
-    return allQuestions as FirebaseQuestion[];
+    return [];
   }
 };
 

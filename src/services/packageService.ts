@@ -19,7 +19,7 @@ export const getAllPackages = async (): Promise<QuestionPackage[]> => {
   try {
     const querySnapshot = await getDocs(collection(db, PACKAGES_COLLECTION));
     if (querySnapshot.empty) {
-      return defaultPackages;
+      return [];
     }
     return querySnapshot.docs.map((doc) => ({
       ...doc.data(),
@@ -28,7 +28,7 @@ export const getAllPackages = async (): Promise<QuestionPackage[]> => {
     })) as QuestionPackage[];
   } catch (error) {
     console.error("Error fetching packages:", error);
-    return defaultPackages;
+    return [];
   }
 };
 
@@ -45,7 +45,7 @@ export const getPackagesByCategory = async (
     const querySnapshot = await getDocs(q);
 
     if (querySnapshot.empty) {
-      return defaultPackages.filter((pkg) => pkg.category === category);
+      return [];
     }
 
     return querySnapshot.docs.map((doc) => ({
@@ -55,7 +55,7 @@ export const getPackagesByCategory = async (
     })) as QuestionPackage[];
   } catch (error) {
     console.error("Error fetching packages by category:", error);
-    return defaultPackages.filter((pkg) => pkg.category === category);
+    return [];
   }
 };
 

@@ -645,6 +645,7 @@ export default function Admin() {
                           </TableHead>
                           <TableHead>ID</TableHead>
                           <TableHead>{t("admin.category")}</TableHead>
+                          <TableHead>Paket</TableHead>
                           <TableHead>{t("admin.questionText")}</TableHead>
                           <TableHead className="text-right">Aksi</TableHead>
                         </TableRow>
@@ -662,6 +663,12 @@ export default function Admin() {
                             <TableCell>
                               {categories.find((c) => c.value === q.category)
                                 ?.label || q.category}
+                            </TableCell>
+                            <TableCell className="max-w-xs truncate">
+                              {packages
+                                .filter((p) => p.questionIds.includes(q.id))
+                                .map((p) => p.name)
+                                .join(", ") || "-"}
                             </TableCell>
                             <TableCell className="max-w-md truncate">
                               {q.question_text}
