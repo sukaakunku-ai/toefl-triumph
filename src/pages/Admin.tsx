@@ -13,6 +13,7 @@ import {
   Moon,
   Sun,
   Save,
+  BookText,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
@@ -70,6 +71,12 @@ import {
   saveQuestion,
   deleteQuestion,
 } from "@/services/questionService";
+import {
+  getAllArticles,
+  saveArticle,
+  deleteArticle,
+  Article
+} from "@/services/articleService";
 import { QuestionPackage } from "@/data/packages";
 import { Question } from "@/data/questions";
 import { toast } from "sonner";
@@ -77,7 +84,6 @@ import { toast } from "sonner";
 type Category = "structure" | "reading" | "listening" | "full";
 
 const categories: { value: Category; label: string }[] = [
-  { value: "full", label: "Full Simulation" },
   { value: "structure", label: "Structure & Written Expression" },
   { value: "reading", label: "Reading Comprehension" },
   { value: "listening", label: "Listening Comprehension" },
@@ -120,10 +126,28 @@ export default function Admin() {
   // Package selection for bulk delete
   const [selectedPackages, setSelectedPackages] = useState<Set<string>>(new Set());
 
+  // Articles state
+  const [articles, setArticles] = useState<Article[]>([]);
+  const [isLoadingArticles, setIsLoadingArticles] = useState(true);
+  const [showArticleDialog, setShowArticleDialog] = useState(false);
+  const [editingArticle, setEditingArticle] = useState<Article | null>(null);
+  const [articleForm, setArticleForm] = useState<Article>({
+    id: "",
+    title: "",
+    excerpt: "",
+    content: "",
+    author: "Admin",
+    category: "Tips & Strategi",
+    date: new Date().toISOString().split('T')[0],
+    imageUrl: "https://images.unsplash.com/photo-1456513080510-7bf3a84b82f8?auto=format&fit=crop&q=80&w=800",
+    readTime: "5 min read"
+  });
+  const [selectedArticles, setSelectedArticles] = useState<Set<string>>(new Set());
+
   // Delete confirmation
   const [deleteConfirmOpen, setDeleteConfirmOpen] = useState(false);
   const [itemToDelete, setItemToDelete] = useState<{
-    type: "package" | "question";
+    type: "package" | "question" | "article";
     id: string | number;
   } | null>(null);
 
@@ -156,6 +180,7 @@ export default function Admin() {
   useEffect(() => {
     loadPackages();
     loadQuestions();
+    loadArticles();
   }, []);
 
   const loadPackages = async () => {
@@ -179,6 +204,18 @@ export default function Admin() {
       toast.error(t("common.error"));
     } finally {
       setIsLoadingQuestions(false);
+    }
+  };
+
+  const loadArticles = async () => {
+    setIsLoadingArticles(true);
+    try {
+      const data = await getAllArticles();
+      setArticles(data);
+    } catch (error) {
+      toast.error("Failed to load articles");
+    } finally {
+      setIsLoadingArticles(false);
     }
   };
 
@@ -283,9 +320,12 @@ export default function Admin() {
       if (itemToDelete.type === "package") {
         await deletePackage(itemToDelete.id as string);
         loadPackages();
-      } else {
+      } else if (itemToDelete.type === "question") {
         await deleteQuestion(itemToDelete.id as number);
         loadQuestions();
+      } else if (itemToDelete.type === "article") {
+        await deleteArticle(itemToDelete.id as string);
+        loadArticles();
       }
       toast.success(t("common.success"));
     } catch (error) {
@@ -400,6 +440,82 @@ export default function Admin() {
     }
   };
 
+  // Article handlers
+  const handleAddArticle = () => {
+    setEditingArticle(null);
+    setArticleForm({
+      id: "",
+      title: "",
+      excerpt: "",
+      content: "",
+      author: "Admin",
+      category: "Tips & Strategi",
+      date: new Date().toISOString().split('T')[0],
+      imageUrl: "https://images.unsplash.com/photo-1456513080510-7bf3a84b82f8?auto=format&fit=crop&q=80&w=800",
+      readTime: "5 min read"
+    });
+    setShowArticleDialog(true);
+  };
+
+  const handleEditArticle = (article: Article) => {
+    setEditingArticle(article);
+    setArticleForm(article);
+    setShowArticleDialog(true);
+  };
+
+  const handleSaveArticle = async () => {
+    try {
+      if (!articleForm.title || !articleForm.content) {
+        toast.error("Title and content are required");
+        return;
+      }
+
+      await saveArticle(articleForm);
+      toast.success(editingArticle ? "Article updated" : "Article created");
+      setShowArticleDialog(false);
+      loadArticles();
+    } catch (error) {
+      toast.error("Failed to save article");
+    }
+  };
+
+  const handleBulkDeleteArticles = async () => {
+    if (selectedArticles.size === 0) return;
+
+    try {
+      for (const id of Array.from(selectedArticles)) {
+        await deleteArticle(id);
+      }
+      toast.success(`${selectedArticles.size} articles deleted`);
+      setSelectedArticles(new Set());
+      loadArticles();
+    } catch (error) {
+      toast.error(t("common.error"));
+    }
+  };
+
+  // Toggle article selection
+  const toggleArticleSelection = (id: string) => {
+    setSelectedArticles(prev => {
+      const newSet = new Set(prev);
+      if (newSet.has(id)) {
+        newSet.delete(id);
+      } else {
+        newSet.add(id);
+      }
+      return newSet;
+    });
+  };
+
+  // Select all articles
+  const toggleSelectAllArticles = () => {
+    if (selectedArticles.size === articles.length && articles.length > 0) {
+      setSelectedArticles(new Set());
+    } else {
+      setSelectedArticles(new Set(articles.map(a => a.id)));
+    }
+  };
+
   const filteredQuestions = questions.filter(q =>
     questionCategoryFilter === "all" || q.category === questionCategoryFilter
   );
@@ -468,7 +584,7 @@ export default function Admin() {
 
       <main className="container mx-auto px-4 py-8">
         <Tabs value={activeTab} onValueChange={setActiveTab}>
-          <TabsList className="grid w-full max-w-md grid-cols-2 mx-auto mb-8">
+          <TabsList className="grid w-full max-w-xl grid-cols-3 mx-auto mb-8">
             <TabsTrigger value="packages" className="gap-2">
               <Package className="w-4 h-4" />
               {t("admin.packages")}
@@ -476,6 +592,10 @@ export default function Admin() {
             <TabsTrigger value="questions" className="gap-2">
               <FileQuestion className="w-4 h-4" />
               {t("admin.questions")}
+            </TabsTrigger>
+            <TabsTrigger value="articles" className="gap-2">
+              <BookText className="w-4 h-4" />
+              Blog
             </TabsTrigger>
           </TabsList>
 
@@ -686,6 +806,103 @@ export default function Admin() {
                                   variant="ghost"
                                   size="icon"
                                   onClick={() => confirmDelete("question", q.id)}
+                                  className="text-destructive hover:text-destructive"
+                                >
+                                  <Trash2 className="w-4 h-4" />
+                                </Button>
+                              </div>
+                            </TableCell>
+                          </TableRow>
+                        ))}
+                      </TableBody>
+                    </Table>
+                  )}
+                </CardContent>
+              </Card>
+            </motion.div>
+          </TabsContent>
+
+          {/* Articles Tab */}
+          <TabsContent value="articles">
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+            >
+              <Card>
+                <CardHeader className="flex flex-row items-center justify-between space-y-0">
+                  <CardTitle>Artikel Blog</CardTitle>
+                  <div className="flex items-center gap-2">
+                    {selectedArticles.size > 0 && (
+                      <Button
+                        variant="destructive"
+                        onClick={handleBulkDeleteArticles}
+                        className="gap-2"
+                      >
+                        <Trash2 className="w-4 h-4" />
+                        Hapus ({selectedArticles.size})
+                      </Button>
+                    )}
+                    <Button onClick={handleAddArticle} className="gap-2">
+                      <Plus className="w-4 h-4" />
+                      Tambah Artikel
+                    </Button>
+                  </div>
+                </CardHeader>
+                <CardContent>
+                  {isLoadingArticles ? (
+                    <div className="flex justify-center py-12">
+                      <Loader2 className="w-8 h-8 animate-spin text-primary" />
+                    </div>
+                  ) : articles.length === 0 ? (
+                    <p className="text-center text-muted-foreground py-12">
+                      Belum ada artikel
+                    </p>
+                  ) : (
+                    <Table>
+                      <TableHeader>
+                        <TableRow>
+                          <TableHead className="w-12">
+                            <Checkbox
+                              checked={selectedArticles.size === articles.length && articles.length > 0}
+                              onCheckedChange={toggleSelectAllArticles}
+                            />
+                          </TableHead>
+                          <TableHead>Judul</TableHead>
+                          <TableHead>Kategori</TableHead>
+                          <TableHead>Tanggal</TableHead>
+                          <TableHead className="text-right">Aksi</TableHead>
+                        </TableRow>
+                      </TableHeader>
+                      <TableBody>
+                        {articles.map((article) => (
+                          <TableRow key={article.id}>
+                            <TableCell>
+                              <Checkbox
+                                checked={selectedArticles.has(article.id)}
+                                onCheckedChange={() => toggleArticleSelection(article.id)}
+                              />
+                            </TableCell>
+                            <TableCell className="font-medium max-w-xs truncate">
+                              {article.title}
+                            </TableCell>
+                            <TableCell>{article.category}</TableCell>
+                            <TableCell>{article.date}</TableCell>
+                            <TableCell className="text-right">
+                              <div className="flex justify-end gap-2">
+                                <Button
+                                  variant="ghost"
+                                  size="icon"
+                                  onClick={() => handleEditArticle(article)}
+                                >
+                                  <Pencil className="w-4 h-4" />
+                                </Button>
+                                <Button
+                                  variant="ghost"
+                                  size="icon"
+                                  onClick={() => {
+                                    setItemToDelete({ type: "article", id: article.id });
+                                    setDeleteConfirmOpen(true);
+                                  }}
                                   className="text-destructive hover:text-destructive"
                                 >
                                   <Trash2 className="w-4 h-4" />
@@ -990,6 +1207,95 @@ export default function Admin() {
               Batal
             </Button>
             <Button onClick={handleAssignToPackage} disabled={!selectedPackageForAssign}>
+              Simpan
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      {/* Article Dialog */}
+      <Dialog open={showArticleDialog} onOpenChange={setShowArticleDialog}>
+        <DialogContent className="sm:max-w-2xl max-h-[90vh] overflow-y-auto">
+          <DialogHeader>
+            <DialogTitle>
+              {editingArticle ? "Edit Artikel" : "Tambah Artikel"}
+            </DialogTitle>
+          </DialogHeader>
+
+          <div className="space-y-4 py-4">
+            <div className="space-y-2">
+              <Label>Judul Artikel</Label>
+              <Input
+                value={articleForm.title}
+                onChange={(e) =>
+                  setArticleForm((prev) => ({ ...prev, title: e.target.value }))
+                }
+                placeholder="Judul artikel..."
+              />
+            </div>
+
+            <div className="grid grid-cols-2 gap-4">
+              <div className="space-y-2">
+                <Label>Kategori</Label>
+                <Input
+                  value={articleForm.category}
+                  onChange={(e) => setArticleForm(prev => ({ ...prev, category: e.target.value }))}
+                  placeholder="e.g. Tips & Strategi"
+                />
+              </div>
+              <div className="space-y-2">
+                <Label>Author</Label>
+                <Input
+                  value={articleForm.author}
+                  onChange={(e) =>
+                    setArticleForm((prev) => ({ ...prev, author: e.target.value }))
+                  }
+                  placeholder="Nama penulis"
+                />
+              </div>
+            </div>
+
+            <div className="space-y-2">
+              <Label>URL Gambar Cover</Label>
+              <Input
+                value={articleForm.imageUrl}
+                onChange={(e) =>
+                  setArticleForm((prev) => ({ ...prev, imageUrl: e.target.value }))
+                }
+                placeholder="https://..."
+              />
+            </div>
+
+            <div className="space-y-2">
+              <Label>Excerpt (Ringkasan)</Label>
+              <Textarea
+                value={articleForm.excerpt}
+                onChange={(e) =>
+                  setArticleForm((prev) => ({ ...prev, excerpt: e.target.value }))
+                }
+                placeholder="Ringkasan singkat artikel..."
+              />
+            </div>
+
+            <div className="space-y-2">
+              <Label>Konten Artikel (Markdown/HTML)</Label>
+              <Textarea
+                className="min-h-[300px] font-mono"
+                value={articleForm.content}
+                onChange={(e) =>
+                  setArticleForm((prev) => ({ ...prev, content: e.target.value }))
+                }
+                placeholder="Tulis konten artikel di sini..."
+              />
+            </div>
+          </div>
+
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setShowArticleDialog(false)}>
+              Batal
+            </Button>
+            <Button onClick={handleSaveArticle}>
+              <Save className="w-4 h-4 mr-2" />
               Simpan
             </Button>
           </DialogFooter>

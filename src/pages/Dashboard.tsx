@@ -225,22 +225,6 @@ export default function Dashboard() {
           </Link>
 
           <div className="flex items-center gap-2">
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={handleSeedDatabase}
-              disabled={isSeeding || isSeeded}
-              className="gap-2"
-            >
-              {isSeeding ? (
-                <Loader2 className="w-4 h-4 animate-spin" />
-              ) : isSeeded ? (
-                <CheckCircle className="w-4 h-4 text-green-500" />
-              ) : (
-                <Database className="w-4 h-4" />
-              )}
-              {isSeeding ? "Seeding..." : isSeeded ? "Seeded" : "Seed DB"}
-            </Button>
             <Link to="/admin">
               <Button variant="ghost" size="icon" className="rounded-full">
                 <Settings className="w-5 h-5" />
