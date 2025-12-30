@@ -16,6 +16,7 @@ import {
   BookText,
   Bold,
   Underline,
+  Eye,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
@@ -1051,151 +1052,218 @@ export default function Admin() {
       {/* Question Dialog */}
       <Dialog open={showQuestionDialog} onOpenChange={setShowQuestionDialog}>
         <DialogContent className="sm:max-w-2xl max-h-[90vh] overflow-y-auto">
-          <DialogHeader>
-            <DialogTitle>
-              {editingQuestion ? t("admin.editQuestion") : t("admin.addQuestion")}
-            </DialogTitle>
-          </DialogHeader>
+          <Tabs defaultValue="edit" className="w-full">
+            <DialogHeader>
+              <div className="flex items-center justify-between pr-8">
+                <DialogTitle>
+                  {editingQuestion ? t("admin.editQuestion") : t("admin.addQuestion")}
+                </DialogTitle>
+                <TabsList>
+                  <TabsTrigger value="edit" className="gap-2">
+                    <Pencil className="w-4 h-4" />
+                    Edit
+                  </TabsTrigger>
+                  <TabsTrigger value="preview" className="gap-2">
+                    <Eye className="w-4 h-4" />
+                    Preview
+                  </TabsTrigger>
+                </TabsList>
+              </div>
+            </DialogHeader>
 
-          <div className="space-y-4 py-4">
-            <div className="space-y-2">
-              <Label>{t("admin.category")}</Label>
-              <Select
-                value={questionForm.category}
-                onValueChange={(val) =>
-                  setQuestionForm((prev) => ({
-                    ...prev,
-                    category: val as Category,
-                  }))
-                }
-              >
-                <SelectTrigger>
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent>
-                  {categories
-                    .filter((c) => c.value !== "full")
-                    .map((cat) => (
-                      <SelectItem key={cat.value} value={cat.value}>
-                        {cat.label}
-                      </SelectItem>
+            <TabsContent value="edit" className="space-y-4 py-4 mt-0">
+              <div className="space-y-4">
+                <div className="space-y-2">
+                  <Label>{t("admin.category")}</Label>
+                  <Select
+                    value={questionForm.category}
+                    onValueChange={(val) =>
+                      setQuestionForm((prev) => ({
+                        ...prev,
+                        category: val as Category,
+                      }))
+                    }
+                  >
+                    <SelectTrigger>
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {categories
+                        .filter((c) => c.value !== "full")
+                        .map((cat) => (
+                          <SelectItem key={cat.value} value={cat.value}>
+                            {cat.label}
+                          </SelectItem>
+                        ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+
+                <div className="space-y-2">
+                  <div className="flex items-center justify-between">
+                    <Label>{t("admin.questionText")}</Label>
+                    <div className="flex items-center gap-1">
+                      <Button
+                        type="button"
+                        variant="outline"
+                        size="sm"
+                        className="h-8 w-8 p-0"
+                        onClick={() => insertFormatTag('b')}
+                        title="Bold"
+                      >
+                        <Bold className="h-4 w-4" />
+                      </Button>
+                      <Button
+                        type="button"
+                        variant="outline"
+                        size="sm"
+                        className="h-8 w-8 p-0"
+                        onClick={() => insertFormatTag('u')}
+                        title="Underline"
+                      >
+                        <Underline className="h-4 w-4" />
+                      </Button>
+                    </div>
+                  </div>
+                  <Textarea
+                    id="question-text-input"
+                    value={questionForm.question_text}
+                    onChange={(e) =>
+                      setQuestionForm((prev) => ({
+                        ...prev,
+                        question_text: e.target.value,
+                      }))
+                    }
+                    rows={3}
+                  />
+                </div>
+
+                <div className="space-y-2">
+                  <Label>{t("admin.options")}</Label>
+                  <div className="space-y-2">
+                    {questionForm.options.map((opt, idx) => (
+                      <div key={idx} className="flex items-center gap-2">
+                        <span className="w-6 text-center font-medium">
+                          {String.fromCharCode(65 + idx)}.
+                        </span>
+                        <Input
+                          value={opt}
+                          onChange={(e) => {
+                            const newOptions = [...questionForm.options];
+                            newOptions[idx] = e.target.value;
+                            setQuestionForm((prev) => ({
+                              ...prev,
+                              options: newOptions,
+                            }));
+                          }}
+                          placeholder={`Pilihan ${String.fromCharCode(65 + idx)}`}
+                        />
+                      </div>
                     ))}
-                </SelectContent>
-              </Select>
-            </div>
+                  </div>
+                </div>
 
-            <div className="space-y-2">
-              <div className="flex items-center justify-between">
-                <Label>{t("admin.questionText")}</Label>
-                <div className="flex items-center gap-1">
-                  <Button
-                    type="button"
-                    variant="outline"
-                    size="sm"
-                    className="h-8 w-8 p-0"
-                    onClick={() => insertFormatTag('b')}
-                    title="Bold"
+                <div className="space-y-2">
+                  <Label>{t("admin.correctAnswer")}</Label>
+                  <Select
+                    value={questionForm.correct_answer.toString()}
+                    onValueChange={(val) =>
+                      setQuestionForm((prev) => ({
+                        ...prev,
+                        correct_answer: parseInt(val),
+                      }))
+                    }
                   >
-                    <Bold className="h-4 w-4" />
-                  </Button>
-                  <Button
-                    type="button"
-                    variant="outline"
-                    size="sm"
-                    className="h-8 w-8 p-0"
-                    onClick={() => insertFormatTag('u')}
-                    title="Underline"
-                  >
-                    <Underline className="h-4 w-4" />
-                  </Button>
+                    <SelectTrigger>
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {questionForm.options.map((opt, idx) => (
+                        <SelectItem key={idx} value={idx.toString()}>
+                          {String.fromCharCode(65 + idx)}. {opt || `Pilihan ${idx + 1}`}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+
+                <div className="space-y-2">
+                  <Label>{t("admin.explanation")}</Label>
+                  <Textarea
+                    value={questionForm.explanation}
+                    onChange={(e) =>
+                      setQuestionForm((prev) => ({
+                        ...prev,
+                        explanation: e.target.value,
+                      }))
+                    }
+                    rows={3}
+                  />
                 </div>
               </div>
-              <Textarea
-                id="question-text-input"
-                value={questionForm.question_text}
-                onChange={(e) =>
-                  setQuestionForm((prev) => ({
-                    ...prev,
-                    question_text: e.target.value,
-                  }))
-                }
-                rows={3}
-              />
-            </div>
+            </TabsContent>
 
-            <div className="space-y-2">
-              <Label>{t("admin.options")}</Label>
-              <div className="space-y-2">
-                {questionForm.options.map((opt, idx) => (
-                  <div key={idx} className="flex items-center gap-2">
-                    <span className="w-6 text-center font-medium">
-                      {String.fromCharCode(65 + idx)}.
-                    </span>
-                    <Input
-                      value={opt}
-                      onChange={(e) => {
-                        const newOptions = [...questionForm.options];
-                        newOptions[idx] = e.target.value;
-                        setQuestionForm((prev) => ({
-                          ...prev,
-                          options: newOptions,
-                        }));
-                      }}
-                      placeholder={`Pilihan ${String.fromCharCode(65 + idx)}`}
+            <TabsContent value="preview" className="mt-0">
+              <div className="py-8">
+                <Card className="border-2 border-primary/20 bg-card shadow-lg">
+                  <CardContent className="p-8">
+                    <div className="mb-4">
+                      <span className="text-sm text-primary font-bold uppercase tracking-wider">
+                        {categories.find(c => c.value === questionForm.category)?.label || questionForm.category} Preview
+                      </span>
+                    </div>
+
+                    <p
+                      className="text-lg md:text-xl font-medium text-foreground leading-relaxed mb-8"
+                      dangerouslySetInnerHTML={{ __html: questionForm.question_text || "<i>Teks soal akan muncul di sini...</i>" }}
                     />
-                  </div>
-                ))}
+
+                    <div className="space-y-3">
+                      {questionForm.options.map((option, index) => (
+                        <div
+                          key={index}
+                          className="w-full p-4 rounded-xl border-2 border-border bg-card flex items-center gap-4"
+                        >
+                          <div className="w-10 h-10 rounded-lg bg-secondary flex items-center justify-center font-semibold text-sm text-muted-foreground">
+                            {String.fromCharCode(65 + index)}
+                          </div>
+                          <span
+                            className="flex-1 text-foreground"
+                            dangerouslySetInnerHTML={{ __html: option || `Pilihan ${String.fromCharCode(65 + index)}` }}
+                          />
+                          {questionForm.correct_answer === index && (
+                            <span className="text-[10px] font-bold bg-green-500/10 text-green-600 px-2 py-1 rounded dark:bg-green-500/20 dark:text-green-400">
+                              KUNCI JAWABAN
+                            </span>
+                          )}
+                        </div>
+                      ))}
+                    </div>
+
+                    {questionForm.explanation && (
+                      <div className="mt-8 p-4 rounded-lg bg-primary/5 border border-primary/10">
+                        <p className="text-sm font-semibold text-primary mb-1">Penjelasan:</p>
+                        <p className="text-sm text-muted-foreground italic">{questionForm.explanation}</p>
+                      </div>
+                    )}
+                  </CardContent>
+                </Card>
+                <div className="mt-4 p-4 rounded-lg bg-muted/30 text-xs text-center text-muted-foreground italic">
+                  Tampilan di atas adalah ilustrasi bagaimana soal akan muncul di layar peserta kuis.
+                </div>
               </div>
-            </div>
+            </TabsContent>
 
-            <div className="space-y-2">
-              <Label>{t("admin.correctAnswer")}</Label>
-              <Select
-                value={questionForm.correct_answer.toString()}
-                onValueChange={(val) =>
-                  setQuestionForm((prev) => ({
-                    ...prev,
-                    correct_answer: parseInt(val),
-                  }))
-                }
-              >
-                <SelectTrigger>
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent>
-                  {questionForm.options.map((opt, idx) => (
-                    <SelectItem key={idx} value={idx.toString()}>
-                      {String.fromCharCode(65 + idx)}. {opt || `Pilihan ${idx + 1}`}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            </div>
-
-            <div className="space-y-2">
-              <Label>{t("admin.explanation")}</Label>
-              <Textarea
-                value={questionForm.explanation}
-                onChange={(e) =>
-                  setQuestionForm((prev) => ({
-                    ...prev,
-                    explanation: e.target.value,
-                  }))
-                }
-                rows={3}
-              />
-            </div>
-          </div>
-
-          <DialogFooter>
-            <Button variant="outline" onClick={() => setShowQuestionDialog(false)}>
-              {t("quiz.cancel")}
-            </Button>
-            <Button onClick={handleSaveQuestion} className="gap-2">
-              <Save className="w-4 h-4" />
-              {t("admin.save")}
-            </Button>
-          </DialogFooter>
+            <DialogFooter>
+              <Button variant="outline" onClick={() => setShowQuestionDialog(false)}>
+                {t("quiz.cancel")}
+              </Button>
+              <Button onClick={handleSaveQuestion} className="gap-2">
+                <Save className="w-4 h-4" />
+                {t("admin.save")}
+              </Button>
+            </DialogFooter>
+          </Tabs>
         </DialogContent>
       </Dialog>
 
