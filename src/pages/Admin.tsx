@@ -661,12 +661,13 @@ export default function Admin() {
                     <Table>
                       <TableHeader>
                         <TableRow>
-                          <TableHead className="w-12">
+                          <TableHead className="w-10">
                             <Checkbox
                               checked={selectedPackages.size === packages.length && packages.length > 0}
                               onCheckedChange={toggleSelectAllPackages}
                             />
                           </TableHead>
+                          <TableHead className="w-12">No.</TableHead>
                           <TableHead>{t("admin.packageName")}</TableHead>
                           <TableHead>{t("admin.category")}</TableHead>
                           <TableHead>{t("admin.questionCount")}</TableHead>
@@ -674,7 +675,7 @@ export default function Admin() {
                         </TableRow>
                       </TableHeader>
                       <TableBody>
-                        {packages.map((pkg) => (
+                        {packages.map((pkg, index) => (
                           <TableRow key={pkg.id}>
                             <TableCell>
                               <Checkbox
@@ -682,6 +683,7 @@ export default function Admin() {
                                 onCheckedChange={() => togglePackageSelection(pkg.id)}
                               />
                             </TableCell>
+                            <TableCell className="font-medium">{index + 1}</TableCell>
                             <TableCell className="font-medium">
                               {pkg.name}
                             </TableCell>
@@ -783,9 +785,8 @@ export default function Admin() {
                     <Table>
                       <TableHeader>
                         <TableRow>
-                          <TableHead className="w-12">
-                            {/* Checkbox dihapus sesuai request */}
-                          </TableHead>
+                          <TableHead className="w-10"></TableHead>
+                          <TableHead className="w-12">No.</TableHead>
                           <TableHead>ID</TableHead>
                           <TableHead>{t("admin.category")}</TableHead>
                           <TableHead>Paket</TableHead>
@@ -794,7 +795,7 @@ export default function Admin() {
                         </TableRow>
                       </TableHeader>
                       <TableBody>
-                        {filteredQuestions.map((q) => (
+                        {filteredQuestions.map((q, index) => (
                           <TableRow key={q.id}>
                             <TableCell>
                               <Checkbox
@@ -802,7 +803,8 @@ export default function Admin() {
                                 onCheckedChange={() => toggleQuestionSelection(q.id)}
                               />
                             </TableCell>
-                            <TableCell>{q.id}</TableCell>
+                            <TableCell className="font-medium">{index + 1}</TableCell>
+                            <TableCell className="text-muted-foreground text-xs">{q.id}</TableCell>
                             <TableCell>
                               {categories.find((c) => c.value === q.category)
                                 ?.label || q.category}
@@ -884,12 +886,13 @@ export default function Admin() {
                     <Table>
                       <TableHeader>
                         <TableRow>
-                          <TableHead className="w-12">
+                          <TableHead className="w-10">
                             <Checkbox
                               checked={selectedArticles.size === articles.length && articles.length > 0}
                               onCheckedChange={toggleSelectAllArticles}
                             />
                           </TableHead>
+                          <TableHead className="w-12">No.</TableHead>
                           <TableHead>Judul</TableHead>
                           <TableHead>Kategori</TableHead>
                           <TableHead>Tanggal</TableHead>
@@ -897,7 +900,7 @@ export default function Admin() {
                         </TableRow>
                       </TableHeader>
                       <TableBody>
-                        {articles.map((article) => (
+                        {articles.map((article, index) => (
                           <TableRow key={article.id}>
                             <TableCell>
                               <Checkbox
@@ -905,6 +908,7 @@ export default function Admin() {
                                 onCheckedChange={() => toggleArticleSelection(article.id)}
                               />
                             </TableCell>
+                            <TableCell className="font-medium">{index + 1}</TableCell>
                             <TableCell className="font-medium max-w-xs truncate">
                               {article.title}
                             </TableCell>
