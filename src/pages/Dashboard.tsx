@@ -9,11 +9,16 @@ import {
   ArrowRight,
   Layers,
   Moon,
-  Sun
+  Sun,
+  Database,
+  Loader2,
+  CheckCircle
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { testConfigs } from "@/data/questions";
+import { seedQuestions } from "@/services/questionService";
+import { toast } from "sonner";
 
 const testTypes = [
   {
@@ -56,10 +61,15 @@ const testTypes = [
 
 export default function Dashboard() {
   const [isDark, setIsDark] = useState(false);
+  const [isSeeding, setIsSeeding] = useState(false);
+  const [isSeeded, setIsSeeded] = useState(false);
 
   useEffect(() => {
     const savedTheme = localStorage.getItem("theme");
     const prefersDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
+    const seeded = localStorage.getItem("firebase_seeded");
+    
+    if (seeded) setIsSeeded(true);
     
     if (savedTheme === "dark" || (!savedTheme && prefersDark)) {
       setIsDark(true);
@@ -81,6 +91,21 @@ export default function Dashboard() {
     });
   };
 
+  const handleSeedDatabase = async () => {
+    setIsSeeding(true);
+    try {
+      await seedQuestions();
+      setIsSeeded(true);
+      localStorage.setItem("firebase_seeded", "true");
+      toast.success("Database seeded successfully!");
+    } catch (error) {
+      toast.error("Failed to seed database. Check Firebase console.");
+      console.error(error);
+    } finally {
+      setIsSeeding(false);
+    }
+  };
+
   return (
     <div className="min-h-screen bg-background">
       {/* Header */}
@@ -93,14 +118,32 @@ export default function Dashboard() {
             <span className="font-bold text-xl text-foreground">TOEFLPrep</span>
           </Link>
 
-          <Button
-            variant="ghost"
-            size="icon"
-            onClick={toggleTheme}
-            className="rounded-full"
-          >
-            {isDark ? <Sun className="w-5 h-5" /> : <Moon className="w-5 h-5" />}
-          </Button>
+          <div className="flex items-center gap-2">
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={handleSeedDatabase}
+              disabled={isSeeding || isSeeded}
+              className="gap-2"
+            >
+              {isSeeding ? (
+                <Loader2 className="w-4 h-4 animate-spin" />
+              ) : isSeeded ? (
+                <CheckCircle className="w-4 h-4 text-green-500" />
+              ) : (
+                <Database className="w-4 h-4" />
+              )}
+              {isSeeding ? "Seeding..." : isSeeded ? "Seeded" : "Seed DB"}
+            </Button>
+            <Button
+              variant="ghost"
+              size="icon"
+              onClick={toggleTheme}
+              className="rounded-full"
+            >
+              {isDark ? <Sun className="w-5 h-5" /> : <Moon className="w-5 h-5" />}
+            </Button>
+          </div>
         </div>
       </header>
 
