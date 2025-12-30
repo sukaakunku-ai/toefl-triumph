@@ -2,9 +2,8 @@ import { useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { QuizEngine } from "@/components/quiz/QuizEngine";
 import { ResultPage } from "@/components/quiz/ResultPage";
-import { testConfigs } from "@/data/questions";
-
-type TestType = keyof typeof testConfigs;
+import { useTestConfig } from "@/hooks/useQuestions";
+import { Loader2 } from "lucide-react";
 
 export default function Quiz() {
   const { testType } = useParams<{ testType: string }>();
@@ -15,7 +14,7 @@ export default function Quiz() {
     timeSpent: number;
   } | null>(null);
 
-  const config = testConfigs[testType as TestType];
+  const { config, isLoading } = useTestConfig(testType || "");
 
   if (!config) {
     navigate("/dashboard");
@@ -26,6 +25,17 @@ export default function Quiz() {
     setResults({ answers, timeSpent });
     setIsComplete(true);
   };
+
+  if (isLoading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-background">
+        <div className="flex flex-col items-center gap-4">
+          <Loader2 className="w-8 h-8 animate-spin text-primary" />
+          <p className="text-muted-foreground">Loading questions...</p>
+        </div>
+      </div>
+    );
+  }
 
   if (isComplete && results) {
     return (
