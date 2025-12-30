@@ -556,10 +556,16 @@ export default function Admin() {
     });
   };
 
-  const filteredQuestionsForPackage = questions.filter(
-    (q) =>
-      packageForm.category === "full" || q.category === packageForm.category
-  );
+  const filteredQuestionsForPackage = questions.filter((q) => {
+    const isCorrectCategory = packageForm.category === "full" || q.category === packageForm.category;
+
+    // Check if the question is already in another package (not the one being edited)
+    const isAlreadyInOtherPackage = packages.some(
+      (pkg) => pkg.id !== editingPackage?.id && pkg.questionIds.includes(q.id)
+    );
+
+    return isCorrectCategory && !isAlreadyInOtherPackage;
+  });
 
   return (
     <div className="min-h-screen bg-background">
