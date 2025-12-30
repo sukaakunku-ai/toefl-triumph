@@ -3,13 +3,14 @@ import {
   getDocs, 
   doc, 
   setDoc, 
+  deleteDoc,
   query, 
   where,
   orderBy,
   writeBatch
 } from "firebase/firestore";
 import { db } from "@/lib/firebase";
-import { Question, testConfigs } from "@/data/questions";
+import { Question, testConfigs, allQuestions } from "@/data/questions";
 
 const QUESTIONS_COLLECTION = "questions";
 
@@ -28,7 +29,6 @@ export const getQuestionsByCategory = async (category: string): Promise<Question
     const querySnapshot = await getDocs(q);
     
     if (querySnapshot.empty) {
-      // Return mock data if no data in Firebase
       console.log(`No questions found in Firebase for ${category}, using mock data`);
       return testConfigs[category as keyof typeof testConfigs]?.questions || [];
     }
@@ -43,7 +43,6 @@ export const getQuestionsByCategory = async (category: string): Promise<Question
     })) as Question[];
   } catch (error) {
     console.error("Error fetching questions:", error);
-    // Fallback to mock data
     return testConfigs[category as keyof typeof testConfigs]?.questions || [];
   }
 };
@@ -75,9 +74,37 @@ export const seedQuestions = async (): Promise<void> => {
 export const getAllQuestions = async (): Promise<FirebaseQuestion[]> => {
   try {
     const querySnapshot = await getDocs(collection(db, QUESTIONS_COLLECTION));
+    if (querySnapshot.empty) {
+      return allQuestions as FirebaseQuestion[];
+    }
     return querySnapshot.docs.map(doc => doc.data() as FirebaseQuestion);
   } catch (error) {
     console.error("Error fetching all questions:", error);
-    return [];
+    return allQuestions as FirebaseQuestion[];
+  }
+};
+
+// Save/update a question
+export const saveQuestion = async (question: Question): Promise<void> => {
+  try {
+    const docRef = doc(db, QUESTIONS_COLLECTION, `${question.category}_${question.id}`);
+    await setDoc(docRef, question);
+  } catch (error) {
+    console.error("Error saving question:", error);
+    throw error;
+  }
+};
+
+// Delete a question
+export const deleteQuestion = async (questionId: number): Promise<void> => {
+  try {
+    const querySnapshot = await getDocs(collection(db, QUESTIONS_COLLECTION));
+    const docToDelete = querySnapshot.docs.find(d => d.data().id === questionId);
+    if (docToDelete) {
+      await deleteDoc(doc(db, QUESTIONS_COLLECTION, docToDelete.id));
+    }
+  } catch (error) {
+    console.error("Error deleting question:", error);
+    throw error;
   }
 };
