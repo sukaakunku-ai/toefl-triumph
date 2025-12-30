@@ -14,6 +14,8 @@ import {
   Sun,
   Save,
   BookText,
+  Bold,
+  Underline,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
@@ -260,6 +262,26 @@ export default function Admin() {
     } catch (error) {
       toast.error(t("common.error"));
     }
+  };
+
+  // Format text helper
+  const insertFormatTag = (tag: 'b' | 'u') => {
+    const textarea = document.getElementById('question-text-input') as HTMLTextAreaElement;
+    if (!textarea) return;
+
+    const start = textarea.selectionStart;
+    const end = textarea.selectionEnd;
+    const text = questionForm.question_text;
+
+    if (start === end) return;
+
+    const selectedText = text.substring(start, end);
+    const before = text.substring(0, start);
+    const after = text.substring(end);
+
+    const newText = `${before}<${tag}>${selectedText}</${tag}>${after}`;
+
+    setQuestionForm(prev => ({ ...prev, question_text: newText }));
   };
 
   // Question handlers
@@ -1063,8 +1085,33 @@ export default function Admin() {
             </div>
 
             <div className="space-y-2">
-              <Label>{t("admin.questionText")}</Label>
+              <div className="flex items-center justify-between">
+                <Label>{t("admin.questionText")}</Label>
+                <div className="flex items-center gap-1">
+                  <Button
+                    type="button"
+                    variant="outline"
+                    size="sm"
+                    className="h-8 w-8 p-0"
+                    onClick={() => insertFormatTag('b')}
+                    title="Bold"
+                  >
+                    <Bold className="h-4 w-4" />
+                  </Button>
+                  <Button
+                    type="button"
+                    variant="outline"
+                    size="sm"
+                    className="h-8 w-8 p-0"
+                    onClick={() => insertFormatTag('u')}
+                    title="Underline"
+                  >
+                    <Underline className="h-4 w-4" />
+                  </Button>
+                </div>
+              </div>
               <Textarea
+                id="question-text-input"
                 value={questionForm.question_text}
                 onChange={(e) =>
                   setQuestionForm((prev) => ({

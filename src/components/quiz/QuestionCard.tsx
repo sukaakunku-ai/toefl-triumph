@@ -72,9 +72,10 @@ export function QuestionCard({
 
       <Card variant="elevated" className="overflow-hidden">
         <CardContent className="p-8">
-          <p className="text-lg md:text-xl font-medium text-foreground leading-relaxed mb-8">
-            {question.question_text}
-          </p>
+          <p
+            className="text-lg md:text-xl font-medium text-foreground leading-relaxed mb-8"
+            dangerouslySetInnerHTML={{ __html: question.question_text }}
+          />
 
           <div className="space-y-3">
             {question.options.map((option, index) => (
