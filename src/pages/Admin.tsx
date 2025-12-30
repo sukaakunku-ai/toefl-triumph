@@ -112,8 +112,13 @@ export default function Admin() {
     correct_answer: 0,
     explanation: "",
   });
-  const [selectedQuestions, setSelectedQuestions] = useState<number[]>([]);
+  const [selectedQuestions, setSelectedQuestions] = useState<Set<number>>(new Set());
   const [questionCategoryFilter, setQuestionCategoryFilter] = useState<Category | "all">("all");
+  const [showAssignPackageDialog, setShowAssignPackageDialog] = useState(false);
+  const [selectedPackageForAssign, setSelectedPackageForAssign] = useState<string>("");
+
+  // Package selection for bulk delete
+  const [selectedPackages, setSelectedPackages] = useState<Set<string>>(new Set());
 
   // Delete confirmation
   const [deleteConfirmOpen, setDeleteConfirmOpen] = useState(false);
@@ -293,15 +298,31 @@ export default function Admin() {
 
   // Bulk delete questions
   const handleBulkDeleteQuestions = async () => {
-    if (selectedQuestions.length === 0) return;
+    if (selectedQuestions.size === 0) return;
 
     try {
-      for (const id of selectedQuestions) {
+      for (const id of Array.from(selectedQuestions)) {
         await deleteQuestion(id);
       }
-      toast.success(`${selectedQuestions.length} soal berhasil dihapus`);
-      setSelectedQuestions([]);
+      toast.success(`${selectedQuestions.size} soal berhasil dihapus`);
+      setSelectedQuestions(new Set());
       loadQuestions();
+    } catch (error) {
+      toast.error(t("common.error"));
+    }
+  };
+
+  // Bulk delete packages
+  const handleBulkDeletePackages = async () => {
+    if (selectedPackages.size === 0) return;
+
+    try {
+      for (const id of Array.from(selectedPackages)) {
+        await deletePackage(id);
+      }
+      toast.success(`${selectedPackages.size} paket berhasil dihapus`);
+      setSelectedPackages(new Set());
+      loadPackages();
     } catch (error) {
       toast.error(t("common.error"));
     }
@@ -309,17 +330,73 @@ export default function Admin() {
 
   // Toggle question selection
   const toggleQuestionSelection = (id: number) => {
-    setSelectedQuestions(prev =>
-      prev.includes(id) ? prev.filter(qId => qId !== id) : [...prev, id]
-    );
+    setSelectedQuestions(prev => {
+      const newSet = new Set(prev);
+      if (newSet.has(id)) {
+        newSet.delete(id);
+      } else {
+        newSet.add(id);
+      }
+      return newSet;
+    });
+  };
+
+  // Toggle package selection
+  const togglePackageSelection = (id: string) => {
+    setSelectedPackages(prev => {
+      const newSet = new Set(prev);
+      if (newSet.has(id)) {
+        newSet.delete(id);
+      } else {
+        newSet.add(id);
+      }
+      return newSet;
+    });
   };
 
   // Select all questions
   const toggleSelectAll = () => {
-    if (selectedQuestions.length === filteredQuestions.length) {
-      setSelectedQuestions([]);
+    if (selectedQuestions.size === filteredQuestions.length && filteredQuestions.length > 0) {
+      setSelectedQuestions(new Set());
     } else {
-      setSelectedQuestions(filteredQuestions.map(q => q.id));
+      setSelectedQuestions(new Set(filteredQuestions.map(q => q.id)));
+    }
+  };
+
+  // Select all packages
+  const toggleSelectAllPackages = () => {
+    if (selectedPackages.size === packages.length && packages.length > 0) {
+      setSelectedPackages(new Set());
+    } else {
+      setSelectedPackages(new Set(packages.map(p => p.id)));
+    }
+  };
+
+  // Assign questions to package
+  const handleAssignToPackage = async () => {
+    if (!selectedPackageForAssign || selectedQuestions.size === 0) {
+      toast.error("Pilih paket dan soal terlebih dahulu");
+      return;
+    }
+
+    try {
+      const pkg = packages.find(p => p.id === selectedPackageForAssign);
+      if (!pkg) return;
+
+      const updatedQuestionIds = Array.from(new Set([...pkg.questionIds, ...Array.from(selectedQuestions)]));
+
+      await savePackage({
+        ...pkg,
+        questionIds: updatedQuestionIds,
+      });
+
+      toast.success(`${selectedQuestions.size} soal ditambahkan ke ${pkg.name}`);
+      setShowAssignPackageDialog(false);
+      setSelectedQuestions(new Set());
+      setSelectedPackageForAssign("");
+      loadPackages();
+    } catch (error) {
+      toast.error(t("common.error"));
     }
   };
 
@@ -409,12 +486,24 @@ export default function Admin() {
               animate={{ opacity: 1, y: 0 }}
             >
               <Card>
-                <CardHeader className="flex flex-row items-center justify-between">
+                <CardHeader className="flex flex-row items-center justify-between space-y-0">
                   <CardTitle>{t("admin.packages")}</CardTitle>
-                  <Button onClick={handleAddPackage} className="gap-2">
-                    <Plus className="w-4 h-4" />
-                    {t("admin.addPackage")}
-                  </Button>
+                  <div className="flex items-center gap-2">
+                    {selectedPackages.size > 0 && (
+                      <Button
+                        variant="destructive"
+                        onClick={handleBulkDeletePackages}
+                        className="gap-2"
+                      >
+                        <Trash2 className="w-4 h-4" />
+                        Hapus ({selectedPackages.size})
+                      </Button>
+                    )}
+                    <Button onClick={handleAddPackage} className="gap-2">
+                      <Plus className="w-4 h-4" />
+                      {t("admin.addPackage")}
+                    </Button>
+                  </div>
                 </CardHeader>
                 <CardContent>
                   {isLoadingPackages ? (
@@ -429,6 +518,12 @@ export default function Admin() {
                     <Table>
                       <TableHeader>
                         <TableRow>
+                          <TableHead className="w-12">
+                            <Checkbox
+                              checked={selectedPackages.size === packages.length && packages.length > 0}
+                              onCheckedChange={toggleSelectAllPackages}
+                            />
+                          </TableHead>
                           <TableHead>{t("admin.packageName")}</TableHead>
                           <TableHead>{t("admin.category")}</TableHead>
                           <TableHead>{t("admin.questionCount")}</TableHead>
@@ -438,6 +533,12 @@ export default function Admin() {
                       <TableBody>
                         {packages.map((pkg) => (
                           <TableRow key={pkg.id}>
+                            <TableCell>
+                              <Checkbox
+                                checked={selectedPackages.has(pkg.id)}
+                                onCheckedChange={() => togglePackageSelection(pkg.id)}
+                              />
+                            </TableCell>
                             <TableCell className="font-medium">
                               {pkg.name}
                             </TableCell>
@@ -500,15 +601,25 @@ export default function Admin() {
                         ))}
                       </SelectContent>
                     </Select>
-                    {selectedQuestions.length > 0 && (
-                      <Button
-                        variant="destructive"
-                        onClick={handleBulkDeleteQuestions}
-                        className="gap-2"
-                      >
-                        <Trash2 className="w-4 h-4" />
-                        Hapus ({selectedQuestions.length})
-                      </Button>
+                    {selectedQuestions.size > 0 && (
+                      <>
+                        <Button
+                          variant="outline"
+                          onClick={() => setShowAssignPackageDialog(true)}
+                          className="gap-2"
+                        >
+                          <Package className="w-4 h-4" />
+                          Tambah ke Paket ({selectedQuestions.size})
+                        </Button>
+                        <Button
+                          variant="destructive"
+                          onClick={handleBulkDeleteQuestions}
+                          className="gap-2"
+                        >
+                          <Trash2 className="w-4 h-4" />
+                          Hapus ({selectedQuestions.size})
+                        </Button>
+                      </>
                     )}
                     <Button onClick={handleAddQuestion} className="gap-2">
                       <Plus className="w-4 h-4" />
@@ -530,10 +641,7 @@ export default function Admin() {
                       <TableHeader>
                         <TableRow>
                           <TableHead className="w-12">
-                            <Checkbox
-                              checked={selectedQuestions.length === filteredQuestions.length && filteredQuestions.length > 0}
-                              onCheckedChange={toggleSelectAll}
-                            />
+                            {/* Checkbox dihapus sesuai request */}
                           </TableHead>
                           <TableHead>ID</TableHead>
                           <TableHead>{t("admin.category")}</TableHead>
@@ -546,7 +654,7 @@ export default function Admin() {
                           <TableRow key={q.id}>
                             <TableCell>
                               <Checkbox
-                                checked={selectedQuestions.includes(q.id)}
+                                checked={selectedQuestions.has(q.id)}
                                 onCheckedChange={() => toggleQuestionSelection(q.id)}
                               />
                             </TableCell>
@@ -840,6 +948,46 @@ export default function Admin() {
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>
+
+      {/* Assign Package Dialog */}
+      <Dialog open={showAssignPackageDialog} onOpenChange={setShowAssignPackageDialog}>
+        <DialogContent className="sm:max-w-md">
+          <DialogHeader>
+            <DialogTitle>Tambahkan ke Paket</DialogTitle>
+          </DialogHeader>
+          <div className="space-y-4 py-4">
+            <div className="space-y-2">
+              <Label>Pilih Paket</Label>
+              <Select
+                value={selectedPackageForAssign}
+                onValueChange={setSelectedPackageForAssign}
+              >
+                <SelectTrigger>
+                  <SelectValue placeholder="Pilih paket..." />
+                </SelectTrigger>
+                <SelectContent>
+                  {packages.map((pkg) => (
+                    <SelectItem key={pkg.id} value={pkg.id}>
+                      {pkg.name} ({pkg.questionIds.length} soal)
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+            <p className="text-sm text-muted-foreground">
+              {selectedQuestions.size} soal akan ditambahkan ke paket yang dipilih.
+            </p>
+          </div>
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setShowAssignPackageDialog(false)}>
+              Batal
+            </Button>
+            <Button onClick={handleAssignToPackage} disabled={!selectedPackageForAssign}>
+              Simpan
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }
