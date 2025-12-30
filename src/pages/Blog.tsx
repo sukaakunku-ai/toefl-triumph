@@ -6,86 +6,166 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Footer } from "@/components/Footer";
+import { useLanguage } from "@/contexts/LanguageContext";
+import { LanguageSwitcher } from "@/components/LanguageSwitcher";
 
-const articles = [
-  {
-    id: 1,
-    title: "10 Essential TOEFL Reading Strategies for 2024",
-    excerpt: "Master the reading section with these proven strategies used by high scorers. Learn how to manage your time effectively and identify key information quickly.",
-    category: "Reading Tips",
-    author: "Sarah Johnson",
-    date: "Dec 20, 2024",
-    readTime: "8 min read",
-    image: "📚",
-  },
-  {
-    id: 2,
-    title: "How to Improve Your Listening Score by 10 Points",
-    excerpt: "Discover techniques to enhance your listening comprehension and note-taking skills. Practice with these expert-approved methods.",
-    category: "Listening Tips",
-    author: "Michael Chen",
-    date: "Dec 18, 2024",
-    readTime: "6 min read",
-    image: "🎧",
-  },
-  {
-    id: 3,
-    title: "Common Grammar Mistakes to Avoid on TOEFL",
-    excerpt: "Learn the most frequent grammar errors that cost test-takers valuable points. Avoid these common pitfalls to maximize your score.",
-    category: "Structure Tips",
-    author: "Emily Roberts",
-    date: "Dec 15, 2024",
-    readTime: "5 min read",
-    image: "✍️",
-  },
-  {
-    id: 4,
-    title: "TOEFL Writing Templates That Actually Work",
-    excerpt: "Use these proven templates to structure your independent and integrated writing tasks. Includes real examples from high-scoring essays.",
-    category: "Writing Tips",
-    author: "David Park",
-    date: "Dec 12, 2024",
-    readTime: "10 min read",
-    image: "📝",
-  },
-  {
-    id: 5,
-    title: "Speaking Section: Overcome Nervousness and Speak Confidently",
-    excerpt: "Learn techniques to manage test anxiety and deliver clear, confident responses in the speaking section.",
-    category: "Speaking Tips",
-    author: "Lisa Wang",
-    date: "Dec 10, 2024",
-    readTime: "7 min read",
-    image: "🎤",
-  },
-  {
-    id: 6,
-    title: "Understanding TOEFL Scores: What Universities Really Want",
-    excerpt: "Decode TOEFL score requirements and learn what competitive scores look like for top universities worldwide.",
-    category: "General",
-    author: "James Miller",
-    date: "Dec 8, 2024",
-    readTime: "4 min read",
-    image: "🎯",
-  },
-];
-
-const categories = ["All", "Reading Tips", "Listening Tips", "Structure Tips", "Writing Tips", "Speaking Tips", "General"];
+const getLocalizedArticles = (t: (key: string) => string, lang: string) => {
+  if (lang === "id") {
+    return [
+      {
+        id: 1,
+        title: "10 Strategi Penting TOEFL Reading untuk 2024",
+        excerpt: "Kuasai bagian reading dengan strategi terbukti yang digunakan oleh peraih skor tinggi. Pelajari cara mengelola waktu secara efektif dan mengidentifikasi informasi kunci dengan cepat.",
+        category: "Tips Membaca",
+        author: "Sarah Johnson",
+        date: "20 Des 2024",
+        readTime: "8 menit baca",
+        image: "📚",
+      },
+      {
+        id: 2,
+        title: "Cara Meningkatkan Skor Listening Anda Hingga 10 Poin",
+        excerpt: "Temukan teknik untuk meningkatkan pemahaman mendengar dan keterampilan mencatat Anda. Berlatihlah dengan metode yang disetujui ahli ini.",
+        category: "Tips Mendengar",
+        author: "Michael Chen",
+        date: "18 Des 2024",
+        readTime: "6 menit baca",
+        image: "🎧",
+      },
+      {
+        id: 3,
+        title: "Kesalahan Tata Bahasa Umum yang Harus Dihindari di TOEFL",
+        excerpt: "Pelajari kesalahan tata bahasa yang paling sering merugikan peserta tes poin berharga. Hindari jebakan umum ini untuk memaksimalkan skor Anda.",
+        category: "Tips Struktur",
+        author: "Emily Roberts",
+        date: "15 Des 2024",
+        readTime: "5 menit baca",
+        image: "✍️",
+      },
+      {
+        id: 4,
+        title: "Templat Menulis TOEFL yang Benar-benar Bekerja",
+        excerpt: "Gunakan templat terbukti ini untuk menyusun tugas menulis independen dan terintegrasi Anda. Termasuk contoh nyata dari esai dengan skor tinggi.",
+        category: "Tips Menulis",
+        author: "David Park",
+        date: "12 Des 2024",
+        readTime: "10 menit baca",
+        image: "📝",
+      },
+      {
+        id: 5,
+        title: "Bagian Speaking: Atasi Kegugupan dan Berbicaralah dengan Percaya Diri",
+        excerpt: "Pelajari teknik untuk mengelola kecemasan tes dan memberikan tanggapan yang jelas dan percaya diri di bagian speaking.",
+        category: "Tips Berbicara",
+        author: "Lisa Wang",
+        date: "10 Des 2024",
+        readTime: "7 menit baca",
+        image: "🎤",
+      },
+      {
+        id: 6,
+        title: "Memahami Skor TOEFL: Apa yang Sebenarnya Diinginkan Universitas",
+        excerpt: "Pahami persyaratan skor TOEFL dan pelajari seperti apa skor kompetitif untuk universitas top di seluruh dunia.",
+        category: "Umum",
+        author: "James Miller",
+        date: "8 Des 2024",
+        readTime: "4 menit baca",
+        image: "🎯",
+      },
+    ];
+  }
+  return [
+    {
+      id: 1,
+      title: "10 Essential TOEFL Reading Strategies for 2024",
+      excerpt: "Master the reading section with these proven strategies used by high scorers. Learn how to manage your time effectively and identify key information quickly.",
+      category: "Reading Tips",
+      author: "Sarah Johnson",
+      date: "Dec 20, 2024",
+      readTime: "8 min read",
+      image: "📚",
+    },
+    {
+      id: 2,
+      title: "How to Improve Your Listening Score by 10 Points",
+      excerpt: "Discover techniques to enhance your listening comprehension and note-taking skills. Practice with these expert-approved methods.",
+      category: "Listening Tips",
+      author: "Michael Chen",
+      date: "Dec 18, 2024",
+      readTime: "6 min read",
+      image: "🎧",
+    },
+    {
+      id: 3,
+      title: "Common Grammar Mistakes to Avoid on TOEFL",
+      excerpt: "Learn the most frequent grammar errors that cost test-takers valuable points. Avoid these common pitfalls to maximize your score.",
+      category: "Structure Tips",
+      author: "Emily Roberts",
+      date: "Dec 15, 2024",
+      readTime: "5 min read",
+      image: "✍️",
+    },
+    {
+      id: 4,
+      title: "TOEFL Writing Templates That Actually Work",
+      excerpt: "Use these proven templates to structure your independent and integrated writing tasks. Includes real examples from high-scoring essays.",
+      category: "Writing Tips",
+      author: "David Park",
+      date: "Dec 12, 2024",
+      readTime: "10 min read",
+      image: "📝",
+    },
+    {
+      id: 5,
+      title: "Speaking Section: Overcome Nervousness and Speak Confidently",
+      excerpt: "Learn techniques to manage test anxiety and deliver clear, confident responses in the speaking section.",
+      category: "Speaking Tips",
+      author: "Lisa Wang",
+      date: "Dec 10, 2024",
+      readTime: "7 min read",
+      image: "🎤",
+    },
+    {
+      id: 6,
+      title: "Understanding TOEFL Scores: What Universities Really Want",
+      excerpt: "Decode TOEFL score requirements and learn what competitive scores look like for top universities worldwide.",
+      category: "General",
+      author: "James Miller",
+      date: "Dec 8, 2024",
+      readTime: "4 min read",
+      image: "🎯",
+    },
+  ];
+};
 
 export default function Blog() {
   const [isDark, setIsDark] = useState(false);
-  const [selectedCategory, setSelectedCategory] = useState("All");
+  const { t, language } = useLanguage();
+  const [selectedCategory, setSelectedCategory] = useState(t("blog.categories.all"));
   const [searchQuery, setSearchQuery] = useState("");
+
+  const articles = getLocalizedArticles(t, language);
+  const categories = [
+    t("blog.categories.all"),
+    t("blog.categories.reading"),
+    t("blog.categories.listening"),
+    t("blog.categories.structure"),
+    t("blog.categories.writing"),
+    t("blog.categories.speaking"),
+    t("blog.categories.general")
+  ];
 
   useEffect(() => {
     const savedTheme = localStorage.getItem("theme");
     const prefersDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
-    
+
     if (savedTheme === "dark" || (!savedTheme && prefersDark)) {
       setIsDark(true);
       document.documentElement.classList.add("dark");
     }
-  }, []);
+    // Update selected category when language changes
+    setSelectedCategory(t("blog.categories.all"));
+  }, [language, t]);
 
   const toggleTheme = () => {
     setIsDark((prev) => {
@@ -102,9 +182,9 @@ export default function Blog() {
   };
 
   const filteredArticles = articles.filter((article) => {
-    const matchesCategory = selectedCategory === "All" || article.category === selectedCategory;
+    const matchesCategory = selectedCategory === t("blog.categories.all") || article.category === selectedCategory;
     const matchesSearch = article.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-                         article.excerpt.toLowerCase().includes(searchQuery.toLowerCase());
+      article.excerpt.toLowerCase().includes(searchQuery.toLowerCase());
     return matchesCategory && matchesSearch;
   });
 
@@ -121,6 +201,7 @@ export default function Blog() {
           </Link>
 
           <div className="flex items-center gap-4">
+            <LanguageSwitcher />
             <Button
               variant="ghost"
               size="icon"
@@ -130,7 +211,7 @@ export default function Blog() {
               {isDark ? <Sun className="w-5 h-5" /> : <Moon className="w-5 h-5" />}
             </Button>
             <Link to="/dashboard">
-              <Button variant="hero">Start Practice</Button>
+              <Button variant="hero">{t("nav.startPractice")}</Button>
             </Link>
           </div>
         </div>
@@ -144,17 +225,17 @@ export default function Blog() {
               animate={{ opacity: 1, y: 0 }}
             >
               <h1 className="text-3xl md:text-4xl font-bold text-foreground mb-4">
-                Study Resources & Tips
+                {t("blog.title")}
               </h1>
               <p className="text-lg text-muted-foreground max-w-2xl mx-auto mb-8">
-                Expert strategies and insights to help you achieve your target TOEFL score
+                {t("blog.subtitle")}
               </p>
 
               <div className="max-w-md mx-auto relative">
                 <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground" />
                 <Input
                   type="search"
-                  placeholder="Search articles..."
+                  placeholder={t("blog.searchPlaceholder")}
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
                   className="pl-12 h-12 rounded-xl"
@@ -223,7 +304,7 @@ export default function Blog() {
 
             {filteredArticles.length === 0 && (
               <div className="text-center py-12">
-                <p className="text-muted-foreground">No articles found matching your search.</p>
+                <p className="text-muted-foreground">{t("blog.noResults")}</p>
               </div>
             )}
           </div>

@@ -1,25 +1,28 @@
 import { motion } from "framer-motion";
 import { UserPlus, Target, Trophy } from "lucide-react";
-
-const steps = [
-  {
-    icon: UserPlus,
-    title: "Choose Your Practice",
-    description: "Select from full simulation or focus on specific sections like Reading, Listening, or Structure.",
-  },
-  {
-    icon: Target,
-    title: "Take the Test",
-    description: "Answer questions under timed conditions with the ability to flag and review questions.",
-  },
-  {
-    icon: Trophy,
-    title: "Review & Improve",
-    description: "Get detailed explanations for every answer and track your progress over time.",
-  },
-];
+import { useLanguage } from "@/contexts/LanguageContext";
 
 export function HowItWorks() {
+  const { t } = useLanguage();
+
+  const steps = [
+    {
+      icon: UserPlus,
+      title: t("howItWorks.step1.title"),
+      description: t("howItWorks.step1.desc"),
+    },
+    {
+      icon: Target,
+      title: t("howItWorks.step2.title"),
+      description: t("howItWorks.step2.desc"),
+    },
+    {
+      icon: Trophy,
+      title: t("howItWorks.step3.title"),
+      description: t("howItWorks.step3.desc"),
+    },
+  ];
+
   return (
     <section className="py-24 bg-gradient-subtle">
       <div className="container mx-auto px-4">
@@ -31,10 +34,10 @@ export function HowItWorks() {
           className="text-center mb-16"
         >
           <h2 className="text-3xl md:text-4xl font-bold text-foreground mb-4">
-            How It Works
+            {t("howItWorks.title")}
           </h2>
           <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-            Start improving your TOEFL score in three simple steps
+            {t("howItWorks.subtitle")}
           </p>
         </motion.div>
 

@@ -8,7 +8,8 @@ import Index from "./pages/Index";
 import Dashboard from "./pages/Dashboard";
 import Quiz from "./pages/Quiz";
 import Blog from "./pages/Blog";
-import Admin from "./pages/Admin";
+import Login from "./pages/Login";
+import ProtectedAdmin from "./pages/ProtectedAdmin";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -25,7 +26,9 @@ const App = () => (
             <Route path="/dashboard" element={<Dashboard />} />
             <Route path="/quiz/:testType" element={<Quiz />} />
             <Route path="/blog" element={<Blog />} />
-            <Route path="/admin" element={<Admin />} />
+            <Route path="/admin/login" element={<Login />} />
+            <Route path="/admin/panel" element={<ProtectedAdmin />} />
+            <Route path="/admin" element={<Login />} />
             <Route path="*" element={<NotFound />} />
           </Routes>
         </BrowserRouter>

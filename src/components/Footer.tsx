@@ -1,7 +1,10 @@
 import { Link } from "react-router-dom";
 import { BookOpen, Twitter, Linkedin, Mail } from "lucide-react";
+import { useLanguage } from "@/contexts/LanguageContext";
 
 export function Footer() {
+  const { t } = useLanguage();
+
   return (
     <footer className="bg-card border-t border-border">
       <div className="container mx-auto px-4 py-12">
@@ -14,59 +17,59 @@ export function Footer() {
               <span className="font-bold text-xl text-foreground">TOEFLPrep</span>
             </Link>
             <p className="text-sm text-muted-foreground">
-              Master TOEFL with our comprehensive practice platform. Achieve your dream score with realistic simulations.
+              {t("footer.tagline")}
             </p>
           </div>
 
           <div>
-            <h4 className="font-semibold text-foreground mb-4">Practice</h4>
+            <h4 className="font-semibold text-foreground mb-4">{t("footer.practice")}</h4>
             <ul className="space-y-2">
               <li>
                 <Link to="/dashboard" className="text-sm text-muted-foreground hover:text-primary transition-colors">
-                  Full Simulation
+                  {t("footer.fullSimulation")}
                 </Link>
               </li>
               <li>
                 <Link to="/dashboard" className="text-sm text-muted-foreground hover:text-primary transition-colors">
-                  Structure & Grammar
+                  {t("footer.structure")}
                 </Link>
               </li>
               <li>
                 <Link to="/dashboard" className="text-sm text-muted-foreground hover:text-primary transition-colors">
-                  Reading
+                  {t("footer.reading")}
                 </Link>
               </li>
               <li>
                 <Link to="/dashboard" className="text-sm text-muted-foreground hover:text-primary transition-colors">
-                  Listening
+                  {t("footer.listening")}
                 </Link>
               </li>
             </ul>
           </div>
 
           <div>
-            <h4 className="font-semibold text-foreground mb-4">Resources</h4>
+            <h4 className="font-semibold text-foreground mb-4">{t("footer.resources")}</h4>
             <ul className="space-y-2">
               <li>
                 <Link to="/blog" className="text-sm text-muted-foreground hover:text-primary transition-colors">
-                  Study Tips
+                  {t("footer.studyTips")}
                 </Link>
               </li>
               <li>
                 <Link to="/blog" className="text-sm text-muted-foreground hover:text-primary transition-colors">
-                  TOEFL Strategies
+                  {t("footer.strategies")}
                 </Link>
               </li>
               <li>
                 <Link to="/blog" className="text-sm text-muted-foreground hover:text-primary transition-colors">
-                  Score Guide
+                  {t("footer.scoreGuide")}
                 </Link>
               </li>
             </ul>
           </div>
 
           <div>
-            <h4 className="font-semibold text-foreground mb-4">Connect</h4>
+            <h4 className="font-semibold text-foreground mb-4">{t("footer.connect")}</h4>
             <div className="flex gap-4">
               <a
                 href="#"
@@ -92,7 +95,7 @@ export function Footer() {
 
         <div className="mt-12 pt-8 border-t border-border text-center">
           <p className="text-sm text-muted-foreground">
-            © {new Date().getFullYear()} TOEFLPrep. All rights reserved.
+            © {new Date().getFullYear()} TOEFLPrep. {t("footer.rights")}
           </p>
         </div>
       </div>

@@ -20,7 +20,7 @@ const translations: Record<Language, Record<string, string>> = {
     "nav.about": "Tentang",
     "nav.admin": "Admin",
     "nav.startPractice": "Mulai Latihan",
-    
+
     // Dashboard
     "dashboard.title": "Pilih Jenis Latihan",
     "dashboard.subtitle": "Pilih jenis tes untuk memulai persiapan TOEFL Anda",
@@ -38,36 +38,44 @@ const translations: Record<Language, Record<string, string>> = {
     "dashboard.selectPackage": "Pilih Paket Soal",
     "dashboard.package": "Paket",
     "dashboard.start": "Mulai Latihan",
-    
+
     // Hero
-    "hero.title": "Persiapan TOEFL Terbaik",
+    "hero.title": "Kuasai dengan Percaya Diri",
     "hero.subtitle": "Tingkatkan skor TOEFL Anda dengan latihan soal berkualitas tinggi dan simulasi tes yang realistis.",
     "hero.cta": "Mulai Gratis",
     "hero.secondary": "Pelajari Selengkapnya",
-    
+
     // How it works
     "howItWorks.title": "Cara Kerjanya",
-    "howItWorks.step1.title": "Pilih Jenis Tes",
-    "howItWorks.step1.desc": "Pilih antara simulasi lengkap atau latihan per bagian",
-    "howItWorks.step2.title": "Kerjakan Soal",
-    "howItWorks.step2.desc": "Jawab soal dengan timer seperti tes sesungguhnya",
-    "howItWorks.step3.title": "Lihat Hasil",
-    "howItWorks.step3.desc": "Dapatkan analisis detail dan penjelasan jawaban",
-    
+    "howItWorks.subtitle": "Mulai tingkatkan skor TOEFL Anda dalam tiga langkah sederhana",
+    "howItWorks.step1.title": "Pilih Latihan Anda",
+    "howItWorks.step1.desc": "Pilih dari simulasi lengkap atau fokus pada bagian tertentu seperti Reading, Listening, atau Structure",
+    "howItWorks.step2.title": "Kerjakan Tes",
+    "howItWorks.step2.desc": "Jawab pertanyaan di bawah kondisi waktu nyata dengan kemampuan untuk menandai dan meninjau pertanyaan",
+    "howItWorks.step3.title": "Tinjau & Tingkatkan",
+    "howItWorks.step3.desc": "Dapatkan penjelasan mendetail untuk setiap jawaban dan pantau kemajuan Anda dari waktu ke waktu",
+
     // Why choose us
-    "whyChooseUs.title": "Mengapa Memilih Kami",
-    "whyChooseUs.feature1.title": "Soal Berkualitas",
-    "whyChooseUs.feature1.desc": "Soal-soal dirancang sesuai standar TOEFL terbaru",
+    "whyChooseUs.title": "Mengapa Memilih TOEFLPrep?",
+    "whyChooseUs.subtitle": "Semua yang Anda butuhkan untuk mencapai target skor TOEFL Anda",
+    "whyChooseUs.feature1.title": "Simulasi Realistis",
+    "whyChooseUs.feature1.desc": "Berlatihlah dengan pertanyaan yang mencerminkan format dan tingkat kesulitan ujian TOEFL yang sebenarnya.",
     "whyChooseUs.feature2.title": "Penjelasan Detail",
-    "whyChooseUs.feature2.desc": "Setiap jawaban dilengkapi penjelasan lengkap",
-    "whyChooseUs.feature3.title": "Simulasi Realistis",
-    "whyChooseUs.feature3.desc": "Timer dan format seperti tes sesungguhnya",
-    
+    "whyChooseUs.feature2.desc": "Pahami setiap jawaban dengan penjelasan komprehensif untuk semua pertanyaan.",
+    "whyChooseUs.feature3.title": "Pelacakan Kemajuan",
+    "whyChooseUs.feature3.desc": "Pantau peningkatan Anda dengan analitik terperinci dan wawasan kinerja.",
+    "whyChooseUs.feature4.title": "Latihan Berwaktu",
+    "whyChooseUs.feature4.desc": "Bangun stamina mengerjakan tes dengan batasan waktu yang realistis untuk setiap bagian.",
+    "whyChooseUs.feature5.title": "Metode Terbukti",
+    "whyChooseUs.feature5.desc": "Pelajari strategi yang dikembangkan oleh ahli TOEFL dan peraih skor tinggi.",
+    "whyChooseUs.feature6.title": "Latihan di Mana Saja",
+    "whyChooseUs.feature6.desc": "Akses tes latihan Anda di perangkat apa pun, kapan pun, di mana pun.",
+
     // CTA
-    "cta.title": "Siap Meningkatkan Skor TOEFL?",
-    "cta.subtitle": "Mulai latihan sekarang dan raih skor impianmu!",
-    "cta.button": "Mulai Sekarang",
-    
+    "cta.title": "Siap Menaklukkan TOEFL?",
+    "cta.subtitle": "Mulai berlatih hari ini dengan simulasi realistis dan umpan balik mendetail. Skor target Anda sudah di depan mata.",
+    "cta.button": "Mulai Latihan Gratis Sekarang",
+
     // Quiz
     "quiz.question": "Soal",
     "quiz.of": "dari",
@@ -83,7 +91,7 @@ const translations: Record<Language, Record<string, string>> = {
     "quiz.unansweredTitle": "Soal Belum Terjawab",
     "quiz.unansweredMessage": "Masih ada {count} soal yang belum dijawab. Yakin ingin mengumpulkan?",
     "quiz.submitAnyway": "Tetap Kumpulkan",
-    
+
     // Results
     "results.title": "Hasil Tes",
     "results.score": "Skor Anda",
@@ -96,7 +104,7 @@ const translations: Record<Language, Record<string, string>> = {
     "results.yourAnswer": "Jawaban Anda",
     "results.correctAnswer": "Jawaban Benar",
     "results.explanation": "Penjelasan",
-    
+
     // Admin
     "admin.title": "Panel Admin",
     "admin.packages": "Kelola Paket Soal",
@@ -119,12 +127,53 @@ const translations: Record<Language, Record<string, string>> = {
     "admin.noPackages": "Belum ada paket soal",
     "admin.noQuestions": "Belum ada soal dalam paket ini",
     "admin.backToDashboard": "Kembali ke Dashboard",
-    
+
+    // Blog
+    "blog.title": "Sumber Belajar & Tips",
+    "blog.subtitle": "Strategi dan wawasan ahli untuk membantu Anda mencapai target skor TOEFL",
+    "blog.searchPlaceholder": "Cari artikel...",
+    "blog.noResults": "Tidak ada artikel yang cocok dengan pencarian Anda.",
+    "blog.readTime": "menit baca",
+    "blog.viewAll": "Lihat Semua Artikel",
+    "blog.sectionTitle": "Sumber Belajar",
+    "blog.sectionSubtitle": "Tips dan strategi ahli untuk meningkatkan persiapan TOEFL Anda",
+    "blog.categories.all": "Semua",
+    "blog.categories.reading": "Tips Membaca",
+    "blog.categories.listening": "Tips Mendengar",
+    "blog.categories.structure": "Tips Struktur",
+    "blog.categories.writing": "Tips Menulis",
+    "blog.categories.speaking": "Tips Berbicara",
+    "blog.categories.general": "Umum",
+
+    // Hero Extra
+    "hero.freePractice": "Latihan gratis tersedia",
+    "hero.students": "10.000+ Siswa",
+    "hero.goals": "Mencapai tujuan mereka",
+    "hero.demo": "Lihat Demo",
+    "hero.questionCount": "Soal 15 dari 50",
+    "hero.timeRemaining": "25:30 tersisa",
+    "hero.accuracy": "Akurasi 85%",
+    "hero.structureSection": "Bagian Structure",
+
     // Common
     "common.loading": "Memuat...",
     "common.error": "Terjadi kesalahan",
     "common.success": "Berhasil",
     "common.language": "Bahasa",
+
+    // Footer
+    "footer.tagline": "Kuasai TOEFL dengan platform latihan komprehensif kami. Raih skor impian Anda dengan simulasi realistis.",
+    "footer.practice": "Latihan",
+    "footer.fullSimulation": "Simulasi Lengkap",
+    "footer.structure": "Struktur & Tata Bahasa",
+    "footer.reading": "Membaca",
+    "footer.listening": "Mendengar",
+    "footer.resources": "Sumber Daya",
+    "footer.studyTips": "Tips Belajar",
+    "footer.strategies": "Strategi TOEFL",
+    "footer.scoreGuide": "Panduan Skor",
+    "footer.connect": "Hubungi Kami",
+    "footer.rights": "Semua hak dilindungi.",
   },
   en: {
     // Navigation
@@ -134,7 +183,7 @@ const translations: Record<Language, Record<string, string>> = {
     "nav.about": "About",
     "nav.admin": "Admin",
     "nav.startPractice": "Start Practice",
-    
+
     // Dashboard
     "dashboard.title": "Choose Your Practice",
     "dashboard.subtitle": "Select a test type to begin your TOEFL preparation",
@@ -152,36 +201,44 @@ const translations: Record<Language, Record<string, string>> = {
     "dashboard.selectPackage": "Select Question Package",
     "dashboard.package": "Package",
     "dashboard.start": "Start Practice",
-    
+
     // Hero
-    "hero.title": "Best TOEFL Preparation",
+    "hero.title": "Master with Confidence",
     "hero.subtitle": "Boost your TOEFL score with high-quality practice questions and realistic test simulations.",
     "hero.cta": "Get Started Free",
     "hero.secondary": "Learn More",
-    
+
     // How it works
     "howItWorks.title": "How It Works",
-    "howItWorks.step1.title": "Choose Test Type",
-    "howItWorks.step1.desc": "Select between full simulation or section practice",
-    "howItWorks.step2.title": "Answer Questions",
-    "howItWorks.step2.desc": "Answer questions with timer like the real test",
-    "howItWorks.step3.title": "View Results",
-    "howItWorks.step3.desc": "Get detailed analysis and answer explanations",
-    
+    "howItWorks.subtitle": "Start improving your TOEFL score in three simple steps",
+    "howItWorks.step1.title": "Choose Your Practice",
+    "howItWorks.step1.desc": "Select from full simulation or focus on specific sections like Reading, Listening, or Structure",
+    "howItWorks.step2.title": "Take the Test",
+    "howItWorks.step2.desc": "Answer questions under timed conditions with the ability to flag and review questions",
+    "howItWorks.step3.title": "Review & Improve",
+    "howItWorks.step3.desc": "Get detailed explanations for every answer and track your progress over time",
+
     // Why choose us
-    "whyChooseUs.title": "Why Choose Us",
-    "whyChooseUs.feature1.title": "Quality Questions",
-    "whyChooseUs.feature1.desc": "Questions designed according to latest TOEFL standards",
+    "whyChooseUs.title": "Why Choose TOEFLPrep?",
+    "whyChooseUs.subtitle": "Everything you need to achieve your target TOEFL score",
+    "whyChooseUs.feature1.title": "Realistic Simulations",
+    "whyChooseUs.feature1.desc": "Practice with questions that mirror the actual TOEFL exam format and difficulty.",
     "whyChooseUs.feature2.title": "Detailed Explanations",
-    "whyChooseUs.feature2.desc": "Every answer comes with complete explanation",
-    "whyChooseUs.feature3.title": "Realistic Simulation",
-    "whyChooseUs.feature3.desc": "Timer and format like the real test",
-    
+    "whyChooseUs.feature2.desc": "Understand every answer with comprehensive explanations for all questions.",
+    "whyChooseUs.feature3.title": "Progress Tracking",
+    "whyChooseUs.feature3.desc": "Monitor your improvement with detailed analytics and performance insights.",
+    "whyChooseUs.feature4.title": "Timed Practice",
+    "whyChooseUs.feature4.desc": "Build test-taking stamina with realistic time constraints for each section.",
+    "whyChooseUs.feature5.title": "Proven Methods",
+    "whyChooseUs.feature5.desc": "Learn strategies developed by TOEFL experts and high scorers.",
+    "whyChooseUs.feature6.title": "Practice Anywhere",
+    "whyChooseUs.feature6.desc": "Access your practice tests on any device, anytime, anywhere.",
+
     // CTA
-    "cta.title": "Ready to Boost Your TOEFL Score?",
-    "cta.subtitle": "Start practicing now and achieve your dream score!",
-    "cta.button": "Start Now",
-    
+    "cta.title": "Ready to Ace the TOEFL?",
+    "cta.subtitle": "Start practicing today with realistic simulations and detailed feedback. Your target score is within reach.",
+    "cta.button": "Start Free Practice Now",
+
     // Quiz
     "quiz.question": "Question",
     "quiz.of": "of",
@@ -197,7 +254,7 @@ const translations: Record<Language, Record<string, string>> = {
     "quiz.unansweredTitle": "Unanswered Questions",
     "quiz.unansweredMessage": "You still have {count} unanswered questions. Submit anyway?",
     "quiz.submitAnyway": "Submit Anyway",
-    
+
     // Results
     "results.title": "Test Results",
     "results.score": "Your Score",
@@ -210,7 +267,7 @@ const translations: Record<Language, Record<string, string>> = {
     "results.yourAnswer": "Your Answer",
     "results.correctAnswer": "Correct Answer",
     "results.explanation": "Explanation",
-    
+
     // Admin
     "admin.title": "Admin Panel",
     "admin.packages": "Manage Packages",
@@ -233,12 +290,53 @@ const translations: Record<Language, Record<string, string>> = {
     "admin.noPackages": "No packages yet",
     "admin.noQuestions": "No questions in this package",
     "admin.backToDashboard": "Back to Dashboard",
-    
+
+    // Blog
+    "blog.title": "Study Resources & Tips",
+    "blog.subtitle": "Expert strategies and insights to help you achieve your target TOEFL score",
+    "blog.searchPlaceholder": "Search articles...",
+    "blog.noResults": "No articles found matching your search.",
+    "blog.readTime": "min read",
+    "blog.viewAll": "View All Articles",
+    "blog.sectionTitle": "Study Resources",
+    "blog.sectionSubtitle": "Expert tips and strategies to boost your TOEFL preparation",
+    "blog.categories.all": "All",
+    "blog.categories.reading": "Reading Tips",
+    "blog.categories.listening": "Listening Tips",
+    "blog.categories.structure": "Structure Tips",
+    "blog.categories.writing": "Writing Tips",
+    "blog.categories.speaking": "Speaking Tips",
+    "blog.categories.general": "General",
+
+    // Hero Extra
+    "hero.freePractice": "Free practice available",
+    "hero.students": "10,000+ Students",
+    "hero.goals": "Achieved their goals",
+    "hero.demo": "Watch Demo",
+    "hero.questionCount": "Question 15 of 50",
+    "hero.timeRemaining": "25:30 remaining",
+    "hero.accuracy": "85% Accuracy",
+    "hero.structureSection": "Structure Section",
+
     // Common
     "common.loading": "Loading...",
     "common.error": "An error occurred",
     "common.success": "Success",
     "common.language": "Language",
+
+    // Footer
+    "footer.tagline": "Master TOEFL with our comprehensive practice platform. Achieve your dream score with realistic simulations.",
+    "footer.practice": "Practice",
+    "footer.fullSimulation": "Full Simulation",
+    "footer.structure": "Structure & Grammar",
+    "footer.reading": "Reading",
+    "footer.listening": "Listening",
+    "footer.resources": "Resources",
+    "footer.studyTips": "Study Tips",
+    "footer.strategies": "TOEFL Strategies",
+    "footer.scoreGuide": "Score Guide",
+    "footer.connect": "Connect",
+    "footer.rights": "All rights reserved.",
   },
 };
 

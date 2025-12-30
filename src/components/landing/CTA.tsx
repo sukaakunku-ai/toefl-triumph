@@ -2,8 +2,11 @@ import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
 import { ArrowRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { useLanguage } from "@/contexts/LanguageContext";
 
 export function CTA() {
+  const { t } = useLanguage();
+
   return (
     <section className="py-24">
       <div className="container mx-auto px-4">
@@ -22,18 +25,17 @@ export function CTA() {
 
           <div className="relative z-10">
             <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold text-primary-foreground mb-6">
-              Ready to Ace the TOEFL?
+              {t("cta.title")}
             </h2>
             <p className="text-lg text-primary-foreground/80 max-w-2xl mx-auto mb-8">
-              Start practicing today with realistic simulations and detailed feedback. 
-              Your target score is within reach.
+              {t("cta.subtitle")}
             </p>
             <Link to="/dashboard">
               <Button
                 size="xl"
                 className="bg-background text-primary hover:bg-background/90 gap-2 shadow-xl"
               >
-                Start Free Practice Now
+                {t("cta.button")}
                 <ArrowRight className="w-5 h-5" />
               </Button>
             </Link>

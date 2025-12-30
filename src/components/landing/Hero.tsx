@@ -2,12 +2,22 @@ import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
 import { ArrowRight, Play, CheckCircle2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { useLanguage } from "@/contexts/LanguageContext";
 
 export function Hero() {
+  const { t } = useLanguage();
+
   const features = [
-    "Realistic TOEFL simulations",
-    "Detailed answer explanations",
-    "Progress tracking & analytics",
+    t("whyChooseUs.feature3.desc"), // Realistic TOEFL simulations
+    t("whyChooseUs.feature2.desc"), // Detailed answer explanations
+    "Progress tracking & analytics", // This one doesn't have a direct key yet, let's use the one we added if I added it or a direct translation
+  ];
+
+  // Let's refine the features based on what's available or add keys
+  const translatedFeatures = [
+    t("whyChooseUs.feature3.title"),
+    t("whyChooseUs.feature2.title"),
+    t("whyChooseUs.feature1.title"),
   ];
 
   return (
@@ -29,24 +39,23 @@ export function Hero() {
             <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-accent border border-primary/20">
               <span className="w-2 h-2 rounded-full bg-success animate-pulse" />
               <span className="text-sm font-medium text-accent-foreground">
-                Free practice available
+                {t("hero.freePractice")}
               </span>
             </div>
 
             <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold leading-tight">
-              Master the{" "}
+              {t("hero.title").split(" ")[0]}{" "}
               <span className="text-gradient">TOEFL</span>
               <br />
-              with Confidence
+              {t("hero.title").split(" ").slice(1).join(" ")}
             </h1>
 
             <p className="text-lg text-muted-foreground max-w-lg">
-              Practice with realistic simulations, get instant feedback, and track your progress. 
-              Join thousands of students achieving their target scores.
+              {t("hero.subtitle")}
             </p>
 
             <ul className="space-y-3">
-              {features.map((feature, index) => (
+              {translatedFeatures.map((feature, index) => (
                 <motion.li
                   key={feature}
                   initial={{ opacity: 0, x: -20 }}
@@ -63,14 +72,10 @@ export function Hero() {
             <div className="flex flex-col sm:flex-row gap-4">
               <Link to="/dashboard">
                 <Button variant="hero" size="xl" className="gap-2 w-full sm:w-auto">
-                  Start Free Practice
+                  {t("hero.cta")}
                   <ArrowRight className="w-5 h-5" />
                 </Button>
               </Link>
-              <Button variant="outline" size="xl" className="gap-2">
-                <Play className="w-5 h-5" />
-                Watch Demo
-              </Button>
             </div>
 
             <div className="flex items-center gap-6 pt-4">
@@ -85,8 +90,8 @@ export function Hero() {
                 ))}
               </div>
               <div>
-                <p className="font-semibold text-foreground">10,000+ Students</p>
-                <p className="text-sm text-muted-foreground">Achieved their goals</p>
+                <p className="font-semibold text-foreground">{t("hero.students")}</p>
+                <p className="text-sm text-muted-foreground">{t("hero.goals")}</p>
               </div>
             </div>
           </motion.div>
@@ -102,9 +107,9 @@ export function Hero() {
               <div className="absolute inset-8 bg-card rounded-2xl shadow-xl border border-border p-6 animate-float">
                 <div className="space-y-4">
                   <div className="flex items-center justify-between">
-                    <span className="text-sm font-medium text-muted-foreground">Question 15 of 50</span>
+                    <span className="text-sm font-medium text-muted-foreground">{t("hero.questionCount")}</span>
                     <span className="px-3 py-1 rounded-full bg-warning/20 text-warning text-xs font-medium">
-                      25:30 remaining
+                      {t("hero.timeRemaining")}
                     </span>
                   </div>
                   <div className="h-2 bg-secondary rounded-full overflow-hidden">
@@ -117,11 +122,10 @@ export function Hero() {
                     {["will announce", "announcing", "announced", "has announcing"].map((opt, i) => (
                       <div
                         key={opt}
-                        className={`p-3 rounded-lg border transition-all ${
-                          i === 0
-                            ? "border-primary bg-primary/10 text-primary"
-                            : "border-border bg-background text-foreground hover:border-primary/50"
-                        }`}
+                        className={`p-3 rounded-lg border transition-all ${i === 0
+                          ? "border-primary bg-primary/10 text-primary"
+                          : "border-border bg-background text-foreground hover:border-primary/50"
+                          }`}
                       >
                         <span className="text-sm font-medium">{String.fromCharCode(65 + i)}. {opt}</span>
                       </div>
@@ -132,10 +136,10 @@ export function Hero() {
 
               {/* Floating badges */}
               <div className="absolute top-0 right-0 px-4 py-2 bg-success text-success-foreground rounded-xl shadow-lg text-sm font-medium">
-                ✓ 85% Accuracy
+                ✓ {t("hero.accuracy")}
               </div>
               <div className="absolute bottom-0 left-0 px-4 py-2 bg-card border border-border rounded-xl shadow-lg text-sm font-medium text-foreground">
-                🎯 Structure Section
+                🎯 {t("hero.structureSection")}
               </div>
             </div>
           </motion.div>

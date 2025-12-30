@@ -1,47 +1,50 @@
 import { motion } from "framer-motion";
-import { 
-  Zap, 
-  BookOpen, 
-  BarChart3, 
-  Clock, 
-  Shield, 
-  Smartphone 
+import {
+  Zap,
+  BookOpen,
+  BarChart3,
+  Clock,
+  Shield,
+  Smartphone
 } from "lucide-react";
-
-const features = [
-  {
-    icon: Zap,
-    title: "Realistic Simulations",
-    description: "Practice with questions that mirror the actual TOEFL exam format and difficulty.",
-  },
-  {
-    icon: BookOpen,
-    title: "Detailed Explanations",
-    description: "Understand every answer with comprehensive explanations for all questions.",
-  },
-  {
-    icon: BarChart3,
-    title: "Progress Tracking",
-    description: "Monitor your improvement with detailed analytics and performance insights.",
-  },
-  {
-    icon: Clock,
-    title: "Timed Practice",
-    description: "Build test-taking stamina with realistic time constraints for each section.",
-  },
-  {
-    icon: Shield,
-    title: "Proven Methods",
-    description: "Learn strategies developed by TOEFL experts and high scorers.",
-  },
-  {
-    icon: Smartphone,
-    title: "Practice Anywhere",
-    description: "Access your practice tests on any device, anytime, anywhere.",
-  },
-];
+import { useLanguage } from "@/contexts/LanguageContext";
 
 export function WhyChooseUs() {
+  const { t } = useLanguage();
+
+  const features = [
+    {
+      icon: Zap,
+      title: t("whyChooseUs.feature1.title"),
+      description: t("whyChooseUs.feature1.desc"),
+    },
+    {
+      icon: BookOpen,
+      title: t("whyChooseUs.feature2.title"),
+      description: t("whyChooseUs.feature2.desc"),
+    },
+    {
+      icon: BarChart3,
+      title: t("whyChooseUs.feature3.title"),
+      description: t("whyChooseUs.feature3.desc"),
+    },
+    {
+      icon: Clock,
+      title: t("whyChooseUs.feature4.title"),
+      description: t("whyChooseUs.feature4.desc"),
+    },
+    {
+      icon: Shield,
+      title: t("whyChooseUs.feature5.title"),
+      description: t("whyChooseUs.feature5.desc"),
+    },
+    {
+      icon: Smartphone,
+      title: t("whyChooseUs.feature6.title"),
+      description: t("whyChooseUs.feature6.desc"),
+    },
+  ];
+
   return (
     <section className="py-24">
       <div className="container mx-auto px-4">
@@ -53,10 +56,10 @@ export function WhyChooseUs() {
           className="text-center mb-16"
         >
           <h2 className="text-3xl md:text-4xl font-bold text-foreground mb-4">
-            Why Choose TOEFLPrep?
+            {t("whyChooseUs.title")}
           </h2>
           <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-            Everything you need to achieve your target TOEFL score
+            {t("whyChooseUs.subtitle")}
           </p>
         </motion.div>
 

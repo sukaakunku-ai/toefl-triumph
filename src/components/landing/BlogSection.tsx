@@ -1,43 +1,83 @@
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
-import { ArrowRight, Calendar, Clock, User } from "lucide-react";
+import { ArrowRight, Clock, User } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+import { useLanguage } from "@/contexts/LanguageContext";
 
-const articles = [
-  {
-    id: 1,
-    title: "10 Essential TOEFL Reading Strategies for 2024",
-    excerpt: "Master the reading section with these proven strategies used by high scorers.",
-    category: "Reading Tips",
-    author: "Sarah Johnson",
-    date: "Dec 20, 2024",
-    readTime: "8 min read",
-    image: "📚",
-  },
-  {
-    id: 2,
-    title: "How to Improve Your Listening Score by 10 Points",
-    excerpt: "Discover techniques to enhance your listening comprehension and note-taking skills.",
-    category: "Listening Tips",
-    author: "Michael Chen",
-    date: "Dec 18, 2024",
-    readTime: "6 min read",
-    image: "🎧",
-  },
-  {
-    id: 3,
-    title: "Common Grammar Mistakes to Avoid on TOEFL",
-    excerpt: "Learn the most frequent grammar errors that cost test-takers valuable points.",
-    category: "Structure Tips",
-    author: "Emily Roberts",
-    date: "Dec 15, 2024",
-    readTime: "5 min read",
-    image: "✍️",
-  },
-];
+const getLocalizedArticles = (t: (key: string) => string, lang: string) => {
+  if (lang === "id") {
+    return [
+      {
+        id: 1,
+        title: "10 Strategi Penting TOEFL Reading untuk 2024",
+        excerpt: "Kuasai bagian reading dengan strategi terbukti yang digunakan oleh peraih skor tinggi.",
+        category: "Tips Membaca",
+        author: "Sarah Johnson",
+        date: "20 Des 2024",
+        readTime: "8 menit baca",
+        image: "📚",
+      },
+      {
+        id: 2,
+        title: "Cara Meningkatkan Skor Listening Anda Hingga 10 Poin",
+        excerpt: "Temukan teknik untuk meningkatkan pemahaman mendengar dan keterampilan mencatat Anda.",
+        category: "Tips Mendengar",
+        author: "Michael Chen",
+        date: "18 Des 2024",
+        readTime: "6 menit baca",
+        image: "🎧",
+      },
+      {
+        id: 3,
+        title: "Kesalahan Tata Bahasa Umum yang Harus Dihindari di TOEFL",
+        excerpt: "Pelajari kesalahan tata bahasa yang paling sering merugikan peserta tes poin berharga.",
+        category: "Tips Struktur",
+        author: "Emily Roberts",
+        date: "15 Des 2024",
+        readTime: "5 menit baca",
+        image: "✍️",
+      },
+    ];
+  }
+  return [
+    {
+      id: 1,
+      title: "10 Essential TOEFL Reading Strategies for 2024",
+      excerpt: "Master the reading section with these proven strategies used by high scorers.",
+      category: "Reading Tips",
+      author: "Sarah Johnson",
+      date: "Dec 20, 2024",
+      readTime: "8 min read",
+      image: "📚",
+    },
+    {
+      id: 2,
+      title: "How to Improve Your Listening Score by 10 Points",
+      excerpt: "Discover techniques to enhance your listening comprehension and note-taking skills.",
+      category: "Listening Tips",
+      author: "Michael Chen",
+      date: "Dec 18, 2024",
+      readTime: "6 min read",
+      image: "🎧",
+    },
+    {
+      id: 3,
+      title: "Common Grammar Mistakes to Avoid on TOEFL",
+      excerpt: "Learn the most frequent grammar errors that cost test-takers valuable points.",
+      category: "Structure Tips",
+      author: "Emily Roberts",
+      date: "Dec 15, 2024",
+      readTime: "5 min read",
+      image: "✍️",
+    },
+  ];
+};
 
 export function BlogSection() {
+  const { t, language } = useLanguage();
+  const articles = getLocalizedArticles(t, language);
+
   return (
     <section className="py-24 bg-gradient-subtle">
       <div className="container mx-auto px-4">
@@ -50,15 +90,15 @@ export function BlogSection() {
         >
           <div>
             <h2 className="text-3xl md:text-4xl font-bold text-foreground mb-4">
-              Study Resources
+              {t("blog.sectionTitle")}
             </h2>
             <p className="text-lg text-muted-foreground max-w-2xl">
-              Expert tips and strategies to boost your TOEFL preparation
+              {t("blog.sectionSubtitle")}
             </p>
           </div>
           <Link to="/blog" className="mt-4 md:mt-0">
             <Button variant="outline" className="gap-2">
-              View All Articles
+              {t("blog.viewAll")}
               <ArrowRight className="w-4 h-4" />
             </Button>
           </Link>

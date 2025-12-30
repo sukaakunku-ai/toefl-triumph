@@ -112,6 +112,8 @@ export default function Admin() {
     correct_answer: 0,
     explanation: "",
   });
+  const [selectedQuestions, setSelectedQuestions] = useState<number[]>([]);
+  const [questionCategoryFilter, setQuestionCategoryFilter] = useState<Category | "all">("all");
 
   // Delete confirmation
   const [deleteConfirmOpen, setDeleteConfirmOpen] = useState(false);
@@ -289,6 +291,42 @@ export default function Admin() {
     }
   };
 
+  // Bulk delete questions
+  const handleBulkDeleteQuestions = async () => {
+    if (selectedQuestions.length === 0) return;
+
+    try {
+      for (const id of selectedQuestions) {
+        await deleteQuestion(id);
+      }
+      toast.success(`${selectedQuestions.length} soal berhasil dihapus`);
+      setSelectedQuestions([]);
+      loadQuestions();
+    } catch (error) {
+      toast.error(t("common.error"));
+    }
+  };
+
+  // Toggle question selection
+  const toggleQuestionSelection = (id: number) => {
+    setSelectedQuestions(prev =>
+      prev.includes(id) ? prev.filter(qId => qId !== id) : [...prev, id]
+    );
+  };
+
+  // Select all questions
+  const toggleSelectAll = () => {
+    if (selectedQuestions.length === filteredQuestions.length) {
+      setSelectedQuestions([]);
+    } else {
+      setSelectedQuestions(filteredQuestions.map(q => q.id));
+    }
+  };
+
+  const filteredQuestions = questions.filter(q =>
+    questionCategoryFilter === "all" || q.category === questionCategoryFilter
+  );
+
   // Toggle question in package
   const toggleQuestionInPackage = (questionId: number) => {
     setPackageForm((prev) => {
@@ -337,6 +375,15 @@ export default function Admin() {
               className="rounded-full"
             >
               {isDark ? <Sun className="w-5 h-5" /> : <Moon className="w-5 h-5" />}
+            </Button>
+            <Button
+              variant="outline"
+              onClick={() => {
+                localStorage.removeItem("adminAuth");
+                window.location.href = "/admin/login";
+              }}
+            >
+              Logout
             </Button>
           </div>
         </div>
@@ -437,12 +484,37 @@ export default function Admin() {
               animate={{ opacity: 1, y: 0 }}
             >
               <Card>
-                <CardHeader className="flex flex-row items-center justify-between">
+                <CardHeader className="flex flex-row items-center justify-between space-y-0">
                   <CardTitle>{t("admin.questions")}</CardTitle>
-                  <Button onClick={handleAddQuestion} className="gap-2">
-                    <Plus className="w-4 h-4" />
-                    {t("admin.addQuestion")}
-                  </Button>
+                  <div className="flex items-center gap-2">
+                    <Select value={questionCategoryFilter} onValueChange={(val) => setQuestionCategoryFilter(val as Category | "all")}>
+                      <SelectTrigger className="w-48">
+                        <SelectValue />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="all">Semua Kategori</SelectItem>
+                        {categories.filter(c => c.value !== "full").map(cat => (
+                          <SelectItem key={cat.value} value={cat.value}>
+                            {cat.label}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                    {selectedQuestions.length > 0 && (
+                      <Button
+                        variant="destructive"
+                        onClick={handleBulkDeleteQuestions}
+                        className="gap-2"
+                      >
+                        <Trash2 className="w-4 h-4" />
+                        Hapus ({selectedQuestions.length})
+                      </Button>
+                    )}
+                    <Button onClick={handleAddQuestion} className="gap-2">
+                      <Plus className="w-4 h-4" />
+                      {t("admin.addQuestion")}
+                    </Button>
+                  </div>
                 </CardHeader>
                 <CardContent>
                   {isLoadingQuestions ? (
@@ -457,6 +529,12 @@ export default function Admin() {
                     <Table>
                       <TableHeader>
                         <TableRow>
+                          <TableHead className="w-12">
+                            <Checkbox
+                              checked={selectedQuestions.length === filteredQuestions.length && filteredQuestions.length > 0}
+                              onCheckedChange={toggleSelectAll}
+                            />
+                          </TableHead>
                           <TableHead>ID</TableHead>
                           <TableHead>{t("admin.category")}</TableHead>
                           <TableHead>{t("admin.questionText")}</TableHead>
@@ -464,8 +542,14 @@ export default function Admin() {
                         </TableRow>
                       </TableHeader>
                       <TableBody>
-                        {questions.map((q) => (
+                        {filteredQuestions.map((q) => (
                           <TableRow key={q.id}>
+                            <TableCell>
+                              <Checkbox
+                                checked={selectedQuestions.includes(q.id)}
+                                onCheckedChange={() => toggleQuestionSelection(q.id)}
+                              />
+                            </TableCell>
                             <TableCell>{q.id}</TableCell>
                             <TableCell>
                               {categories.find((c) => c.value === q.category)

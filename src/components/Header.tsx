@@ -3,6 +3,8 @@ import { Link, useLocation } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import { Menu, X, Moon, Sun, BookOpen } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { useLanguage } from "@/contexts/LanguageContext";
+import { LanguageSwitcher } from "@/components/LanguageSwitcher";
 
 interface HeaderProps {
   isDark: boolean;
@@ -12,6 +14,7 @@ interface HeaderProps {
 export function Header({ isDark, toggleTheme }: HeaderProps) {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const { t } = useLanguage();
   const location = useLocation();
 
   useEffect(() => {
@@ -23,18 +26,17 @@ export function Header({ isDark, toggleTheme }: HeaderProps) {
   }, []);
 
   const navLinks = [
-    { href: "/", label: "Home" },
-    { href: "/dashboard", label: "Practice" },
-    { href: "/blog", label: "Resources" },
+    { href: "/", label: t("nav.home") },
+    { href: "/dashboard", label: t("nav.practice") },
+    { href: "/blog", label: t("nav.blog") },
   ];
 
   return (
     <header
-      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
-        isScrolled
+      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${isScrolled
           ? "bg-card/95 backdrop-blur-md shadow-md border-b border-border/50"
           : "bg-transparent"
-      }`}
+        }`}
     >
       <nav className="container mx-auto px-4 h-16 flex items-center justify-between">
         <Link to="/" className="flex items-center gap-2 group">
@@ -50,11 +52,10 @@ export function Header({ isDark, toggleTheme }: HeaderProps) {
             <Link
               key={link.href}
               to={link.href}
-              className={`text-sm font-medium transition-colors hover:text-primary ${
-                location.pathname === link.href
+              className={`text-sm font-medium transition-colors hover:text-primary ${location.pathname === link.href
                   ? "text-primary"
                   : "text-muted-foreground"
-              }`}
+                }`}
             >
               {link.label}
             </Link>
@@ -62,6 +63,8 @@ export function Header({ isDark, toggleTheme }: HeaderProps) {
         </div>
 
         <div className="flex items-center gap-3">
+          <LanguageSwitcher />
+
           <Button
             variant="ghost"
             size="icon"
@@ -73,7 +76,7 @@ export function Header({ isDark, toggleTheme }: HeaderProps) {
 
           <Link to="/dashboard" className="hidden md:block">
             <Button variant="hero" size="default">
-              Start Practice
+              {t("nav.startPractice")}
             </Button>
           </Link>
 
@@ -104,18 +107,21 @@ export function Header({ isDark, toggleTheme }: HeaderProps) {
                   key={link.href}
                   to={link.href}
                   onClick={() => setIsMobileMenuOpen(false)}
-                  className={`text-sm font-medium transition-colors hover:text-primary py-2 ${
-                    location.pathname === link.href
+                  className={`text-sm font-medium transition-colors hover:text-primary py-2 ${location.pathname === link.href
                       ? "text-primary"
                       : "text-muted-foreground"
-                  }`}
+                    }`}
                 >
                   {link.label}
                 </Link>
               ))}
+              <div className="flex items-center gap-4 py-2 border-t border-border mt-2">
+                <span className="text-sm font-medium text-muted-foreground">{t("common.language")}:</span>
+                <LanguageSwitcher />
+              </div>
               <Link to="/dashboard" onClick={() => setIsMobileMenuOpen(false)}>
                 <Button variant="hero" size="lg" className="w-full">
-                  Start Practice
+                  {t("nav.startPractice")}
                 </Button>
               </Link>
             </div>
