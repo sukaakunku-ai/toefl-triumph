@@ -116,6 +116,7 @@ export default function Admin() {
   const [editingQuestion, setEditingQuestion] = useState<Question | null>(null);
   const [questionForm, setQuestionForm] = useState({
     question_text: "",
+    passage: "",
     category: "structure" as Category,
     options: ["", "", "", ""],
     correct_answer: 0,
@@ -290,6 +291,7 @@ export default function Admin() {
     setEditingQuestion(null);
     setQuestionForm({
       question_text: "",
+      passage: "",
       category: "structure",
       options: ["", "", "", ""],
       correct_answer: 0,
@@ -302,6 +304,7 @@ export default function Admin() {
     setEditingQuestion(question);
     setQuestionForm({
       question_text: question.question_text,
+      passage: question.passage || "",
       category: question.category,
       options: [...question.options],
       correct_answer: question.correct_answer,
@@ -316,6 +319,7 @@ export default function Admin() {
         id: editingQuestion?.id || Date.now(),
         category: questionForm.category as "structure" | "reading" | "listening",
         question_text: questionForm.question_text,
+        passage: questionForm.category === 'reading' ? questionForm.passage : undefined,
         options: questionForm.options,
         correct_answer: questionForm.correct_answer,
         explanation: questionForm.explanation,
@@ -1138,6 +1142,23 @@ export default function Admin() {
                   </Select>
                 </div>
 
+                {questionForm.category === 'reading' && (
+                  <div className="space-y-2">
+                    <Label>Teks Artikel/Passage</Label>
+                    <Textarea
+                      value={questionForm.passage}
+                      onChange={(e) =>
+                        setQuestionForm((prev) => ({
+                          ...prev,
+                          passage: e.target.value,
+                        }))
+                      }
+                      placeholder="Masukkan teks artikel di sini..."
+                      rows={6}
+                    />
+                  </div>
+                )}
+
                 <div className="space-y-2">
                   <div className="flex items-center justify-between">
                     <Label>{t("admin.questionText")}</Label>
@@ -1251,6 +1272,16 @@ export default function Admin() {
                         {categories.find(c => c.value === questionForm.category)?.label || questionForm.category} Preview
                       </span>
                     </div>
+
+                    {questionForm.passage && (
+                      <div className="mb-6 p-4 rounded-lg bg-secondary/50 border border-border">
+                        <p className="text-sm font-semibold mb-2">Reading Passage:</p>
+                        <div
+                          className="text-sm text-foreground whitespace-pre-wrap leading-relaxed"
+                          dangerouslySetInnerHTML={{ __html: questionForm.passage }}
+                        />
+                      </div>
+                    )}
 
                     <p
                       className="text-lg md:text-xl font-medium text-foreground leading-relaxed mb-8"

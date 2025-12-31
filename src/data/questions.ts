@@ -2,6 +2,7 @@ export interface Question {
   id: number;
   category: 'structure' | 'reading' | 'listening';
   question_text: string;
+  passage?: string;
   options: string[];
   correct_answer: number;
   explanation: string;

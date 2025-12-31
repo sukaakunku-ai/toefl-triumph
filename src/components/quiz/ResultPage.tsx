@@ -225,6 +225,16 @@ export function ResultPage({ questions, answers, timeSpent, testName }: ResultPa
                         exit={{ height: 0, opacity: 0 }}
                         className="px-4 pb-4 space-y-4"
                       >
+                        {question.passage && (
+                          <div className="mb-4 p-4 rounded-lg bg-secondary/30 border border-border">
+                            <p className="text-xs font-bold text-primary uppercase tracking-wider mb-2">Reading Passage</p>
+                            <div
+                              className="text-sm text-foreground whitespace-pre-wrap leading-relaxed"
+                              dangerouslySetInnerHTML={{ __html: question.passage }}
+                            />
+                          </div>
+                        )}
+
                         <p className="text-foreground" dangerouslySetInnerHTML={{ __html: question.question_text }} />
 
                         <div className="space-y-2">

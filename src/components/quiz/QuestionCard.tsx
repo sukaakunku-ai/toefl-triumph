@@ -72,6 +72,16 @@ export function QuestionCard({
 
       <Card variant="elevated" className="overflow-hidden">
         <CardContent className="p-8">
+          {question.passage && (
+            <div className="mb-8 p-6 rounded-xl bg-secondary/50 border border-border">
+              <p className="text-sm font-bold text-primary uppercase tracking-wider mb-4">Reading Passage</p>
+              <div
+                className="text-base md:text-lg text-foreground whitespace-pre-wrap leading-relaxed"
+                dangerouslySetInnerHTML={{ __html: question.passage }}
+              />
+            </div>
+          )}
+
           <p
             className="text-lg md:text-xl font-medium text-foreground leading-relaxed mb-8"
             dangerouslySetInnerHTML={{ __html: question.question_text }}
