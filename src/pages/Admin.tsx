@@ -539,9 +539,9 @@ export default function Admin() {
     }
   };
 
-  const filteredQuestions = questions.filter(q =>
-    questionCategoryFilter === "all" || q.category === questionCategoryFilter
-  );
+  const filteredQuestions = questions
+    .filter(q => questionCategoryFilter === "all" || q.category === questionCategoryFilter)
+    .sort((a, b) => b.id - a.id);
 
   // Toggle question in package
   const toggleQuestionInPackage = (questionId: number) => {
