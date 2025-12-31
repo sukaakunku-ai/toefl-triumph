@@ -2,13 +2,13 @@ import { useEffect } from "react";
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
 import confetti from "canvas-confetti";
-import { 
-  Trophy, 
-  Target, 
-  Clock, 
-  CheckCircle2, 
-  XCircle, 
-  ArrowRight, 
+import {
+  Trophy,
+  Target,
+  Clock,
+  CheckCircle2,
+  XCircle,
+  ArrowRight,
   RotateCcw,
   ChevronDown,
   ChevronUp
@@ -225,7 +225,7 @@ export function ResultPage({ questions, answers, timeSpent, testName }: ResultPa
                         exit={{ height: 0, opacity: 0 }}
                         className="px-4 pb-4 space-y-4"
                       >
-                        <p className="text-foreground">{question.question_text}</p>
+                        <p className="text-foreground" dangerouslySetInnerHTML={{ __html: question.question_text }} />
 
                         <div className="space-y-2">
                           {question.options.map((option, optIndex) => (
@@ -234,19 +234,19 @@ export function ResultPage({ questions, answers, timeSpent, testName }: ResultPa
                               className={cn(
                                 "p-3 rounded-lg text-sm",
                                 optIndex === question.correct_answer &&
-                                  "bg-success/10 border border-success/30 text-success",
+                                "bg-success/10 border border-success/30 text-success",
                                 optIndex === userAnswer &&
-                                  optIndex !== question.correct_answer &&
-                                  "bg-destructive/10 border border-destructive/30 text-destructive",
                                 optIndex !== question.correct_answer &&
-                                  optIndex !== userAnswer &&
-                                  "bg-secondary text-muted-foreground"
+                                "bg-destructive/10 border border-destructive/30 text-destructive",
+                                optIndex !== question.correct_answer &&
+                                optIndex !== userAnswer &&
+                                "bg-secondary text-muted-foreground"
                               )}
                             >
                               <span className="font-medium">
                                 {String.fromCharCode(65 + optIndex)}.
                               </span>{" "}
-                              {option}
+                              <span dangerouslySetInnerHTML={{ __html: option }} />
                               {optIndex === question.correct_answer && (
                                 <span className="ml-2 text-success">(Correct)</span>
                               )}
@@ -262,9 +262,10 @@ export function ResultPage({ questions, answers, timeSpent, testName }: ResultPa
                           <p className="text-sm font-medium text-foreground mb-1">
                             Explanation:
                           </p>
-                          <p className="text-sm text-muted-foreground">
-                            {question.explanation}
-                          </p>
+                          <p
+                            className="text-sm text-muted-foreground"
+                            dangerouslySetInnerHTML={{ __html: question.explanation }}
+                          />
                         </div>
                       </motion.div>
                     )}

@@ -106,9 +106,8 @@ export function QuestionCard({
                     "flex-1 text-foreground",
                     selectedAnswer === index && "font-medium"
                   )}
-                >
-                  {option}
-                </span>
+                  dangerouslySetInnerHTML={{ __html: option }}
+                />
                 {selectedAnswer === index && (
                   <Check className="w-5 h-5 text-primary" />
                 )}

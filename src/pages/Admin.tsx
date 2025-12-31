@@ -841,7 +841,7 @@ export default function Admin() {
                                 .join(", ") || "-"}
                             </TableCell>
                             <TableCell className="max-w-md truncate">
-                              {q.question_text}
+                              <span dangerouslySetInnerHTML={{ __html: q.question_text }} />
                             </TableCell>
                             <TableCell className="text-right">
                               <div className="flex justify-end gap-2">
@@ -1064,9 +1064,10 @@ export default function Admin() {
                           checked={packageForm.questionIds.includes(q.id)}
                           onCheckedChange={() => toggleQuestionInPackage(q.id)}
                         />
-                        <span className="text-sm truncate flex-1">
-                          {q.id}. {q.question_text}
-                        </span>
+                        <span
+                          className="text-sm truncate flex-1"
+                          dangerouslySetInnerHTML={{ __html: `${q.id}. ${q.question_text}` }}
+                        />
                       </div>
                     ))}
                   </div>
@@ -1281,7 +1282,10 @@ export default function Admin() {
                     {questionForm.explanation && (
                       <div className="mt-8 p-4 rounded-lg bg-primary/5 border border-primary/10">
                         <p className="text-sm font-semibold text-primary mb-1">Penjelasan:</p>
-                        <p className="text-sm text-muted-foreground italic">{questionForm.explanation}</p>
+                        <p
+                          className="text-sm text-muted-foreground italic"
+                          dangerouslySetInnerHTML={{ __html: questionForm.explanation }}
+                        />
                       </div>
                     )}
                   </CardContent>
