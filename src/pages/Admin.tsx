@@ -588,7 +588,7 @@ export default function Admin() {
     );
 
     return isCorrectCategory && !isAlreadyInOtherPackage;
-  });
+  }).sort((a, b) => b.id - a.id);
 
   return (
     <div className="min-h-screen bg-background">
@@ -1059,7 +1059,7 @@ export default function Admin() {
                         <span className="text-sm font-semibold">Pilih Semua</span>
                       </div>
                     )}
-                    {filteredQuestionsForPackage.map((q) => (
+                    {filteredQuestionsForPackage.map((q, index) => (
                       <div
                         key={q.id}
                         className="flex items-center gap-3 p-3 hover:bg-muted/50"
@@ -1070,7 +1070,7 @@ export default function Admin() {
                         />
                         <span
                           className="text-sm truncate flex-1"
-                          dangerouslySetInnerHTML={{ __html: `${q.id}. ${q.question_text}` }}
+                          dangerouslySetInnerHTML={{ __html: `${index + 1}. ${q.question_text}` }}
                         />
                       </div>
                     ))}
