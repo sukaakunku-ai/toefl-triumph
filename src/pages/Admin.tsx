@@ -31,6 +31,7 @@ import {
   DialogContent,
   DialogHeader,
   DialogTitle,
+  DialogDescription,
   DialogFooter,
 } from "@/components/ui/dialog";
 import {
@@ -322,16 +323,22 @@ export default function Admin() {
 
   const handleSaveQuestion = async () => {
     try {
-      const questionData: Question = {
+      const questionData: any = {
         id: editingQuestion?.id || Date.now(),
         category: questionForm.category as "structure" | "reading" | "listening",
         question_text: questionForm.question_text,
-        passage: questionForm.category === 'reading' ? questionForm.passage : undefined,
-        audio_url: questionForm.category === 'listening' ? questionForm.audio_url : undefined,
         options: questionForm.options,
         correct_answer: questionForm.correct_answer,
         explanation: questionForm.explanation,
       };
+
+      if (questionForm.category === 'reading' && questionForm.passage) {
+        questionData.passage = questionForm.passage;
+      }
+
+      if (questionForm.category === 'listening' && questionForm.audio_url) {
+        questionData.audio_url = questionForm.audio_url;
+      }
 
       await saveQuestion(questionData);
       toast.success(t("common.success"));
@@ -993,6 +1000,9 @@ export default function Admin() {
             <DialogTitle>
               {editingPackage ? t("admin.editPackage") : t("admin.addPackage")}
             </DialogTitle>
+            <DialogDescription>
+              Silahkan isi detail paket soal di bawah ini.
+            </DialogDescription>
           </DialogHeader>
 
           <div className="space-y-4 py-4">
@@ -1107,9 +1117,14 @@ export default function Admin() {
           <Tabs defaultValue="edit" className="w-full">
             <DialogHeader>
               <div className="flex items-center justify-between pr-8">
-                <DialogTitle>
-                  {editingQuestion ? t("admin.editQuestion") : t("admin.addQuestion")}
-                </DialogTitle>
+                <div className="space-y-1">
+                  <DialogTitle>
+                    {editingQuestion ? t("admin.editQuestion") : t("admin.addQuestion")}
+                  </DialogTitle>
+                  <DialogDescription>
+                    Kelola detail pertanyaan dan pilihan jawaban.
+                  </DialogDescription>
+                </div>
                 <TabsList>
                   <TabsTrigger value="edit" className="gap-2">
                     <Pencil className="w-4 h-4" />
@@ -1472,6 +1487,9 @@ export default function Admin() {
         <DialogContent className="sm:max-w-md">
           <DialogHeader>
             <DialogTitle>Tambahkan ke Paket</DialogTitle>
+            <DialogDescription>
+              Pilih paket tujuan untuk memasukkan soal yang dipilih.
+            </DialogDescription>
           </DialogHeader>
           <div className="space-y-4 py-4">
             <div className="space-y-2">
@@ -1514,6 +1532,9 @@ export default function Admin() {
             <DialogTitle>
               {editingArticle ? "Edit Artikel" : "Tambah Artikel"}
             </DialogTitle>
+            <DialogDescription>
+              Tulis konten artikel blog di sini.
+            </DialogDescription>
           </DialogHeader>
 
           <div className="space-y-4 py-4">
