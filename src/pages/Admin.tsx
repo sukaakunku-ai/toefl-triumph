@@ -153,6 +153,7 @@ export default function Admin() {
   });
   const [selectedArticles, setSelectedArticles] = useState<Set<string>>(new Set());
   const [isUploadingAudio, setIsUploadingAudio] = useState(false);
+  const [uploadProgress, setUploadProgress] = useState(0);
 
   // Delete confirmation
   const [deleteConfirmOpen, setDeleteConfirmOpen] = useState(false);
@@ -1220,7 +1221,7 @@ export default function Admin() {
                               setIsUploadingAudio(true);
                               try {
                                 const questionId = editingQuestion?.id || Date.now();
-                                const url = await uploadQuestionAudio(questionId, file);
+                                const url = await uploadQuestionAudio(questionId, file, (p) => setUploadProgress(p));
                                 setQuestionForm(prev => ({ ...prev, audio_url: url }));
                                 toast.success("Audio berhasil diunggah");
                               } catch (error: any) {
@@ -1246,7 +1247,7 @@ export default function Admin() {
                             ) : (
                               <Upload className="w-4 h-4" />
                             )}
-                            {isUploadingAudio ? "Mengunggah..." : "Upload MP3"}
+                            {isUploadingAudio ? `Mengunggah (${uploadProgress}%)` : "Upload MP3"}
                           </Button>
                         </div>
                       </div>
