@@ -96,6 +96,8 @@ export function QuestionCard({
                 key={question.audio_url}
                 src={question.audio_url}
                 controls
+                crossOrigin="anonymous"
+                preload="auto"
                 className="w-full h-12"
               />
             </div>

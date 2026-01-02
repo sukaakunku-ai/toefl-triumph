@@ -1266,6 +1266,8 @@ export default function Admin() {
                           key={questionForm.audio_url}
                           src={questionForm.audio_url}
                           controls
+                          crossOrigin="anonymous"
+                          preload="auto"
                           className="w-full h-10"
                         />
                       </div>
