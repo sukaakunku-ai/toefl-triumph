@@ -75,6 +75,7 @@ import {
   saveQuestion,
   deleteQuestion,
   uploadQuestionAudio,
+  convertDriveLink,
 } from "@/services/questionService";
 import {
   getAllArticles,
@@ -336,8 +337,9 @@ export default function Admin() {
       toast.success(t("common.success"));
       setShowQuestionDialog(false);
       loadQuestions();
-    } catch (error) {
-      toast.error(t("common.error"));
+    } catch (error: any) {
+      console.error("Save question error details:", error);
+      toast.error(error.message || t("common.error"));
     }
   };
 
@@ -1173,13 +1175,14 @@ export default function Admin() {
                         <Label>Audio URL (.mp3)</Label>
                         <Input
                           value={questionForm.audio_url}
-                          onChange={(e) =>
+                          onChange={(e) => {
+                            const val = e.target.value;
                             setQuestionForm((prev) => ({
                               ...prev,
-                              audio_url: e.target.value,
-                            }))
-                          }
-                          placeholder="https://example.com/audio.mp3"
+                              audio_url: convertDriveLink(val),
+                            }));
+                          }}
+                          placeholder="https://example.com/audio.mp3 atau Link Drive"
                         />
                       </div>
                       <div className="space-y-2">
@@ -1198,8 +1201,9 @@ export default function Admin() {
                                 const url = await uploadQuestionAudio(questionId, file);
                                 setQuestionForm(prev => ({ ...prev, audio_url: url }));
                                 toast.success("Audio berhasil diunggah");
-                              } catch (error) {
-                                toast.error("Gagal mengunggah audio");
+                              } catch (error: any) {
+                                console.error("Upload error details:", error);
+                                toast.error(error.message || "Gagal mengunggah audio");
                               } finally {
                                 setIsUploadingAudio(false);
                               }

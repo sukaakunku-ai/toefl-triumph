@@ -19,6 +19,19 @@ export interface FirebaseQuestion extends Question {
   category: "structure" | "reading" | "listening";
 }
 
+// Google Drive link converter
+export const convertDriveLink = (url: string): string => {
+  if (!url) return "";
+  if (url.includes('drive.google.com')) {
+    const regex = /\/d\/([a-zA-Z0-9_-]+)/;
+    const match = url.match(regex);
+    if (match && match[1]) {
+      return `https://drive.google.com/uc?export=download&id=${match[1]}`;
+    }
+  }
+  return url;
+};
+
 // Fetch questions by category
 export const getQuestionsByCategory = async (category: string): Promise<Question[]> => {
   try {
@@ -96,9 +109,9 @@ export const saveQuestion = async (question: Question): Promise<void> => {
   try {
     const docRef = doc(db, QUESTIONS_COLLECTION, `${question.category}_${question.id}`);
     await setDoc(docRef, question);
-  } catch (error) {
+  } catch (error: any) {
     console.error("Error saving question:", error);
-    throw error;
+    throw new Error(error.message || "Gagal menyimpan soal");
   }
 };
 
@@ -118,13 +131,16 @@ export const deleteQuestion = async (questionId: number): Promise<void> => {
 
 // Upload question audio
 export const uploadQuestionAudio = async (questionId: string | number, file: File): Promise<string> => {
+  console.log("Starting upload for file:", file.name, "Size:", file.size);
   try {
-    const storageRef = ref(storage, `audio_questions/${questionId}_${file.name}`);
+    const storageRef = ref(storage, `audio_questions/${questionId}_${Date.now()}_${file.name}`);
     const snapshot = await uploadBytes(storageRef, file);
+    console.log("Upload successful, snapshot:", snapshot);
     const downloadURL = await getDownloadURL(snapshot.ref);
+    console.log("Download URL obtained:", downloadURL);
     return downloadURL;
-  } catch (error) {
+  } catch (error: any) {
     console.error("Error uploading audio:", error);
-    throw error;
+    throw new Error(error.message || "Gagal mengunggah audio. Pastikan koneksi internet stabil.");
   }
 };
