@@ -32,14 +32,19 @@ export const getQuestionsByCategory = async (category: string): Promise<Question
       return [];
     }
 
-    const questions = querySnapshot.docs.map(doc => ({
-      id: doc.data().id,
-      category: doc.data().category,
-      question_text: doc.data().question_text,
-      options: doc.data().options,
-      correct_answer: doc.data().correct_answer,
-      explanation: doc.data().explanation,
-    })) as Question[];
+    const questions = querySnapshot.docs.map(doc => {
+      const data = doc.data();
+      return {
+        id: data.id,
+        category: data.category,
+        question_text: data.question_text,
+        passage: data.passage,
+        audio_url: data.audio_url,
+        options: data.options,
+        correct_answer: data.correct_answer,
+        explanation: data.explanation,
+      };
+    }) as Question[];
 
     return questions.sort((a, b) => a.id - b.id);
   } catch (error) {

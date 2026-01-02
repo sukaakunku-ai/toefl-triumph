@@ -104,6 +104,9 @@ const translations: Record<Language, Record<string, string>> = {
     "results.yourAnswer": "Jawaban Anda",
     "results.correctAnswer": "Jawaban Benar",
     "results.explanation": "Penjelasan",
+    "listening.audio": "Audio Listening",
+    "listening.preview": "Preview Audio",
+    "listening.instruction": "Silahkan dengarkan audio di bawah ini",
 
     // Admin
     "admin.title": "Panel Admin",
@@ -267,6 +270,9 @@ const translations: Record<Language, Record<string, string>> = {
     "results.yourAnswer": "Your Answer",
     "results.correctAnswer": "Correct Answer",
     "results.explanation": "Explanation",
+    "listening.audio": "Listening Audio",
+    "listening.preview": "Preview Audio",
+    "listening.instruction": "Please listen to the audio below",
 
     // Admin
     "admin.title": "Admin Panel",

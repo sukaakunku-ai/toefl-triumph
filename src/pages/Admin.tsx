@@ -117,6 +117,7 @@ export default function Admin() {
   const [questionForm, setQuestionForm] = useState({
     question_text: "",
     passage: "",
+    audio_url: "",
     category: "structure" as Category,
     options: ["", "", "", ""],
     correct_answer: 0,
@@ -292,6 +293,7 @@ export default function Admin() {
     setQuestionForm({
       question_text: "",
       passage: "",
+      audio_url: "",
       category: "structure",
       options: ["", "", "", ""],
       correct_answer: 0,
@@ -305,6 +307,7 @@ export default function Admin() {
     setQuestionForm({
       question_text: question.question_text,
       passage: question.passage || "",
+      audio_url: question.audio_url || "",
       category: question.category,
       options: [...question.options],
       correct_answer: question.correct_answer,
@@ -320,6 +323,7 @@ export default function Admin() {
         category: questionForm.category as "structure" | "reading" | "listening",
         question_text: questionForm.question_text,
         passage: questionForm.category === 'reading' ? questionForm.passage : undefined,
+        audio_url: questionForm.category === 'listening' ? questionForm.audio_url : undefined,
         options: questionForm.options,
         correct_answer: questionForm.correct_answer,
         explanation: questionForm.explanation,
@@ -1159,6 +1163,37 @@ export default function Admin() {
                   </div>
                 )}
 
+                {questionForm.category === 'listening' && (
+                  <div className="space-y-4">
+                    <div className="space-y-2">
+                      <Label>Audio URL (.mp3)</Label>
+                      <Input
+                        value={questionForm.audio_url}
+                        onChange={(e) =>
+                          setQuestionForm((prev) => ({
+                            ...prev,
+                            audio_url: e.target.value,
+                          }))
+                        }
+                        placeholder="https://example.com/audio.mp3"
+                      />
+                    </div>
+                    {questionForm.audio_url && (
+                      <div className="p-4 bg-muted rounded-lg space-y-2">
+                        <Label className="text-xs font-semibold flex items-center gap-2">
+                          <Loader2 className="w-3 h-3 animate-pulse" />
+                          {t("listening.preview")}
+                        </Label>
+                        <audio
+                          src={questionForm.audio_url}
+                          controls
+                          className="w-full h-10"
+                        />
+                      </div>
+                    )}
+                  </div>
+                )}
+
                 <div className="space-y-2">
                   <div className="flex items-center justify-between">
                     <Label>{t("admin.questionText")}</Label>
@@ -1272,6 +1307,20 @@ export default function Admin() {
                         {categories.find(c => c.value === questionForm.category)?.label || questionForm.category} Preview
                       </span>
                     </div>
+
+                    {questionForm.category === 'listening' && questionForm.audio_url && (
+                      <div className="mb-6 p-4 rounded-lg bg-primary/5 border border-primary/20 shadow-sm">
+                        <div className="flex items-center gap-2 mb-3">
+                          <Loader2 className="w-4 h-4 animate-spin text-primary" />
+                          <p className="text-sm font-bold text-primary uppercase tracking-wider">{t("listening.audio")}</p>
+                        </div>
+                        <audio
+                          src={questionForm.audio_url}
+                          controls
+                          className="w-full h-10"
+                        />
+                      </div>
+                    )}
 
                     {questionForm.passage && (
                       <div className="mb-6 p-4 rounded-lg bg-secondary/50 border border-border">

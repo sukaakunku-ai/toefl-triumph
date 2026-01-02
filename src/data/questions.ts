@@ -3,6 +3,7 @@ export interface Question {
   category: 'structure' | 'reading' | 'listening';
   question_text: string;
   passage?: string;
+  audio_url?: string;
   options: string[];
   correct_answer: number;
   explanation: string;
