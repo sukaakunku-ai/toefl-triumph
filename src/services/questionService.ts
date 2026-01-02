@@ -22,11 +22,24 @@ export interface FirebaseQuestion extends Question {
 // Google Drive link converter
 export const convertDriveLink = (url: string): string => {
   if (!url) return "";
+
   if (url.includes('drive.google.com')) {
-    const regex = /\/d\/([a-zA-Z0-9_-]+)/;
-    const match = url.match(regex);
+    // Check if it's a folder link
+    if (url.includes('/folders/')) {
+      return "ERROR_FOLDER_LINK";
+    }
+
+    // Match file ID from various Drive link formats
+    // Format 1: /file/d/ID/view
+    // Format 2: /open?id=ID
+    // Format 3: /d/ID
+    const fileIdRegex = /(?:\/d\/|id=)([a-zA-Z0-9_-]{25,})/;
+    const match = url.match(fileIdRegex);
+
     if (match && match[1]) {
-      return `https://drive.google.com/uc?export=download&id=${match[1]}`;
+      const id = match[1];
+      // Return direct download link
+      return `https://drive.google.com/uc?export=download&id=${id}`;
     }
   }
   return url;

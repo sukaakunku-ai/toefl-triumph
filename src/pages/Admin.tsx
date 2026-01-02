@@ -1189,15 +1189,22 @@ export default function Admin() {
                       <div className="space-y-2">
                         <Label>Audio URL (.mp3)</Label>
                         <Input
-                          value={questionForm.audio_url}
+                          value={questionForm.audio_url === "ERROR_FOLDER_LINK" ? "" : questionForm.audio_url}
                           onChange={(e) => {
                             const val = e.target.value;
+                            const converted = convertDriveLink(val);
+
+                            if (converted === "ERROR_FOLDER_LINK") {
+                              toast.error("Itu link FOLDER. Harap masukkan link khusus FILE .mp3 di dalam folder tersebut.");
+                              return;
+                            }
+
                             setQuestionForm((prev) => ({
                               ...prev,
-                              audio_url: convertDriveLink(val),
+                              audio_url: converted,
                             }));
                           }}
-                          placeholder="https://example.com/audio.mp3 atau Link Drive"
+                          placeholder="Ketik Link File MP3 (Direct atau Link Google Drive)"
                         />
                       </div>
                       <div className="space-y-2">
