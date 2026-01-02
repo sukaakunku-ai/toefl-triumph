@@ -93,6 +93,7 @@ export function QuestionCard({
                 </div>
               </div>
               <audio
+                key={question.audio_url}
                 src={question.audio_url}
                 controls
                 className="w-full h-12"

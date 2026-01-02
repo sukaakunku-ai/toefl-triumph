@@ -38,8 +38,8 @@ export const convertDriveLink = (url: string): string => {
 
     if (match && match[1]) {
       const id = match[1];
-      // Return direct download link
-      return `https://drive.google.com/uc?export=download&id=${id}`;
+      // Use docs.google.com for better availability
+      return `https://docs.google.com/uc?export=download&id=${id}`;
     }
   }
   return url;
