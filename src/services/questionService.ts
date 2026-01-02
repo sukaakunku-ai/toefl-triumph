@@ -9,7 +9,8 @@ import {
   orderBy,
   writeBatch
 } from "firebase/firestore";
-import { db } from "@/lib/firebase";
+import { db, storage } from "@/lib/firebase";
+import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
 import { Question, testConfigs, allQuestions } from "@/data/questions";
 
 const QUESTIONS_COLLECTION = "questions";
@@ -111,6 +112,19 @@ export const deleteQuestion = async (questionId: number): Promise<void> => {
     }
   } catch (error) {
     console.error("Error deleting question:", error);
+    throw error;
+  }
+};
+
+// Upload question audio
+export const uploadQuestionAudio = async (questionId: string | number, file: File): Promise<string> => {
+  try {
+    const storageRef = ref(storage, `audio_questions/${questionId}_${file.name}`);
+    const snapshot = await uploadBytes(storageRef, file);
+    const downloadURL = await getDownloadURL(snapshot.ref);
+    return downloadURL;
+  } catch (error) {
+    console.error("Error uploading audio:", error);
     throw error;
   }
 };

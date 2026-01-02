@@ -17,6 +17,7 @@ import {
   Bold,
   Underline,
   Eye,
+  Upload,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
@@ -73,6 +74,7 @@ import {
   getAllQuestions,
   saveQuestion,
   deleteQuestion,
+  uploadQuestionAudio,
 } from "@/services/questionService";
 import {
   getAllArticles,
@@ -148,6 +150,7 @@ export default function Admin() {
     readTime: "5 min read"
   });
   const [selectedArticles, setSelectedArticles] = useState<Set<string>>(new Set());
+  const [isUploadingAudio, setIsUploadingAudio] = useState(false);
 
   // Delete confirmation
   const [deleteConfirmOpen, setDeleteConfirmOpen] = useState(false);
@@ -1165,26 +1168,76 @@ export default function Admin() {
 
                 {questionForm.category === 'listening' && (
                   <div className="space-y-4">
-                    <div className="space-y-2">
-                      <Label>Audio URL (.mp3)</Label>
-                      <Input
-                        value={questionForm.audio_url}
-                        onChange={(e) =>
-                          setQuestionForm((prev) => ({
-                            ...prev,
-                            audio_url: e.target.value,
-                          }))
-                        }
-                        placeholder="https://example.com/audio.mp3"
-                      />
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      <div className="space-y-2">
+                        <Label>Audio URL (.mp3)</Label>
+                        <Input
+                          value={questionForm.audio_url}
+                          onChange={(e) =>
+                            setQuestionForm((prev) => ({
+                              ...prev,
+                              audio_url: e.target.value,
+                            }))
+                          }
+                          placeholder="https://example.com/audio.mp3"
+                        />
+                      </div>
+                      <div className="space-y-2">
+                        <Label>Upload File Audio</Label>
+                        <div className="flex items-center gap-2">
+                          <Input
+                            type="file"
+                            accept="audio/mp3,audio/*"
+                            onChange={async (e) => {
+                              const file = e.target.files?.[0];
+                              if (!file) return;
+
+                              setIsUploadingAudio(true);
+                              try {
+                                const questionId = editingQuestion?.id || Date.now();
+                                const url = await uploadQuestionAudio(questionId, file);
+                                setQuestionForm(prev => ({ ...prev, audio_url: url }));
+                                toast.success("Audio berhasil diunggah");
+                              } catch (error) {
+                                toast.error("Gagal mengunggah audio");
+                              } finally {
+                                setIsUploadingAudio(false);
+                              }
+                            }}
+                            className="hidden"
+                            id="audio-upload"
+                            disabled={isUploadingAudio}
+                          />
+                          <Button
+                            type="button"
+                            variant="outline"
+                            className="w-full gap-2"
+                            onClick={() => document.getElementById('audio-upload')?.click()}
+                            disabled={isUploadingAudio}
+                          >
+                            {isUploadingAudio ? (
+                              <Loader2 className="w-4 h-4 animate-spin" />
+                            ) : (
+                              <Upload className="w-4 h-4" />
+                            )}
+                            {isUploadingAudio ? "Mengunggah..." : "Upload MP3"}
+                          </Button>
+                        </div>
+                      </div>
                     </div>
                     {questionForm.audio_url && (
                       <div className="p-4 bg-muted rounded-lg space-y-2">
-                        <Label className="text-xs font-semibold flex items-center gap-2">
-                          <Loader2 className="w-3 h-3 animate-pulse" />
-                          {t("listening.preview")}
+                        <Label className="text-xs font-semibold flex items-center justify-between">
+                          <div className="flex items-center gap-2">
+                            <Loader2 className="w-3 h-3 animate-pulse" />
+                            {t("listening.preview")}
+                          </div>
+                          {questionForm.audio_url.includes('firebasestorage') && (
+                            <span className="text-[10px] bg-primary/10 text-primary px-1.5 py-0.5 rounded">Uploaded</span>
+                          )}
                         </Label>
                         <audio
+                          key={questionForm.audio_url}
                           src={questionForm.audio_url}
                           controls
                           className="w-full h-10"
