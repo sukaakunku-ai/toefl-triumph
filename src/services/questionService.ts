@@ -38,8 +38,8 @@ export const convertDriveLink = (url: string): string => {
 
     if (match && match[1]) {
       const id = match[1];
-      // Use export=media for better streaming compatibility in audio tags
-      return `https://docs.google.com/uc?id=${id}&export=media`;
+      // Updated to use drive.google.com which often works better with export=download
+      return `https://drive.google.com/uc?export=download&id=${id}`;
     }
   }
   return url;

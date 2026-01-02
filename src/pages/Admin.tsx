@@ -1259,9 +1259,14 @@ export default function Admin() {
                             <Loader2 className="w-3 h-3 animate-pulse" />
                             {t("listening.preview")}
                           </div>
-                          {questionForm.audio_url.includes('firebasestorage') && (
-                            <span className="text-[10px] bg-primary/10 text-primary px-1.5 py-0.5 rounded">Uploaded</span>
-                          )}
+                          <div className="flex gap-2">
+                            {questionForm.audio_url.includes('firebasestorage') && (
+                              <span className="text-[10px] bg-primary/10 text-primary px-1.5 py-0.5 rounded">Uploaded</span>
+                            )}
+                            {questionForm.audio_url.includes('drive.google.com') || questionForm.audio_url.includes('docs.google.com') ? (
+                              <span className="text-[10px] bg-blue-500/10 text-blue-500 px-1.5 py-0.5 rounded">G-Drive Link</span>
+                            ) : null}
+                          </div>
                         </Label>
                         <audio
                           key={questionForm.audio_url}
@@ -1270,6 +1275,13 @@ export default function Admin() {
                           crossOrigin="anonymous"
                           preload="auto"
                           className="w-full h-10"
+                          onError={(e) => {
+                            console.error("Audio Load Error:", e);
+                            // Only show toast if there's actually a URL
+                            if (questionForm.audio_url) {
+                              toast.error("Audio gagal dimuat. Pastikan link benar dan akses bersifat Publik.");
+                            }
+                          }}
                         />
                       </div>
                     )}
