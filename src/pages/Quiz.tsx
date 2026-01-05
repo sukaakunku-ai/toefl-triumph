@@ -70,8 +70,8 @@ export default function Quiz() {
     );
   }
 
-  const questionsToUse = packageQuestions || config.questions;
-  const durationToUse = packageId ? packageDuration : config.duration;
+  const questionsToUse = packageQuestions && packageQuestions.length > 0 ? packageQuestions : config.questions;
+  const durationToUse = packageId && packageQuestions && packageQuestions.length > 0 ? packageDuration : config.duration;
 
   if (isComplete && results) {
     return (
