@@ -1277,12 +1277,32 @@ export default function Admin() {
                           className="w-full h-10"
                           onError={(e) => {
                             console.error("Audio Load Error:", e);
-                            // Only show toast if there's actually a URL
                             if (questionForm.audio_url) {
                               toast.error("Audio gagal dimuat. Pastikan link benar dan akses bersifat Publik.");
                             }
                           }}
                         />
+                        {questionForm.audio_url.includes('firebasestorage') && (
+                          <Button
+                            type="button"
+                            variant="destructive"
+                            size="sm"
+                            className="w-full gap-2"
+                            onClick={async () => {
+                              try {
+                                const { deleteQuestionAudio } = await import("@/services/questionService");
+                                await deleteQuestionAudio(questionForm.audio_url);
+                                setQuestionForm(prev => ({ ...prev, audio_url: "" }));
+                                toast.success("Audio berhasil dihapus");
+                              } catch (error: any) {
+                                toast.error(error.message || "Gagal menghapus audio");
+                              }
+                            }}
+                          >
+                            <Trash2 className="w-4 h-4" />
+                            Hapus Audio
+                          </Button>
+                        )}
                       </div>
                     )}
                   </div>

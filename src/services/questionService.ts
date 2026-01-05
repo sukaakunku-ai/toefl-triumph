@@ -10,7 +10,7 @@ import {
   writeBatch
 } from "firebase/firestore";
 import { db, storage } from "@/lib/firebase";
-import { ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
+import { ref, uploadBytesResumable, getDownloadURL, deleteObject } from "firebase/storage";
 import { Question, testConfigs, allQuestions } from "@/data/questions";
 
 const QUESTIONS_COLLECTION = "questions";
@@ -175,4 +175,25 @@ export const uploadQuestionAudio = async (
       }
     );
   });
+};
+
+// Delete question audio from Firebase Storage
+export const deleteQuestionAudio = async (audioUrl: string): Promise<void> => {
+  try {
+    // Extract the path from the Firebase Storage URL
+    const decodedUrl = decodeURIComponent(audioUrl);
+    const pathMatch = decodedUrl.match(/audio_questions\/[^?]+/);
+    
+    if (!pathMatch) {
+      throw new Error("Invalid audio URL format");
+    }
+    
+    const audioPath = pathMatch[0];
+    const audioRef = ref(storage, audioPath);
+    await deleteObject(audioRef);
+    console.log("Audio deleted successfully:", audioPath);
+  } catch (error: any) {
+    console.error("Error deleting audio:", error);
+    throw new Error("Gagal menghapus audio: " + error.message);
+  }
 };
