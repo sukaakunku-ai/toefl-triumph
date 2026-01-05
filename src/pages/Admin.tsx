@@ -18,6 +18,7 @@ import {
   Underline,
   Eye,
   Upload,
+  VolumeX,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
@@ -75,6 +76,7 @@ import {
   getAllQuestions,
   saveQuestion,
   deleteQuestion,
+  deleteQuestionAudio,
   uploadQuestionAudio,
   convertDriveLink,
 } from "@/services/questionService";
@@ -158,7 +160,7 @@ export default function Admin() {
   // Delete confirmation
   const [deleteConfirmOpen, setDeleteConfirmOpen] = useState(false);
   const [itemToDelete, setItemToDelete] = useState<{
-    type: "package" | "question" | "article";
+    type: "package" | "question" | "article" | "audio";
     id: string | number;
   } | null>(null);
 
@@ -324,7 +326,7 @@ export default function Admin() {
 
   const handleSaveQuestion = async () => {
     try {
-      const questionData: any = {
+      const questionData: Question = {
         id: editingQuestion?.id || Date.now(),
         category: questionForm.category as "structure" | "reading" | "listening",
         question_text: questionForm.question_text,
@@ -345,9 +347,9 @@ export default function Admin() {
       toast.success(t("common.success"));
       setShowQuestionDialog(false);
       loadQuestions();
-    } catch (error: any) {
+    } catch (error) {
       console.error("Save question error details:", error);
-      toast.error(error.message || t("common.error"));
+      toast.error(error instanceof Error ? error.message : t("common.error"));
     }
   };
 
@@ -370,6 +372,14 @@ export default function Admin() {
       } else if (itemToDelete.type === "article") {
         await deleteArticle(itemToDelete.id as string);
         loadArticles();
+      } else if (itemToDelete.type === "audio") {
+        const question = questions.find(q => q.id === itemToDelete.id);
+        if (question && question.audio_url) {
+          await deleteQuestionAudio(question.audio_url);
+          await saveQuestion({ ...question, audio_url: "" });
+          loadQuestions();
+          toast.success("Audio berhasil dihapus");
+        }
       }
       toast.success(t("common.success"));
     } catch (error) {
@@ -866,6 +876,20 @@ export default function Admin() {
                             </TableCell>
                             <TableCell className="text-right">
                               <div className="flex justify-end gap-2">
+                                {q.audio_url && q.audio_url.includes('firebasestorage') && (
+                                  <Button
+                                    variant="ghost"
+                                    size="icon"
+                                    onClick={() => {
+                                      setItemToDelete({ type: "audio", id: q.id });
+                                      setDeleteConfirmOpen(true);
+                                    }}
+                                    className="text-orange-500 hover:text-orange-600 hover:bg-orange-50"
+                                    title="Hapus Audio Terupload"
+                                  >
+                                    <VolumeX className="w-4 h-4" />
+                                  </Button>
+                                )}
                                 <Button
                                   variant="ghost"
                                   size="icon"
@@ -1224,9 +1248,9 @@ export default function Admin() {
                                 const url = await uploadQuestionAudio(questionId, file, (p) => setUploadProgress(p));
                                 setQuestionForm(prev => ({ ...prev, audio_url: url }));
                                 toast.success("Audio berhasil diunggah");
-                              } catch (error: any) {
+                              } catch (error) {
                                 console.error("Upload error details:", error);
-                                toast.error(error.message || "Gagal mengunggah audio");
+                                toast.error(error instanceof Error ? error.message : "Gagal mengunggah audio");
                               } finally {
                                 setIsUploadingAudio(false);
                               }
@@ -1290,12 +1314,11 @@ export default function Admin() {
                             className="w-full gap-2"
                             onClick={async () => {
                               try {
-                                const { deleteQuestionAudio } = await import("@/services/questionService");
                                 await deleteQuestionAudio(questionForm.audio_url);
                                 setQuestionForm(prev => ({ ...prev, audio_url: "" }));
                                 toast.success("Audio berhasil dihapus");
-                              } catch (error: any) {
-                                toast.error(error.message || "Gagal menghapus audio");
+                              } catch (error) {
+                                toast.error(error instanceof Error ? error.message : "Gagal menghapus audio");
                               }
                             }}
                           >
@@ -1507,9 +1530,13 @@ export default function Admin() {
       <AlertDialog open={deleteConfirmOpen} onOpenChange={setDeleteConfirmOpen}>
         <AlertDialogContent>
           <AlertDialogHeader>
-            <AlertDialogTitle>{t("admin.deleteConfirm")}</AlertDialogTitle>
+            <AlertDialogTitle>
+              {itemToDelete?.type === 'audio' ? "Hapus Audio?" : t("admin.deleteConfirm")}
+            </AlertDialogTitle>
             <AlertDialogDescription>
-              {t("admin.deleteConfirm")}
+              {itemToDelete?.type === 'audio'
+                ? "Tindakan ini akan menghapus file mp3 yang sudah diupload dari server secara permanen."
+                : t("admin.deleteConfirm")}
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
@@ -1518,7 +1545,7 @@ export default function Admin() {
               onClick={handleDelete}
               className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
             >
-              {t("admin.delete")}
+              {itemToDelete?.type === 'audio' ? "Hapus" : t("admin.delete")}
             </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>
