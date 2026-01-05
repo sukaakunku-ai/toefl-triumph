@@ -5,14 +5,18 @@ import { Question, testConfigs } from "@/data/questions";
 export const useQuestions = (category: string) => {
   return useQuery<Question[]>({
     queryKey: ["questions", category],
-    queryFn: () => getQuestionsByCategory(category),
-    staleTime: 5 * 60 * 1000, // 5 minutes
-    gcTime: 30 * 60 * 1000, // 30 minutes (formerly cacheTime)
-    initialData: () => {
-      // Use mock data as initial data for instant loading
+    queryFn: async () => {
+      const questions = await getQuestionsByCategory(category);
+      // If Firebase returns questions, use them
+      if (questions && questions.length > 0) {
+        return questions;
+      }
+      // Fallback to mock data only if Firebase is empty
       const config = testConfigs[category as keyof typeof testConfigs];
       return config?.questions || [];
     },
+    staleTime: 5 * 60 * 1000, // 5 minutes
+    gcTime: 30 * 60 * 1000, // 30 minutes
   });
 };
 
