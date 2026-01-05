@@ -35,9 +35,32 @@ export function QuizEngine({ testName, questions, duration, onComplete }: QuizEn
   const [showSubmitDialog, setShowSubmitDialog] = useState(false);
   const [startTime] = useState(Date.now());
 
-  const currentQuestion = questions[currentIndex];
-  const progress = ((Object.keys(answers).length) / questions.length) * 100;
-  const unansweredCount = questions.length - Object.keys(answers).length;
+  const currentQuestion = questions?.[currentIndex];
+  const progress = questions?.length ? ((Object.keys(answers).length) / questions.length) * 100 : 0;
+  const unansweredCount = questions?.length ? questions.length - Object.keys(answers).length : 0;
+
+  // Guard against empty questions array
+  if (!questions || questions.length === 0) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-background">
+        <div className="text-center">
+          <p className="text-muted-foreground mb-4">Tidak ada soal tersedia untuk tes ini.</p>
+          <Button onClick={() => navigate("/dashboard")}>Kembali ke Dashboard</Button>
+        </div>
+      </div>
+    );
+  }
+
+  if (!currentQuestion) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-background">
+        <div className="text-center">
+          <p className="text-muted-foreground mb-4">Soal tidak ditemukan.</p>
+          <Button onClick={() => navigate("/dashboard")}>Kembali ke Dashboard</Button>
+        </div>
+      </div>
+    );
+  }
 
   const handleAnswerSelect = (answerIndex: number) => {
     setAnswers((prev) => ({ ...prev, [currentIndex]: answerIndex }));
