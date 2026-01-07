@@ -74,6 +74,18 @@ export function QuestionCard({
 
       <Card variant="elevated" className="overflow-hidden">
         <CardContent className="p-8">
+          {question.passage && (
+            <div className="mb-8 p-6 rounded-xl bg-secondary/50 border border-border">
+              <p className="text-sm font-bold text-primary uppercase tracking-wider mb-4">
+                {question.category === 'listening' ? 'Transkrip Audio' : 'Reading Passage'}
+              </p>
+              <div
+                className="text-base md:text-lg text-foreground whitespace-pre-wrap leading-relaxed"
+                dangerouslySetInnerHTML={{ __html: question.passage }}
+              />
+            </div>
+          )}
+
           {question.category === 'listening' && question.audio_url && (
             <div className="mb-8 p-6 rounded-xl bg-primary/5 border border-primary/20 shadow-sm">
               <div className="flex items-center gap-3 mb-4">
@@ -103,16 +115,30 @@ export function QuestionCard({
             </div>
           )}
 
-          {question.passage && (
-            <div className="mb-8 p-6 rounded-xl bg-secondary/50 border border-border">
-              <p className="text-sm font-bold text-primary uppercase tracking-wider mb-4">Reading Passage</p>
-              <div
-                className="text-base md:text-lg text-foreground whitespace-pre-wrap leading-relaxed"
-                dangerouslySetInnerHTML={{ __html: question.passage }}
+          {question.category === 'listening' && question.question_audio_url && (
+            <div className="mb-6 p-4 rounded-lg bg-orange-500/5 border border-orange-500/20 shadow-sm">
+              <div className="flex items-center gap-2 mb-3">
+                <div className="w-8 h-8 rounded-full bg-orange-500/10 flex items-center justify-center text-orange-500">
+                  <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15.536 8.464a5 5 0 010 7.072m2.828-9.9a9 9 0 010 12.728M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z" />
+                  </svg>
+                </div>
+                <p className="text-sm font-bold text-orange-500 uppercase tracking-wider">Audio Soal</p>
+              </div>
+              <audio
+                key={question.question_audio_url}
+                src={question.question_audio_url}
+                controls
+                crossOrigin="anonymous"
+                preload="auto"
+                className="w-full h-10"
               />
             </div>
           )}
 
+          <div className="mb-2">
+            <span className="text-sm font-semibold text-muted-foreground uppercase tracking-wider">Pertanyaan:</span>
+          </div>
           <p
             className="text-lg md:text-xl font-medium text-foreground leading-relaxed mb-8"
             dangerouslySetInnerHTML={{ __html: question.question_text }}
