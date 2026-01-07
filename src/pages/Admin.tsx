@@ -1198,9 +1198,9 @@ export default function Admin() {
                   </Select>
                 </div>
 
-                {questionForm.category === 'reading' && (
+                {(questionForm.category === 'reading' || questionForm.category === 'listening') && (
                   <div className="space-y-2">
-                    <Label>Teks Artikel/Passage</Label>
+                    <Label>{questionForm.category === 'listening' ? 'Teks Transkrip/Passage (Opsional)' : 'Teks Artikel/Passage'}</Label>
                     <Textarea
                       value={questionForm.passage}
                       onChange={(e) =>
@@ -1209,7 +1209,7 @@ export default function Admin() {
                           passage: e.target.value,
                         }))
                       }
-                      placeholder="Masukkan teks artikel di sini..."
+                      placeholder={questionForm.category === 'listening' ? "Masukkan transkrip audio utama di sini..." : "Masukkan teks artikel di sini..."}
                       rows={6}
                     />
                   </div>
