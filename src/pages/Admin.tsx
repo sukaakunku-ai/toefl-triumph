@@ -1616,6 +1616,9 @@ export default function Admin() {
                       </div>
                     )}
 
+                    <div className="mb-2">
+                      <span className="text-sm font-semibold text-muted-foreground uppercase tracking-wider">Pertanyaan:</span>
+                    </div>
                     <p
                       className="text-lg md:text-xl font-medium text-foreground leading-relaxed mb-8"
                       dangerouslySetInnerHTML={{ __html: questionForm.question_text || "<i>Teks soal akan muncul di sini...</i>" }}
