@@ -138,6 +138,10 @@ export default function Admin() {
   // Package selection for bulk delete
   const [selectedPackages, setSelectedPackages] = useState<Set<string>>(new Set());
 
+  // Input visibility state
+  const [showTranscriptInput, setShowTranscriptInput] = useState(false);
+  const [showQuestionAudioInput, setShowQuestionAudioInput] = useState(false);
+
   // Articles state
   const [articles, setArticles] = useState<Article[]>([]);
   const [isLoadingArticles, setIsLoadingArticles] = useState(true);
@@ -309,6 +313,9 @@ export default function Admin() {
       correct_answer: 0,
       explanation: "",
     });
+    // Reset visibility states (default hidden)
+    setShowTranscriptInput(false);
+    setShowQuestionAudioInput(false);
     setShowQuestionDialog(true);
   };
 
@@ -324,6 +331,9 @@ export default function Admin() {
       correct_answer: question.correct_answer,
       explanation: question.explanation,
     });
+    // Set visibility based on content existence
+    setShowTranscriptInput(!!question.passage);
+    setShowQuestionAudioInput(!!question.question_audio_url);
     setShowQuestionDialog(true);
   };
 
@@ -1200,18 +1210,38 @@ export default function Admin() {
 
                 {(questionForm.category === 'reading' || questionForm.category === 'listening') && (
                   <div className="space-y-2">
-                    <Label>{questionForm.category === 'listening' ? 'Teks Transkrip/Passage (Opsional)' : 'Teks Artikel/Passage'}</Label>
-                    <Textarea
-                      value={questionForm.passage}
-                      onChange={(e) =>
-                        setQuestionForm((prev) => ({
-                          ...prev,
-                          passage: e.target.value,
-                        }))
-                      }
-                      placeholder={questionForm.category === 'listening' ? "Masukkan transkrip audio utama di sini..." : "Masukkan teks artikel di sini..."}
-                      rows={6}
-                    />
+                    <div className="flex items-center justify-between">
+                      <Label>{questionForm.category === 'listening' ? 'Teks Transkrip/Passage (Opsional)' : 'Teks Artikel/Passage'}</Label>
+                      <Button
+                        type="button"
+                        variant="ghost"
+                        size="sm"
+                        onClick={() => setShowTranscriptInput(!showTranscriptInput)}
+                        className="text-xs text-primary h-6"
+                      >
+                        {showTranscriptInput ? "Sembunyikan" : "+ Tampilkan Input"}
+                      </Button>
+                    </div>
+
+                    {showTranscriptInput && (
+                      <motion.div
+                        initial={{ opacity: 0, height: 0 }}
+                        animate={{ opacity: 1, height: 'auto' }}
+                        exit={{ opacity: 0, height: 0 }}
+                      >
+                        <Textarea
+                          value={questionForm.passage}
+                          onChange={(e) =>
+                            setQuestionForm((prev) => ({
+                              ...prev,
+                              passage: e.target.value,
+                            }))
+                          }
+                          placeholder={questionForm.category === 'listening' ? "Masukkan transkrip audio utama di sini..." : "Masukkan teks artikel di sini..."}
+                          rows={6}
+                        />
+                      </motion.div>
+                    )}
                   </div>
                 )}
 
@@ -1379,126 +1409,146 @@ export default function Admin() {
 
                 {questionForm.category === 'listening' && (
                   <div className="space-y-2 border-t pt-4 mt-4">
-                    <Label className="text-sm font-semibold text-muted-foreground">Audio untuk Teks Soal (Opsional)</Label>
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                      <div className="space-y-2">
-                        <Label className="text-xs">URL Audio Soal</Label>
-                        <Input
-                          value={questionForm.question_audio_url === "ERROR_FOLDER_LINK" ? "" : questionForm.question_audio_url}
-                          onChange={(e) => {
-                            const val = e.target.value;
-                            const converted = convertDriveLink(val);
-
-                            if (converted === "ERROR_FOLDER_LINK") {
-                              toast.error("Itu link FOLDER. Harap masukkan link khusus FILE .mp3 di dalam folder tersebut.");
-                              return;
-                            }
-
-                            setQuestionForm((prev) => ({
-                              ...prev,
-                              question_audio_url: converted,
-                            }));
-                          }}
-                          placeholder="Link MP3 atau Google Drive"
-                          className="text-sm"
-                        />
-                      </div>
-                      <div className="space-y-2">
-                        <Label className="text-xs">Upload File Audio Soal</Label>
-                        <div className="flex items-center gap-2">
-                          <Input
-                            type="file"
-                            accept="audio/mp3,audio/*"
-                            onChange={async (e) => {
-                              const file = e.target.files?.[0];
-                              if (!file) return;
-
-                              setIsUploadingAudio(true);
-                              try {
-                                const questionId = editingQuestion?.id || Date.now();
-                                const url = await uploadQuestionAudio(questionId, file, (p) => setUploadProgress(p), 'question');
-                                setQuestionForm(prev => ({ ...prev, question_audio_url: url }));
-                                toast.success("Audio soal berhasil diunggah");
-                              } catch (error) {
-                                console.error("Upload error details:", error);
-                                toast.error(error instanceof Error ? error.message : "Gagal mengunggah");
-                              } finally {
-                                setIsUploadingAudio(false);
-                              }
-                            }}
-                            className="hidden"
-                            id="question-audio-upload"
-                            disabled={isUploadingAudio}
-                          />
-                          <Button
-                            type="button"
-                            variant="outline"
-                            className="w-full gap-2 text-xs"
-                            size="sm"
-                            onClick={() => document.getElementById('question-audio-upload')?.click()}
-                            disabled={isUploadingAudio}
-                          >
-                            {isUploadingAudio ? (
-                              <Loader2 className="w-3 h-3 animate-spin" />
-                            ) : (
-                              <Upload className="w-3 h-3" />
-                            )}
-                            {isUploadingAudio ? `Uploading (${uploadProgress}%)` : "Upload Audio"}
-                          </Button>
-                        </div>
-                      </div>
+                    <div className="flex items-center justify-between">
+                      <Label className="text-sm font-semibold text-muted-foreground">Audio untuk Teks Soal (Opsional)</Label>
+                      <Button
+                        type="button"
+                        variant="ghost"
+                        size="sm"
+                        onClick={() => setShowQuestionAudioInput(!showQuestionAudioInput)}
+                        className="text-xs text-primary h-6"
+                      >
+                        {showQuestionAudioInput ? "Sembunyikan" : "+ Tampilkan Input"}
+                      </Button>
                     </div>
-                    {questionForm.question_audio_url && (
-                      <div className="p-3 bg-muted/50 rounded-lg space-y-2">
-                        <Label className="text-xs font-semibold flex items-center justify-between">
-                          <div className="flex items-center gap-2">
-                            <Loader2 className="w-3 h-3 animate-pulse" />
-                            Preview Audio Soal
+
+                    {showQuestionAudioInput && (
+                      <motion.div
+                        initial={{ opacity: 0, height: 0 }}
+                        animate={{ opacity: 1, height: 'auto' }}
+                        exit={{ opacity: 0, height: 0 }}
+                      >
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-2">
+                          <div className="space-y-2">
+                            <Label className="text-xs">URL Audio Soal</Label>
+                            <Input
+                              value={questionForm.question_audio_url === "ERROR_FOLDER_LINK" ? "" : questionForm.question_audio_url}
+                              onChange={(e) => {
+                                const val = e.target.value;
+                                const converted = convertDriveLink(val);
+
+                                if (converted === "ERROR_FOLDER_LINK") {
+                                  toast.error("Itu link FOLDER. Harap masukkan link khusus FILE .mp3 di dalam folder tersebut.");
+                                  return;
+                                }
+
+                                setQuestionForm((prev) => ({
+                                  ...prev,
+                                  question_audio_url: converted,
+                                }));
+                              }}
+                              placeholder="Link MP3 atau Google Drive"
+                              className="text-sm"
+                            />
                           </div>
-                          <div className="flex gap-2">
+                          <div className="space-y-2">
+                            <Label className="text-xs">Upload File Audio Soal</Label>
+                            <div className="flex items-center gap-2">
+                              <Input
+                                type="file"
+                                accept="audio/mp3,audio/*"
+                                onChange={async (e) => {
+                                  const file = e.target.files?.[0];
+                                  if (!file) return;
+
+                                  setIsUploadingAudio(true);
+                                  try {
+                                    const questionId = editingQuestion?.id || Date.now();
+                                    const url = await uploadQuestionAudio(questionId, file, (p) => setUploadProgress(p), 'question');
+                                    setQuestionForm(prev => ({ ...prev, question_audio_url: url }));
+                                    toast.success("Audio soal berhasil diunggah");
+                                  } catch (error) {
+                                    console.error("Upload error details:", error);
+                                    toast.error(error instanceof Error ? error.message : "Gagal mengunggah");
+                                  } finally {
+                                    setIsUploadingAudio(false);
+                                  }
+                                }}
+                                className="hidden"
+                                id="question-audio-upload"
+                                disabled={isUploadingAudio}
+                              />
+                              <Button
+                                type="button"
+                                variant="outline"
+                                className="w-full gap-2 text-xs"
+                                size="sm"
+                                onClick={() => document.getElementById('question-audio-upload')?.click()}
+                                disabled={isUploadingAudio}
+                              >
+                                {isUploadingAudio ? (
+                                  <Loader2 className="w-3 h-3 animate-spin" />
+                                ) : (
+                                  <Upload className="w-3 h-3" />
+                                )}
+                                {isUploadingAudio ? `Uploading (${uploadProgress}%)` : "Upload Audio"}
+                              </Button>
+                            </div>
+                          </div>
+                        </div>
+                        {questionForm.question_audio_url && (
+                          <div className="p-3 bg-muted/50 rounded-lg space-y-2 mt-4">
+                            <Label className="text-xs font-semibold flex items-center justify-between">
+                              <div className="flex items-center gap-2">
+                                <Loader2 className="w-3 h-3 animate-pulse" />
+                                Preview Audio Soal
+                              </div>
+                              <div className="flex gap-2">
+                                {questionForm.question_audio_url.includes('firebasestorage') && (
+                                  <span className="text-[10px] bg-primary/10 text-primary px-1.5 py-0.5 rounded">Uploaded</span>
+                                )}
+                                {questionForm.question_audio_url.includes('drive.google.com') || questionForm.question_audio_url.includes('docs.google.com') ? (
+                                  <span className="text-[10px] bg-blue-500/10 text-blue-500 px-1.5 py-0.5 rounded">G-Drive</span>
+                                ) : null}
+                              </div>
+                            </Label>
+                            <audio
+                              key={questionForm.question_audio_url}
+                              src={questionForm.question_audio_url}
+                              controls
+                              crossOrigin="anonymous"
+                              preload="auto"
+                              className="w-full h-8"
+                              onError={(e) => {
+                                console.error("Audio Load Error:", e);
+                                if (questionForm.question_audio_url) {
+                                  toast.error("Audio gagal dimuat.");
+                                }
+                              }}
+                            />
                             {questionForm.question_audio_url.includes('firebasestorage') && (
-                              <span className="text-[10px] bg-primary/10 text-primary px-1.5 py-0.5 rounded">Uploaded</span>
+                              <Button
+                                type="button"
+                                variant="destructive"
+                                size="sm"
+                                className="w-full gap-2 text-xs h-7"
+                                onClick={async () => {
+                                  try {
+                                    await deleteQuestionAudio(questionForm.question_audio_url);
+                                    setQuestionForm(prev => ({ ...prev, question_audio_url: "" }));
+                                    toast.success("Audio soal berhasil dihapus");
+                                  } catch (error) {
+                                    toast.error("Gagal menghapus audio");
+                                  }
+                                }}
+                              >
+                                <VolumeX className="w-3 h-3" />
+                                Hapus Audio Soal
+                              </Button>
                             )}
-                            {questionForm.question_audio_url.includes('drive.google.com') || questionForm.question_audio_url.includes('docs.google.com') ? (
-                              <span className="text-[10px] bg-blue-500/10 text-blue-500 px-1.5 py-0.5 rounded">G-Drive</span>
-                            ) : null}
                           </div>
-                        </Label>
-                        <audio
-                          key={questionForm.question_audio_url}
-                          src={questionForm.question_audio_url}
-                          controls
-                          crossOrigin="anonymous"
-                          preload="auto"
-                          className="w-full h-8"
-                          onError={(e) => {
-                            console.error("Audio Load Error:", e);
-                            if (questionForm.question_audio_url) {
-                              toast.error("Audio gagal dimuat.");
-                            }
-                          }}
-                        />
-                        {questionForm.question_audio_url.includes('firebasestorage') && (
-                          <Button
-                            type="button"
-                            variant="destructive"
-                            size="sm"
-                            className="w-full gap-2 text-xs h-7"
-                            onClick={async () => {
-                              try {
-                                await deleteQuestionAudio(questionForm.question_audio_url);
-                                setQuestionForm(prev => ({ ...prev, question_audio_url: "" }));
-                                toast.success("Audio soal berhasil dihapus");
-                              } catch (error) {
-                                toast.error("Gagal menghapus audio");
-                              }
-                            }}
-                          >
-                            <VolumeX className="w-3 h-3" />
-                            Hapus Audio Soal
-                          </Button>
                         )}
-                      </div>
+                      </motion.div>
                     )}
                   </div>
                 )}
