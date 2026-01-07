@@ -1211,7 +1211,7 @@ export default function Admin() {
                 {(questionForm.category === 'reading' || questionForm.category === 'listening') && (
                   <div className="space-y-2">
                     <div className="flex items-center justify-between">
-                      <Label>{questionForm.category === 'listening' ? 'Teks Transkrip/Passage (Opsional)' : 'Teks Artikel/Passage'}</Label>
+                      <Label>{questionForm.category === 'listening' ? 'Petunjuk Audio (Opsional)' : 'Teks Artikel/Passage'}</Label>
                       <Button
                         type="button"
                         variant="ghost"
@@ -1631,7 +1631,7 @@ export default function Admin() {
                     {questionForm.passage && (
                       <div className="mb-6 p-4 rounded-lg bg-secondary/50 border border-border">
                         <p className="text-sm font-semibold mb-2">
-                          {questionForm.category === 'listening' ? 'Transkrip Audio:' : 'Reading Passage:'}
+                          {questionForm.category === 'listening' ? 'Petunjuk Audio:' : 'Reading Passage:'}
                         </p>
                         <div
                           className="text-sm text-foreground whitespace-pre-wrap leading-relaxed"
