@@ -67,6 +67,7 @@ export const getQuestionsByCategory = async (category: string): Promise<Question
         question_text: data.question_text,
         passage: data.passage,
         audio_url: data.audio_url,
+        question_audio_url: data.question_audio_url,
         options: data.options,
         correct_answer: data.correct_answer,
         explanation: data.explanation,
@@ -146,12 +147,15 @@ export const deleteQuestion = async (questionId: number): Promise<void> => {
 export const uploadQuestionAudio = async (
   questionId: string | number,
   file: File,
-  onProgress?: (progress: number) => void
+  onProgress?: (progress: number) => void,
+  type?: 'passage' | 'question' // Type to differentiate between passage audio and question text audio
 ): Promise<string> => {
   console.log("Starting upload for file:", file.name, "Size:", file.size);
 
   return new Promise((resolve, reject) => {
-    const storageRef = ref(storage, `audio_questions/${questionId}_${Date.now()}_${file.name}`);
+    // Use different folder based on type
+    const folder = type === 'question' ? 'audio_question_text' : 'audio_questions';
+    const storageRef = ref(storage, `${folder}/${questionId}_${Date.now()}_${file.name}`);
     const uploadTask = uploadBytesResumable(storageRef, file);
 
     uploadTask.on('state_changed',
@@ -182,12 +186,13 @@ export const deleteQuestionAudio = async (audioUrl: string): Promise<void> => {
   try {
     // Extract the path from the Firebase Storage URL
     const decodedUrl = decodeURIComponent(audioUrl);
-    const pathMatch = decodedUrl.match(/audio_questions\/[^?]+/);
-    
+    // Match both audio_questions and audio_question_text folders
+    const pathMatch = decodedUrl.match(/(audio_questions|audio_question_text)\/[^?]+/);
+
     if (!pathMatch) {
       throw new Error("Invalid audio URL format");
     }
-    
+
     const audioPath = pathMatch[0];
     const audioRef = ref(storage, audioPath);
     await deleteObject(audioRef);

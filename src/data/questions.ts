@@ -4,6 +4,7 @@ export interface Question {
   question_text: string;
   passage?: string;
   audio_url?: string;
+  question_audio_url?: string; // Audio for question text
   options: string[];
   correct_answer: number;
   explanation: string;
