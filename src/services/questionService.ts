@@ -153,9 +153,10 @@ export const uploadQuestionAudio = async (
   console.log("Starting upload for file:", file.name, "Size:", file.size);
 
   return new Promise((resolve, reject) => {
-    // Use different folder based on type
-    const folder = type === 'question' ? 'audio_question_text' : 'audio_questions';
-    const storageRef = ref(storage, `${folder}/${questionId}_${Date.now()}_${file.name}`);
+    // Use the same folder to ensure permissions work, but add prefix
+    const folder = 'audio_questions';
+    const distinctPrefix = type === 'question' ? 'qtext_' : '';
+    const storageRef = ref(storage, `${folder}/${questionId}_${distinctPrefix}${Date.now()}_${file.name}`);
     const uploadTask = uploadBytesResumable(storageRef, file);
 
     uploadTask.on('state_changed',
