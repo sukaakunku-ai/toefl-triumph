@@ -338,7 +338,7 @@ export default function Admin() {
         explanation: questionForm.explanation,
       };
 
-      if (questionForm.category === 'reading' && questionForm.passage) {
+      if ((questionForm.category === 'reading' || questionForm.category === 'listening') && questionForm.passage) {
         questionData.passage = questionForm.passage;
       }
 
@@ -1578,6 +1578,18 @@ export default function Admin() {
                       </span>
                     </div>
 
+                    {questionForm.passage && (
+                      <div className="mb-6 p-4 rounded-lg bg-secondary/50 border border-border">
+                        <p className="text-sm font-semibold mb-2">
+                          {questionForm.category === 'listening' ? 'Transkrip Audio:' : 'Reading Passage:'}
+                        </p>
+                        <div
+                          className="text-sm text-foreground whitespace-pre-wrap leading-relaxed"
+                          dangerouslySetInnerHTML={{ __html: questionForm.passage }}
+                        />
+                      </div>
+                    )}
+
                     {questionForm.category === 'listening' && questionForm.audio_url && (
                       <div className="mb-6 p-4 rounded-lg bg-primary/5 border border-primary/20 shadow-sm">
                         <div className="flex items-center gap-2 mb-3">
@@ -1588,16 +1600,6 @@ export default function Admin() {
                           src={questionForm.audio_url}
                           controls
                           className="w-full h-10"
-                        />
-                      </div>
-                    )}
-
-                    {questionForm.passage && (
-                      <div className="mb-6 p-4 rounded-lg bg-secondary/50 border border-border">
-                        <p className="text-sm font-semibold mb-2">Reading Passage:</p>
-                        <div
-                          className="text-sm text-foreground whitespace-pre-wrap leading-relaxed"
-                          dangerouslySetInnerHTML={{ __html: questionForm.passage }}
                         />
                       </div>
                     )}
