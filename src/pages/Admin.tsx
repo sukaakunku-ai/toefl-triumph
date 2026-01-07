@@ -1602,6 +1602,20 @@ export default function Admin() {
                       </div>
                     )}
 
+                    {questionForm.category === 'listening' && questionForm.question_audio_url && (
+                      <div className="mb-6 p-4 rounded-lg bg-orange-500/5 border border-orange-500/20 shadow-sm">
+                        <div className="flex items-center gap-2 mb-3">
+                          <Loader2 className="w-4 h-4 animate-spin text-orange-500" />
+                          <p className="text-sm font-bold text-orange-500 uppercase tracking-wider">Audio Soal</p>
+                        </div>
+                        <audio
+                          src={questionForm.question_audio_url}
+                          controls
+                          className="w-full h-10"
+                        />
+                      </div>
+                    )}
+
                     <p
                       className="text-lg md:text-xl font-medium text-foreground leading-relaxed mb-8"
                       dangerouslySetInnerHTML={{ __html: questionForm.question_text || "<i>Teks soal akan muncul di sini...</i>" }}
