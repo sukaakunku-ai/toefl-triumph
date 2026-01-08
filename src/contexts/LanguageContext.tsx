@@ -53,7 +53,7 @@ const translations: Record<Language, Record<string, string>> = {
     "howItWorks.step2.title": "Kerjakan Tes",
     "howItWorks.step2.desc": "Realtime, tinjau instan, belajar dari error.",
     "howItWorks.step3.title": "Tingkatkan",
-    "howItWorks.step3.desc": "Analisis ahli & grafik kemajuan – skor naik cepat!",
+    "howItWorks.step3.desc": "Analisis ahli & penjelasan mendalam – skor naik cepat!",
 
     // Why choose us
     "whyChooseUs.title": "Kenapa TOEFL Rocket? Mudah, Efektif, Gratis!",
@@ -219,7 +219,7 @@ const translations: Record<Language, Record<string, string>> = {
     "howItWorks.step2.title": "Take the Test",
     "howItWorks.step2.desc": "Real-time, instant review, learn from errors.",
     "howItWorks.step3.title": "Improve",
-    "howItWorks.step3.desc": "Expert analysis & progress charts – score up fast!",
+    "howItWorks.step3.desc": "Expert analysis & in-depth feedback – score up fast!",
 
     // Why choose us
     "whyChooseUs.title": "Why TOEFL Rocket? Easy, Effective, Free!",
