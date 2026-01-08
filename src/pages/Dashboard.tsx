@@ -164,6 +164,11 @@ export default function Dashboard() {
           }
         });
 
+        // Calculate 'full' simulation statistics
+        counts.full = counts.listening + counts.structure + counts.reading;
+        // Number of available full combinations is the minimum number of packages in any section
+        pkgCounts.full = Math.min(pkgCounts.listening, pkgCounts.structure, pkgCounts.reading);
+
         setCategoryCounts(counts);
         setPackageCounts(pkgCounts);
       } catch (error) {
