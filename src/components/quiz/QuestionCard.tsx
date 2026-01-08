@@ -68,7 +68,12 @@ export function QuestionCard({
           className="gap-2"
         >
           <Flag className={cn("w-4 h-4", isFlagged && "fill-current")} />
-          {isFlagged ? "Flagged" : "Flag for Review"}
+          <span className="hidden sm:inline">
+            {isFlagged ? "Flagged" : "Flag for Review"}
+          </span>
+          <span className="sm:hidden">
+            {isFlagged ? "Flagged" : "Flag"}
+          </span>
         </Button>
       </div>
 

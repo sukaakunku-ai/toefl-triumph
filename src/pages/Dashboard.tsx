@@ -355,7 +355,7 @@ export default function Dashboard() {
       {/* Package Selection Dialog */}
       <Dialog open={showPackageDialog} onOpenChange={setShowPackageDialog}>
         <DialogContent className={cn(
-          "transition-all duration-300",
+          "transition-all duration-300 flex flex-col max-h-[90vh]",
           selectedTestType?.id === "full" ? "sm:max-w-2xl" : "sm:max-w-xl"
         )}>
           <DialogHeader>
@@ -365,7 +365,7 @@ export default function Dashboard() {
             </DialogDescription>
           </DialogHeader>
 
-          <div className="space-y-6 py-4">
+          <div className="flex-1 overflow-y-auto pr-2 space-y-6 py-4">
             {isLoadingPackages ? (
               <div className="flex justify-center py-12">
                 <Loader2 className="w-8 h-8 animate-spin text-primary" />
@@ -377,21 +377,25 @@ export default function Dashboard() {
                     <Headphones className="w-4 h-4 text-accent" />
                     <label className="text-sm font-bold uppercase tracking-wider text-muted-foreground">{t("dashboard.listening")}</label>
                   </div>
-                  <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
-                    {listeningPackages.map((pkg) => (
-                      <button
-                        key={pkg.id}
-                        onClick={() => setSelectedListeningId(pkg.id)}
-                        className={cn(
-                          "px-3 py-2 rounded-lg border text-sm text-center transition-all",
-                          selectedListeningId === pkg.id
-                            ? "border-accent bg-accent/10 text-accent font-semibold ring-1 ring-accent"
-                            : "border-border bg-card hover:border-accent/50 hover:bg-accent/5"
-                        )}
-                      >
-                        {pkg.name}
-                      </button>
-                    ))}
+                  <div className="flex flex-wrap gap-2">
+                    {listeningPackages.length === 0 ? (
+                      <p className="text-xs text-muted-foreground">Tidak ada paket tersedia</p>
+                    ) : (
+                      listeningPackages.map((pkg) => (
+                        <button
+                          key={pkg.id}
+                          onClick={() => setSelectedListeningId(pkg.id)}
+                          className={cn(
+                            "px-4 py-2 rounded-lg border text-sm text-center transition-all min-w-[80px]",
+                            selectedListeningId === pkg.id
+                              ? "border-accent bg-accent/10 text-accent font-semibold ring-1 ring-accent"
+                              : "border-border bg-card hover:border-accent/50 hover:bg-accent/5"
+                          )}
+                        >
+                          {pkg.name}
+                        </button>
+                      ))
+                    )}
                   </div>
                 </div>
 
@@ -400,21 +404,25 @@ export default function Dashboard() {
                     <PenTool className="w-4 h-4 text-success" />
                     <label className="text-sm font-bold uppercase tracking-wider text-muted-foreground">{t("dashboard.structure")}</label>
                   </div>
-                  <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
-                    {structurePackages.map((pkg) => (
-                      <button
-                        key={pkg.id}
-                        onClick={() => setSelectedStructureId(pkg.id)}
-                        className={cn(
-                          "px-3 py-2 rounded-lg border text-sm text-center transition-all",
-                          selectedStructureId === pkg.id
-                            ? "border-success bg-success/10 text-success font-semibold ring-1 ring-success"
-                            : "border-border bg-card hover:border-success/50 hover:bg-success/5"
-                        )}
-                      >
-                        {pkg.name}
-                      </button>
-                    ))}
+                  <div className="flex flex-wrap gap-2">
+                    {structurePackages.length === 0 ? (
+                      <p className="text-xs text-muted-foreground">Tidak ada paket tersedia</p>
+                    ) : (
+                      structurePackages.map((pkg) => (
+                        <button
+                          key={pkg.id}
+                          onClick={() => setSelectedStructureId(pkg.id)}
+                          className={cn(
+                            "px-4 py-2 rounded-lg border text-sm text-center transition-all min-w-[80px]",
+                            selectedStructureId === pkg.id
+                              ? "border-success bg-success/10 text-success font-semibold ring-1 ring-success"
+                              : "border-border bg-card hover:border-success/50 hover:bg-success/5"
+                          )}
+                        >
+                          {pkg.name}
+                        </button>
+                      ))
+                    )}
                   </div>
                 </div>
 
@@ -423,21 +431,25 @@ export default function Dashboard() {
                     <BookOpen className="w-4 h-4 text-warning" />
                     <label className="text-sm font-bold uppercase tracking-wider text-muted-foreground">{t("dashboard.reading")}</label>
                   </div>
-                  <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
-                    {readingPackages.map((pkg) => (
-                      <button
-                        key={pkg.id}
-                        onClick={() => setSelectedReadingId(pkg.id)}
-                        className={cn(
-                          "px-3 py-2 rounded-lg border text-sm text-center transition-all",
-                          selectedReadingId === pkg.id
-                            ? "border-warning bg-warning/10 text-warning font-semibold ring-1 ring-warning"
-                            : "border-border bg-card hover:border-warning/50 hover:bg-warning/5"
-                        )}
-                      >
-                        {pkg.name}
-                      </button>
-                    ))}
+                  <div className="flex flex-wrap gap-2">
+                    {readingPackages.length === 0 ? (
+                      <p className="text-xs text-muted-foreground">Tidak ada paket tersedia</p>
+                    ) : (
+                      readingPackages.map((pkg) => (
+                        <button
+                          key={pkg.id}
+                          onClick={() => setSelectedReadingId(pkg.id)}
+                          className={cn(
+                            "px-4 py-2 rounded-lg border text-sm text-center transition-all min-w-[80px]",
+                            selectedReadingId === pkg.id
+                              ? "border-warning bg-warning/10 text-warning font-semibold ring-1 ring-warning"
+                              : "border-border bg-card hover:border-warning/50 hover:bg-warning/5"
+                          )}
+                        >
+                          {pkg.name}
+                        </button>
+                      ))
+                    )}
                   </div>
                 </div>
               </div>

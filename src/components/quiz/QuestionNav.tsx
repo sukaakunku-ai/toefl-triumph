@@ -41,7 +41,7 @@ export function QuestionNav({
         </div>
       </div>
 
-      <div className="grid grid-cols-5 sm:grid-cols-10 gap-2">
+      <div className="flex flex-wrap gap-2">
         {Array.from({ length: totalQuestions }, (_, i) => {
           const isAnswered = answers[i] !== undefined;
           const isCurrent = i === currentQuestion;
@@ -67,7 +67,7 @@ export function QuestionNav({
               {showResults && isCorrect && <Check className="w-4 h-4" />}
               {showResults && isWrong && <X className="w-4 h-4" />}
               {!showResults && (i + 1)}
-              
+
               {isFlagged && (
                 <Flag className="absolute -top-1 -right-1 w-3 h-3 text-warning fill-warning" />
               )}
