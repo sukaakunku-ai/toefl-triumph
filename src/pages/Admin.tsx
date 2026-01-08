@@ -635,9 +635,9 @@ export default function Admin() {
   }).sort((a, b) => b.id - a.id);
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-wavy">
       {/* Header */}
-      <header className="sticky top-0 z-50 bg-card/95 backdrop-blur-md border-b border-border">
+      <header className="sticky top-0 z-50 bg-white/70 dark:bg-black/40 backdrop-blur-xl border-b border-border transition-colors duration-300">
         <div className="container mx-auto px-4 h-16 flex items-center justify-between">
           <div className="flex items-center gap-4">
             <Link to="/dashboard">
@@ -649,7 +649,7 @@ export default function Admin() {
               <div className="w-10 h-10 rounded-xl bg-gradient-hero flex items-center justify-center shadow-md">
                 <BookOpen className="w-5 h-5 text-primary-foreground" />
               </div>
-              <span className="font-bold text-xl text-foreground">
+              <span className="font-black text-xl text-foreground uppercase tracking-tighter">
                 {t("admin.title")}
               </span>
             </div>
