@@ -58,7 +58,7 @@ const translations: Record<Language, Record<string, string>> = {
     // Why choose us
     "whyChooseUs.title": "Kenapa TOEFLPrep? Mudah, Efektif, Gratis!",
     "whyChooseUs.subtitle": "Ribuan sukses tanpa kursus mahal – kunci skor tinggi!",
-    "whyChooseUs.feature1.title": "Simulasi ETS Asli",
+    "whyChooseUs.feature1.title": "Simulasi mirip Toefl ETS",
     "whyChooseUs.feature1.desc": "Format, timer, kesulitan mirip ETS.",
     "whyChooseUs.feature2.title": "Penjelasan Ahli",
     "whyChooseUs.feature2.desc": "Pahami konsep, bukan hafal.",
@@ -224,7 +224,7 @@ const translations: Record<Language, Record<string, string>> = {
     // Why choose us
     "whyChooseUs.title": "Why TOEFLPrep? Easy, Effective, Free!",
     "whyChooseUs.subtitle": "Thousands success without expensive courses – key to high scores!",
-    "whyChooseUs.feature1.title": "Real ETS Simulation",
+    "whyChooseUs.feature1.title": "TOEFL ETS-Style Simulation",
     "whyChooseUs.feature1.desc": "Format, timer, difficulty similar to ETS.",
     "whyChooseUs.feature2.title": "Expert Explanation",
     "whyChooseUs.feature2.desc": "Understand concepts, don't memorize.",
