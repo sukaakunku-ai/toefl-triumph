@@ -37,10 +37,23 @@ export function Hero() {
             </div>
 
             <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold leading-tight">
-              {t("hero.title").split(" ")[0]}{" "}
-              <span className="text-gradient">TOEFL</span>
-              <br />
-              {t("hero.title").split(" ").slice(1).join(" ")}
+              {t("hero.title").includes("Skor TOEFL") ? (
+                <>
+                  {t("hero.title").split("Skor TOEFL")[0]}
+                  <br />
+                  <span className="text-purple-600">Skor TOEFL</span>
+                  {t("hero.title").split("Skor TOEFL")[1]}
+                </>
+              ) : t("hero.title").includes("TOEFL Score") ? (
+                <>
+                  {t("hero.title").split("TOEFL Score")[0]}
+                  <br />
+                  <span className="text-purple-600">TOEFL Score</span>
+                  {t("hero.title").split("TOEFL Score")[1]}
+                </>
+              ) : (
+                t("hero.title")
+              )}
             </h1>
 
             <p className="text-lg text-muted-foreground max-w-lg">
