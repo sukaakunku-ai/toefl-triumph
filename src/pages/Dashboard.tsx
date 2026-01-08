@@ -101,6 +101,7 @@ export default function Dashboard() {
   const [isSeeding, setIsSeeding] = useState(false);
   const [isSeeded, setIsSeeded] = useState(false);
   const [categoryCounts, setCategoryCounts] = useState<Record<string, number>>({});
+  const [packageCounts, setPackageCounts] = useState<Record<string, number>>({});
 
   // Package selection state
   const [showPackageDialog, setShowPackageDialog] = useState(false);
@@ -129,15 +130,26 @@ export default function Dashboard() {
       document.documentElement.classList.add("dark");
     }
 
-    // Fetch real question counts
+    // Fetch real question and package counts
     const fetchCounts = async () => {
       try {
-        const allQuestions = await import("@/services/questionService").then(m => m.getAllQuestions());
+        const [allQuestions, allPackages] = await Promise.all([
+          import("@/services/questionService").then(m => m.getAllQuestions()),
+          import("@/services/packageService").then(m => m.getAllPackages())
+        ]);
+
         const counts: Record<string, number> = {
           structure: 0,
           reading: 0,
           listening: 0,
-          full: 0 // Full simulation uses all
+          full: 0
+        };
+
+        const pkgCounts: Record<string, number> = {
+          structure: 0,
+          reading: 0,
+          listening: 0,
+          full: 0
         };
 
         allQuestions.forEach(q => {
@@ -146,17 +158,14 @@ export default function Dashboard() {
           }
         });
 
-        // Full simulation count is total unique questions usable in full sim? 
-        // Or specific full sim questions? Usually full sim pulls from all.
-        // Let's assume full sim uses packages designated as 'full'.
-        // For simplicity, let's just count all for now or specific category.
-        // Actually, the testTypes use specific IDs.
-
-        // Let's verify 'full' category exists in questions. Usually it's composed of others.
-        // If 'full' is not a category in questions, we might need to count packages. 
-        // But for structure/reading/listening it works.
+        allPackages.forEach(p => {
+          if (pkgCounts[p.category] !== undefined) {
+            pkgCounts[p.category]++;
+          }
+        });
 
         setCategoryCounts(counts);
+        setPackageCounts(pkgCounts);
       } catch (error) {
         console.error("Failed to fetch counts", error);
       }
@@ -321,17 +330,25 @@ export default function Dashboard() {
                     <CardDescription>{t(test.descKey)}</CardDescription>
                   </CardHeader>
                   <CardContent>
-                    <div className="flex items-center gap-6 text-sm text-muted-foreground">
-                      <div className="flex items-center gap-2">
-                        <Clock className="w-4 h-4" />
-                        <span>
-                          {test.duration} {t("dashboard.minutes")}
-                        </span>
+                    <div className="flex flex-col gap-3">
+                      <div className="flex items-center gap-6 text-sm text-muted-foreground">
+                        <div className="flex items-center gap-2">
+                          <Clock className="w-4 h-4" />
+                          <span>
+                            {test.duration} {t("dashboard.minutes")}
+                          </span>
+                        </div>
+                        <div className="flex items-center gap-2">
+                          <BookOpen className="w-4 h-4" />
+                          <span>
+                            {categoryCounts[test.id] || 0} {t("dashboard.questions")}
+                          </span>
+                        </div>
                       </div>
-                      <div className="flex items-center gap-2">
-                        <BookOpen className="w-4 h-4" />
+                      <div className="flex items-center gap-2 text-sm text-primary font-medium bg-primary/5 px-3 py-1.5 rounded-lg w-fit">
+                        <Layers className="w-4 h-4" />
                         <span>
-                          {categoryCounts[test.id] || 0} {t("dashboard.questions")}
+                          {packageCounts[test.id] || 0} {t("dashboard.package")} Tersedia
                         </span>
                       </div>
                     </div>
