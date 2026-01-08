@@ -353,7 +353,10 @@ export default function Dashboard() {
 
       {/* Package Selection Dialog */}
       <Dialog open={showPackageDialog} onOpenChange={setShowPackageDialog}>
-        <DialogContent className="sm:max-w-md">
+        <DialogContent className={cn(
+          "transition-all duration-300",
+          selectedTestType?.id === "full" ? "sm:max-w-2xl" : "sm:max-w-xl"
+        )}>
           <DialogHeader>
             <DialogTitle>{t("dashboard.selectPackage")}</DialogTitle>
             <DialogDescription>
@@ -361,76 +364,122 @@ export default function Dashboard() {
             </DialogDescription>
           </DialogHeader>
 
-          <div className="space-y-4 py-4">
+          <div className="space-y-6 py-4">
             {isLoadingPackages ? (
-              <div className="flex justify-center py-8">
+              <div className="flex justify-center py-12">
                 <Loader2 className="w-8 h-8 animate-spin text-primary" />
               </div>
             ) : selectedTestType?.id === "full" ? (
-              <div className="space-y-4">
-                <div className="space-y-2">
-                  <label className="text-sm font-medium">{t("dashboard.listening")}</label>
-                  <Select value={selectedListeningId} onValueChange={setSelectedListeningId}>
-                    <SelectTrigger>
-                      <SelectValue placeholder={t("dashboard.selectPackage")} />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {listeningPackages.map((pkg) => (
-                        <SelectItem key={pkg.id} value={pkg.id}>
-                          {pkg.name} ({pkg.questionIds.length} {t("dashboard.questions")})
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
+              <div className="space-y-6">
+                <div className="space-y-3">
+                  <div className="flex items-center gap-2">
+                    <Headphones className="w-4 h-4 text-accent" />
+                    <label className="text-sm font-bold uppercase tracking-wider text-muted-foreground">{t("dashboard.listening")}</label>
+                  </div>
+                  <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
+                    {listeningPackages.map((pkg) => (
+                      <button
+                        key={pkg.id}
+                        onClick={() => setSelectedListeningId(pkg.id)}
+                        className={cn(
+                          "px-3 py-2 rounded-lg border text-sm text-center transition-all",
+                          selectedListeningId === pkg.id
+                            ? "border-accent bg-accent/10 text-accent font-semibold ring-1 ring-accent"
+                            : "border-border bg-card hover:border-accent/50 hover:bg-accent/5"
+                        )}
+                      >
+                        {pkg.name}
+                      </button>
+                    ))}
+                  </div>
                 </div>
-                <div className="space-y-2">
-                  <label className="text-sm font-medium">{t("dashboard.reading")}</label>
-                  <Select value={selectedReadingId} onValueChange={setSelectedReadingId}>
-                    <SelectTrigger>
-                      <SelectValue placeholder={t("dashboard.selectPackage")} />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {readingPackages.map((pkg) => (
-                        <SelectItem key={pkg.id} value={pkg.id}>
-                          {pkg.name} ({pkg.questionIds.length} {t("dashboard.questions")})
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
+
+                <div className="space-y-3">
+                  <div className="flex items-center gap-2">
+                    <PenTool className="w-4 h-4 text-success" />
+                    <label className="text-sm font-bold uppercase tracking-wider text-muted-foreground">{t("dashboard.structure")}</label>
+                  </div>
+                  <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
+                    {structurePackages.map((pkg) => (
+                      <button
+                        key={pkg.id}
+                        onClick={() => setSelectedStructureId(pkg.id)}
+                        className={cn(
+                          "px-3 py-2 rounded-lg border text-sm text-center transition-all",
+                          selectedStructureId === pkg.id
+                            ? "border-success bg-success/10 text-success font-semibold ring-1 ring-success"
+                            : "border-border bg-card hover:border-success/50 hover:bg-success/5"
+                        )}
+                      >
+                        {pkg.name}
+                      </button>
+                    ))}
+                  </div>
                 </div>
-                <div className="space-y-2">
-                  <label className="text-sm font-medium">{t("dashboard.structure")}</label>
-                  <Select value={selectedStructureId} onValueChange={setSelectedStructureId}>
-                    <SelectTrigger>
-                      <SelectValue placeholder={t("dashboard.selectPackage")} />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {structurePackages.map((pkg) => (
-                        <SelectItem key={pkg.id} value={pkg.id}>
-                          {pkg.name} ({pkg.questionIds.length} {t("dashboard.questions")})
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
+
+                <div className="space-y-3">
+                  <div className="flex items-center gap-2">
+                    <BookOpen className="w-4 h-4 text-warning" />
+                    <label className="text-sm font-bold uppercase tracking-wider text-muted-foreground">{t("dashboard.reading")}</label>
+                  </div>
+                  <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
+                    {readingPackages.map((pkg) => (
+                      <button
+                        key={pkg.id}
+                        onClick={() => setSelectedReadingId(pkg.id)}
+                        className={cn(
+                          "px-3 py-2 rounded-lg border text-sm text-center transition-all",
+                          selectedReadingId === pkg.id
+                            ? "border-warning bg-warning/10 text-warning font-semibold ring-1 ring-warning"
+                            : "border-border bg-card hover:border-warning/50 hover:bg-warning/5"
+                        )}
+                      >
+                        {pkg.name}
+                      </button>
+                    ))}
+                  </div>
                 </div>
               </div>
             ) : packages.length === 0 ? (
-              <p className="text-center text-muted-foreground py-4">
+              <p className="text-center text-muted-foreground py-8">
                 {t("admin.noPackages")}
               </p>
             ) : (
-              <Select value={selectedPackageId} onValueChange={setSelectedPackageId}>
-                <SelectTrigger>
-                  <SelectValue placeholder={t("dashboard.selectPackage")} />
-                </SelectTrigger>
-                <SelectContent>
-                  {packages.map((pkg) => (
-                    <SelectItem key={pkg.id} value={pkg.id}>
-                      {pkg.name} ({pkg.questionIds.length} {t("dashboard.questions")})
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                {packages.map((pkg) => (
+                  <button
+                    key={pkg.id}
+                    onClick={() => setSelectedPackageId(pkg.id)}
+                    className={cn(
+                      "p-4 rounded-xl border-2 text-left transition-all duration-200 flex flex-col gap-2 group",
+                      selectedPackageId === pkg.id
+                        ? "border-primary bg-primary/5 ring-2 ring-primary/20 shadow-md translate-y-[-2px]"
+                        : "border-border bg-card hover:border-primary/50 hover:bg-accent/50"
+                    )}
+                  >
+                    <div className="flex items-center justify-between">
+                      <span className={cn(
+                        "font-bold text-lg transition-colors",
+                        selectedPackageId === pkg.id ? "text-primary" : "text-foreground"
+                      )}>
+                        {pkg.name}
+                      </span>
+                      {selectedPackageId === pkg.id && (
+                        <div className="w-5 h-5 rounded-full bg-primary flex items-center justify-center">
+                          <CheckCircle className="w-3 h-3 text-primary-foreground" />
+                        </div>
+                      )}
+                    </div>
+                    <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                      <BookOpen className="w-4 h-4" />
+                      <span>{pkg.questionIds.length} {t("dashboard.questions")}</span>
+                      <span className="mx-1">•</span>
+                      <Clock className="w-4 h-4" />
+                      <span>{pkg.duration} {t("dashboard.minutes")}</span>
+                    </div>
+                  </button>
+                ))}
+              </div>
             )}
 
             <Button
