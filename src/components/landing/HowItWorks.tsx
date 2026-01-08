@@ -1,5 +1,5 @@
 import { motion } from "framer-motion";
-import { Trophy, Gamepad2, TrendingUp, Award } from "lucide-react";
+import { UserPlus, Target, Trophy } from "lucide-react";
 import { useLanguage } from "@/contexts/LanguageContext";
 
 export function HowItWorks() {
@@ -7,42 +7,24 @@ export function HowItWorks() {
 
   const steps = [
     {
+      icon: UserPlus,
+      title: t("howItWorks.step1.title"),
+      description: t("howItWorks.step1.desc"),
+    },
+    {
+      icon: Target,
+      title: t("howItWorks.step2.title"),
+      description: t("howItWorks.step2.desc"),
+    },
+    {
       icon: Trophy,
-      title: "1. Tantang Diri",
-      subtitle: "Pilih Latihan",
-      progress: 30,
-      reward: "30%",
-      color: "blue",
-      bgColor: "bg-blue-50 dark:bg-blue-500/10",
-      borderColor: "border-blue-200 dark:border-blue-500/30",
-      accentColor: "bg-blue-500",
-    },
-    {
-      icon: Gamepad2,
-      title: "2. Taklukkan Tes",
-      subtitle: "Kerjakan Tes",
-      progress: 20,
-      reward: "20%",
-      color: "green",
-      bgColor: "bg-green-50 dark:bg-green-500/10",
-      borderColor: "border-green-200 dark:border-green-500/30",
-      accentColor: "bg-green-500",
-    },
-    {
-      icon: TrendingUp,
-      title: "3. Tingkatkan Level",
-      subtitle: "Analisis & Kenaikan Skor",
-      progress: 11,
-      reward: "11%",
-      color: "orange",
-      bgColor: "bg-orange-50 dark:bg-orange-500/10",
-      borderColor: "border-orange-200 dark:border-orange-500/30",
-      accentColor: "bg-orange-500",
+      title: t("howItWorks.step3.title"),
+      description: t("howItWorks.step3.desc"),
     },
   ];
 
   return (
-    <section className="py-24 bg-background relative overflow-hidden">
+    <section className="py-24 bg-gradient-subtle">
       <div className="container mx-auto px-4">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
@@ -51,10 +33,10 @@ export function HowItWorks() {
           transition={{ duration: 0.5 }}
           className="text-center mb-16"
         >
-          <h2 className="text-3xl md:text-4xl font-extrabold text-foreground mb-4 uppercase tracking-tight">
+          <h2 className="text-3xl md:text-4xl font-bold text-foreground mb-4">
             {t("howItWorks.title")}
           </h2>
-          <p className="text-lg text-muted-foreground max-w-2xl mx-auto font-medium">
+          <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
             {t("howItWorks.subtitle")}
           </p>
         </motion.div>
@@ -63,45 +45,32 @@ export function HowItWorks() {
           {steps.map((step, index) => (
             <motion.div
               key={step.title}
-              initial={{ opacity: 0, y: 30 }}
+              initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
-              transition={{ duration: 0.6, delay: index * 0.1 }}
-              className={`group relative rounded-[32px] p-8 border-4 ${step.borderColor} ${step.bgColor} shadow-xl hover:-translate-y-2 transition-all duration-300`}
+              transition={{ duration: 0.5, delay: index * 0.1 }}
+              className="relative"
             >
-              <div className="flex justify-between items-start mb-6">
-                <div>
-                  <h3 className="text-2xl font-black text-foreground mb-1 leading-tight">
-                    {step.title}
-                  </h3>
-                  <p className="text-sm font-bold text-muted-foreground uppercase tracking-widest">
-                    {step.subtitle}
-                  </p>
-                </div>
-                <div className={`w-16 h-16 rounded-2xl bg-white dark:bg-white/10 flex items-center justify-center shadow-lg transform rotate-3 group-hover:rotate-12 transition-transform`}>
-                  <step.icon className={`w-8 h-8 ${step.color === 'blue' ? 'text-blue-500' : step.color === 'green' ? 'text-green-500' : 'text-orange-500'}`} />
-                </div>
-              </div>
+              {/* Connector line */}
+              {index < steps.length - 1 && (
+                <div className="hidden md:block absolute top-16 left-1/2 w-full h-0.5 bg-border" />
+              )}
 
-              <div className="space-y-4 pt-12">
-                <div className="h-4 bg-white/50 dark:bg-black/20 rounded-full overflow-hidden p-1 border border-white/20">
-                  <motion.div
-                    initial={{ width: 0 }}
-                    whileInView={{ width: `${step.progress}%` }}
-                    transition={{ duration: 1, delay: 0.5 }}
-                    className={`h-full rounded-full ${step.accentColor} shadow-[0_0_10px_rgba(0,0,0,0.1)]`}
-                  />
+              <div className="relative bg-card rounded-2xl p-8 border border-border shadow-sm hover:shadow-lg transition-shadow text-center">
+                <div className="absolute -top-4 left-1/2 -translate-x-1/2 w-8 h-8 rounded-full bg-gradient-hero flex items-center justify-center text-primary-foreground font-bold text-sm shadow-lg">
+                  {index + 1}
                 </div>
 
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-2">
-                    <span className="text-[10px] font-black text-muted-foreground uppercase tracking-tighter">Reward bonus:</span>
-                    <span className="text-xs font-black text-foreground">{step.reward}</span>
-                  </div>
-                  <div className="w-8 h-8 rounded-full bg-[#fbbf24] flex items-center justify-center shadow-md border-2 border-[#d97706] -mr-2">
-                    <Award className="w-4 h-4 text-black" />
-                  </div>
+                <div className="w-16 h-16 mx-auto mb-6 rounded-2xl bg-accent flex items-center justify-center">
+                  <step.icon className="w-8 h-8 text-primary" />
                 </div>
+
+                <h3 className="text-xl font-semibold text-foreground mb-3">
+                  {step.title}
+                </h3>
+                <p className="text-muted-foreground">
+                  {step.description}
+                </p>
               </div>
             </motion.div>
           ))}
