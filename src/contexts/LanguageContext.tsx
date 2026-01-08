@@ -40,8 +40,8 @@ const translations: Record<Language, Record<string, string>> = {
     "dashboard.start": "Mulai Latihan",
 
     // Hero
-    "hero.title": "Kuasai dengan Percaya Diri",
-    "hero.subtitle": "Tingkatkan skor TOEFL Anda dengan latihan soal berkualitas tinggi dan simulasi tes yang realistis.",
+    "hero.title": "Raih Skor TOEFL Impianmu dengan Percaya Diri Maksimal!",
+    "hero.subtitle": "Bayangkan skor TOEFL tinggi yang membuka pintu kesuksesan studi dan karir internasional. Dengan simulasi tes ETS standar gratis kami, latihan soal premium, dan analisis mendalam, tingkatkan kemampuanmu secara cepat dan efektif – tanpa biaya sepeser pun!",
     "hero.cta": "Mulai Gratis",
     "hero.secondary": "Pelajari Selengkapnya",
 
@@ -206,8 +206,8 @@ const translations: Record<Language, Record<string, string>> = {
     "dashboard.start": "Start Practice",
 
     // Hero
-    "hero.title": "Master with Confidence",
-    "hero.subtitle": "Boost your TOEFL score with high-quality practice questions and realistic test simulations.",
+    "hero.title": "Achieve Your Dream TOEFL Score with Ultimate Confidence!",
+    "hero.subtitle": "Imagine a high TOEFL score opening doors to international study and career success. With our free standard ETS-style simulations, premium questions, and in-depth analysis, improve your skills quickly and effectively – at no cost at all!",
     "hero.cta": "Get Started Free",
     "hero.secondary": "Learn More",
 
