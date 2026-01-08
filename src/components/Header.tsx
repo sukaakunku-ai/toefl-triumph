@@ -34,8 +34,8 @@ export function Header({ isDark, toggleTheme }: HeaderProps) {
   return (
     <header
       className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${isScrolled
-          ? "bg-card/95 backdrop-blur-md shadow-md border-b border-border/50"
-          : "bg-transparent"
+        ? "bg-card/95 backdrop-blur-md shadow-md border-b border-border/50"
+        : "bg-transparent"
         }`}
     >
       <nav className="container mx-auto px-4 h-16 flex items-center justify-between">
@@ -43,7 +43,7 @@ export function Header({ isDark, toggleTheme }: HeaderProps) {
           <div className="w-10 h-10 rounded-xl bg-gradient-hero flex items-center justify-center shadow-md group-hover:shadow-lg transition-shadow">
             <BookOpen className="w-5 h-5 text-primary-foreground" />
           </div>
-          <span className="font-bold text-xl text-foreground">TOEFLPrep</span>
+          <span className="font-bold text-xl text-foreground">TOEFL Rocket</span>
         </Link>
 
         {/* Desktop Navigation */}
@@ -53,8 +53,8 @@ export function Header({ isDark, toggleTheme }: HeaderProps) {
               key={link.href}
               to={link.href}
               className={`text-sm font-medium transition-colors hover:text-primary ${location.pathname === link.href
-                  ? "text-primary"
-                  : "text-muted-foreground"
+                ? "text-primary"
+                : "text-muted-foreground"
                 }`}
             >
               {link.label}
@@ -108,8 +108,8 @@ export function Header({ isDark, toggleTheme }: HeaderProps) {
                   to={link.href}
                   onClick={() => setIsMobileMenuOpen(false)}
                   className={`text-sm font-medium transition-colors hover:text-primary py-2 ${location.pathname === link.href
-                      ? "text-primary"
-                      : "text-muted-foreground"
+                    ? "text-primary"
+                    : "text-muted-foreground"
                     }`}
                 >
                   {link.label}

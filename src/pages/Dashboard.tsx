@@ -267,7 +267,7 @@ export default function Dashboard() {
             <div className="w-10 h-10 rounded-xl bg-gradient-hero flex items-center justify-center shadow-md">
               <BookOpen className="w-5 h-5 text-primary-foreground" />
             </div>
-            <span className="font-bold text-xl text-foreground">TOEFLPrep</span>
+            <span className="font-bold text-xl text-foreground">TOEFL Rocket</span>
           </Link>
 
           <div className="flex items-center gap-2">

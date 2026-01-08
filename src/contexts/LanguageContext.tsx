@@ -56,7 +56,7 @@ const translations: Record<Language, Record<string, string>> = {
     "howItWorks.step3.desc": "Analisis ahli & grafik kemajuan – skor naik cepat!",
 
     // Why choose us
-    "whyChooseUs.title": "Kenapa TOEFLPrep? Mudah, Efektif, Gratis!",
+    "whyChooseUs.title": "Kenapa TOEFL Rocket? Mudah, Efektif, Gratis!",
     "whyChooseUs.subtitle": "Ribuan sukses tanpa kursus mahal – kunci skor tinggi!",
     "whyChooseUs.feature1.title": "Simulasi mirip Toefl ETS",
     "whyChooseUs.feature1.desc": "Format, timer, kesulitan mirip ETS.",
@@ -222,7 +222,7 @@ const translations: Record<Language, Record<string, string>> = {
     "howItWorks.step3.desc": "Expert analysis & progress charts – score up fast!",
 
     // Why choose us
-    "whyChooseUs.title": "Why TOEFLPrep? Easy, Effective, Free!",
+    "whyChooseUs.title": "Why TOEFL Rocket? Easy, Effective, Free!",
     "whyChooseUs.subtitle": "Thousands success without expensive courses – key to high scores!",
     "whyChooseUs.feature1.title": "TOEFL ETS-Style Simulation",
     "whyChooseUs.feature1.desc": "Format, timer, difficulty similar to ETS.",
