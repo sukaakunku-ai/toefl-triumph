@@ -265,8 +265,14 @@ export const testConfigs = {
   full: {
     name: "Full TOEFL Simulation",
     description: "Complete test with all sections",
-    duration: 55,
+    duration: 115,
     questions: allQuestions,
+  },
+  listening: {
+    name: "Listening Comprehension",
+    description: "Audio-based questions",
+    duration: 35,
+    questions: listeningQuestions,
   },
   structure: {
     name: "Structure & Written Expression",
@@ -277,13 +283,7 @@ export const testConfigs = {
   reading: {
     name: "Reading Comprehension",
     description: "Reading passages and analysis",
-    duration: 35,
+    duration: 55,
     questions: readingQuestions,
-  },
-  listening: {
-    name: "Listening Comprehension",
-    description: "Audio-based questions",
-    duration: 30,
-    questions: listeningQuestions,
   },
 };
