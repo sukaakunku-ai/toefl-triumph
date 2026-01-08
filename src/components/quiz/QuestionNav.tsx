@@ -25,16 +25,16 @@ export function QuestionNav({
     <div className="bg-card border border-border rounded-xl p-4 shadow-sm">
       <div className="flex items-center justify-between mb-4">
         <h3 className="font-semibold text-foreground">Questions</h3>
-        <div className="flex items-center gap-3 text-xs text-muted-foreground">
-          <span className="flex items-center gap-1">
+        <div className="flex flex-wrap items-center gap-x-3 gap-y-1 text-xs text-muted-foreground">
+          <span className="flex items-center gap-1 whitespace-nowrap">
             <div className="w-3 h-3 rounded-sm bg-primary" />
             Current
           </span>
-          <span className="flex items-center gap-1">
+          <span className="flex items-center gap-1 whitespace-nowrap">
             <div className="w-3 h-3 rounded-sm bg-accent border border-primary/30" />
             Answered
           </span>
-          <span className="flex items-center gap-1">
+          <span className="flex items-center gap-1 whitespace-nowrap">
             <Flag className="w-3 h-3 text-warning" />
             Flagged
           </span>

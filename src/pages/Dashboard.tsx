@@ -72,7 +72,7 @@ const testTypes: TestType[] = [
     descKey: "dashboard.listeningDesc",
     duration: 35,
     questions: 50,
-    color: "accent",
+    color: "primary",
   },
   {
     id: "structure",
@@ -374,7 +374,7 @@ export default function Dashboard() {
               <div className="space-y-6">
                 <div className="space-y-3">
                   <div className="flex items-center gap-2">
-                    <Headphones className="w-4 h-4 text-accent" />
+                    <Headphones className="w-4 h-4 text-primary" />
                     <label className="text-sm font-bold uppercase tracking-wider text-muted-foreground">{t("dashboard.listening")}</label>
                   </div>
                   <div className="flex flex-wrap gap-2">
@@ -386,10 +386,10 @@ export default function Dashboard() {
                           key={pkg.id}
                           onClick={() => setSelectedListeningId(pkg.id)}
                           className={cn(
-                            "px-4 py-2 rounded-lg border text-sm text-center transition-all min-w-[80px]",
+                            "px-4 py-2 rounded-lg border-2 text-sm text-center transition-all min-w-[80px]",
                             selectedListeningId === pkg.id
-                              ? "border-accent bg-accent/10 text-accent font-semibold ring-1 ring-accent"
-                              : "border-border bg-card hover:border-accent/50 hover:bg-accent/5"
+                              ? "border-primary bg-primary text-primary-foreground font-bold shadow-md"
+                              : "border-border bg-card hover:border-primary/50 hover:bg-primary/5"
                           )}
                         >
                           {pkg.name}
@@ -413,9 +413,9 @@ export default function Dashboard() {
                           key={pkg.id}
                           onClick={() => setSelectedStructureId(pkg.id)}
                           className={cn(
-                            "px-4 py-2 rounded-lg border text-sm text-center transition-all min-w-[80px]",
+                            "px-4 py-2 rounded-lg border-2 text-sm text-center transition-all min-w-[80px]",
                             selectedStructureId === pkg.id
-                              ? "border-success bg-success/10 text-success font-semibold ring-1 ring-success"
+                              ? "border-success bg-success text-success-foreground font-bold shadow-md"
                               : "border-border bg-card hover:border-success/50 hover:bg-success/5"
                           )}
                         >
@@ -440,9 +440,9 @@ export default function Dashboard() {
                           key={pkg.id}
                           onClick={() => setSelectedReadingId(pkg.id)}
                           className={cn(
-                            "px-4 py-2 rounded-lg border text-sm text-center transition-all min-w-[80px]",
+                            "px-4 py-2 rounded-lg border-2 text-sm text-center transition-all min-w-[80px]",
                             selectedReadingId === pkg.id
-                              ? "border-warning bg-warning/10 text-warning font-semibold ring-1 ring-warning"
+                              ? "border-warning bg-warning text-warning-foreground font-bold shadow-md"
                               : "border-border bg-card hover:border-warning/50 hover:bg-warning/5"
                           )}
                         >
