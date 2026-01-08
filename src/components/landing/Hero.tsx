@@ -9,7 +9,6 @@ export function Hero() {
 
   // Let's refine the features based on what's available or add keys
   const translatedFeatures = [
-    `${t("whyChooseUs.feature3.title")}: ${t("whyChooseUs.feature3.desc")}`,
     `${t("whyChooseUs.feature2.title")}: ${t("whyChooseUs.feature2.desc")}`,
     `${t("whyChooseUs.feature1.title")}: ${t("whyChooseUs.feature1.desc")}`,
   ];

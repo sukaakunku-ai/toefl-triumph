@@ -23,11 +23,7 @@ export function WhyChooseUs() {
       title: t("whyChooseUs.feature2.title"),
       description: t("whyChooseUs.feature2.desc"),
     },
-    {
-      icon: BarChart3,
-      title: t("whyChooseUs.feature3.title"),
-      description: t("whyChooseUs.feature3.desc"),
-    },
+
     {
       icon: Clock,
       title: t("whyChooseUs.feature4.title"),
