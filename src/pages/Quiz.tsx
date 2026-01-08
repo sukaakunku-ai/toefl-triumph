@@ -26,18 +26,61 @@ export default function Quiz() {
 
   useEffect(() => {
     const loadPackageQuestions = async () => {
-      if (!packageId || !testType) return;
-      
+      if (!testType) return;
+
+      const packageId = searchParams.get("package");
+      const listeningId = searchParams.get("listening");
+      const readingId = searchParams.get("reading");
+      const structureId = searchParams.get("structure");
+
+      if (!packageId && !listeningId && !readingId && !structureId) return;
+
       setIsLoadingPackage(true);
       try {
-        const packages = await getPackagesByCategory(testType);
-        const pkg = packages.find(p => p.id === packageId);
-        
-        if (pkg) {
-          const allQs = await getAllQuestions();
-          const filtered = allQs.filter(q => pkg.questionIds.includes(q.id));
-          setPackageQuestions(filtered);
-          setPackageDuration(pkg.duration);
+        const allQs = await getAllQuestions();
+        let questions: Question[] = [];
+        let duration = 0;
+
+        if (testType === "full" && (listeningId || readingId || structureId)) {
+          const allPackages = await import("@/services/packageService").then(m => m.getAllPackages());
+
+          // TOEFL order: Listening, Structure, Reading
+          if (listeningId) {
+            const pkg = allPackages.find(p => p.id === listeningId);
+            if (pkg) {
+              const qs = allQs.filter(q => pkg.questionIds.includes(q.id));
+              questions = [...questions, ...qs];
+              duration += pkg.duration;
+            }
+          }
+          if (structureId) {
+            const pkg = allPackages.find(p => p.id === structureId);
+            if (pkg) {
+              const qs = allQs.filter(q => pkg.questionIds.includes(q.id));
+              questions = [...questions, ...qs];
+              duration += pkg.duration;
+            }
+          }
+          if (readingId) {
+            const pkg = allPackages.find(p => p.id === readingId);
+            if (pkg) {
+              const qs = allQs.filter(q => pkg.questionIds.includes(q.id));
+              questions = [...questions, ...qs];
+              duration += pkg.duration;
+            }
+          }
+        } else if (packageId) {
+          const packages = await getPackagesByCategory(testType);
+          const pkg = packages.find(p => p.id === packageId);
+          if (pkg) {
+            questions = allQs.filter(q => pkg.questionIds.includes(q.id));
+            duration = pkg.duration;
+          }
+        }
+
+        if (questions.length > 0) {
+          setPackageQuestions(questions);
+          setPackageDuration(duration);
         }
       } catch (error) {
         console.error("Error loading package:", error);
@@ -47,7 +90,7 @@ export default function Quiz() {
     };
 
     loadPackageQuestions();
-  }, [packageId, testType]);
+  }, [searchParams, testType]);
 
   if (!config) {
     navigate("/dashboard");
@@ -71,7 +114,7 @@ export default function Quiz() {
   }
 
   const questionsToUse = packageQuestions && packageQuestions.length > 0 ? packageQuestions : config.questions;
-  const durationToUse = packageId && packageQuestions && packageQuestions.length > 0 ? packageDuration : config.duration;
+  const durationToUse = packageQuestions && packageQuestions.length > 0 ? packageDuration : config.duration;
 
   if (isComplete && results) {
     return (

@@ -108,6 +108,8 @@ export function QuestionCard({
                 key={question.audio_url}
                 src={question.audio_url}
                 controls
+                controlsList="nodownload"
+                onContextMenu={(e) => e.preventDefault()}
                 crossOrigin="anonymous"
                 preload="auto"
                 className="w-full h-12"
@@ -129,6 +131,8 @@ export function QuestionCard({
                 key={question.question_audio_url}
                 src={question.question_audio_url}
                 controls
+                controlsList="nodownload"
+                onContextMenu={(e) => e.preventDefault()}
                 crossOrigin="anonymous"
                 preload="auto"
                 className="w-full h-10"

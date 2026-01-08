@@ -108,6 +108,14 @@ export default function Dashboard() {
   const [selectedPackageId, setSelectedPackageId] = useState<string>("");
   const [isLoadingPackages, setIsLoadingPackages] = useState(false);
 
+  // Full simulation nested packages
+  const [listeningPackages, setListeningPackages] = useState<QuestionPackage[]>([]);
+  const [readingPackages, setReadingPackages] = useState<QuestionPackage[]>([]);
+  const [structurePackages, setStructurePackages] = useState<QuestionPackage[]>([]);
+  const [selectedListeningId, setSelectedListeningId] = useState<string>("");
+  const [selectedReadingId, setSelectedReadingId] = useState<string>("");
+  const [selectedStructureId, setSelectedStructureId] = useState<string>("");
+
   useEffect(() => {
     const savedTheme = localStorage.getItem("theme");
     const prefersDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
@@ -192,10 +200,25 @@ export default function Dashboard() {
     setShowPackageDialog(true);
 
     try {
-      const categoryPackages = await getPackagesByCategory(test.id);
-      setPackages(categoryPackages);
-      if (categoryPackages.length > 0) {
-        setSelectedPackageId(categoryPackages[0].id);
+      if (test.id === "full") {
+        const [lPkgs, rPkgs, sPkgs] = await Promise.all([
+          getPackagesByCategory("listening"),
+          getPackagesByCategory("reading"),
+          getPackagesByCategory("structure"),
+        ]);
+        setListeningPackages(lPkgs);
+        setReadingPackages(rPkgs);
+        setStructurePackages(sPkgs);
+
+        if (lPkgs.length > 0) setSelectedListeningId(lPkgs[0].id);
+        if (rPkgs.length > 0) setSelectedReadingId(rPkgs[0].id);
+        if (sPkgs.length > 0) setSelectedStructureId(sPkgs[0].id);
+      } else {
+        const categoryPackages = await getPackagesByCategory(test.id);
+        setPackages(categoryPackages);
+        if (categoryPackages.length > 0) {
+          setSelectedPackageId(categoryPackages[0].id);
+        }
       }
     } catch (error) {
       console.error("Error loading packages:", error);
@@ -206,8 +229,16 @@ export default function Dashboard() {
   };
 
   const handleStartQuiz = () => {
-    if (selectedPackageId && selectedTestType) {
-      navigate(`/quiz/${selectedTestType.id}?package=${selectedPackageId}`);
+    if (selectedTestType) {
+      if (selectedTestType.id === "full") {
+        const params = new URLSearchParams();
+        if (selectedListeningId) params.append("listening", selectedListeningId);
+        if (selectedReadingId) params.append("reading", selectedReadingId);
+        if (selectedStructureId) params.append("structure", selectedStructureId);
+        navigate(`/quiz/full?${params.toString()}`);
+      } else if (selectedPackageId) {
+        navigate(`/quiz/${selectedTestType.id}?package=${selectedPackageId}`);
+      }
       setShowPackageDialog(false);
     }
   };
@@ -335,6 +366,54 @@ export default function Dashboard() {
               <div className="flex justify-center py-8">
                 <Loader2 className="w-8 h-8 animate-spin text-primary" />
               </div>
+            ) : selectedTestType?.id === "full" ? (
+              <div className="space-y-4">
+                <div className="space-y-2">
+                  <label className="text-sm font-medium">{t("dashboard.listening")}</label>
+                  <Select value={selectedListeningId} onValueChange={setSelectedListeningId}>
+                    <SelectTrigger>
+                      <SelectValue placeholder={t("dashboard.selectPackage")} />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {listeningPackages.map((pkg) => (
+                        <SelectItem key={pkg.id} value={pkg.id}>
+                          {pkg.name} ({pkg.questionIds.length} {t("dashboard.questions")})
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+                <div className="space-y-2">
+                  <label className="text-sm font-medium">{t("dashboard.reading")}</label>
+                  <Select value={selectedReadingId} onValueChange={setSelectedReadingId}>
+                    <SelectTrigger>
+                      <SelectValue placeholder={t("dashboard.selectPackage")} />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {readingPackages.map((pkg) => (
+                        <SelectItem key={pkg.id} value={pkg.id}>
+                          {pkg.name} ({pkg.questionIds.length} {t("dashboard.questions")})
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+                <div className="space-y-2">
+                  <label className="text-sm font-medium">{t("dashboard.structure")}</label>
+                  <Select value={selectedStructureId} onValueChange={setSelectedStructureId}>
+                    <SelectTrigger>
+                      <SelectValue placeholder={t("dashboard.selectPackage")} />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {structurePackages.map((pkg) => (
+                        <SelectItem key={pkg.id} value={pkg.id}>
+                          {pkg.name} ({pkg.questionIds.length} {t("dashboard.questions")})
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+              </div>
             ) : packages.length === 0 ? (
               <p className="text-center text-muted-foreground py-4">
                 {t("admin.noPackages")}
@@ -356,7 +435,12 @@ export default function Dashboard() {
 
             <Button
               onClick={handleStartQuiz}
-              disabled={!selectedPackageId || isLoadingPackages}
+              disabled={
+                isLoadingPackages ||
+                (selectedTestType?.id === "full"
+                  ? (!selectedListeningId && !selectedReadingId && !selectedStructureId)
+                  : !selectedPackageId)
+              }
               className="w-full"
             >
               {t("dashboard.start")}
