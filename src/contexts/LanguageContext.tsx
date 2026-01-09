@@ -48,12 +48,12 @@ const translations: Record<Language, Record<string, string>> = {
     // How it works
     "howItWorks.title": "4 SIMPLE STEPS TO SUCCESS!",
     "howItWorks.subtitle": "Easy, Fast, Effective. 💪",
-    "howItWorks.step1.title": "SIGN UP",
-    "howItWorks.step1.desc": "Daftar gratis dalam 30 detik. NO credit card needed!",
+    "howItWorks.step1.title": "NO SIGN UP",
+    "howItWorks.step1.desc": "Tidak perlu daftar. Langsung gaskeun!",
     "howItWorks.step2.title": "PRACTICE",
     "howItWorks.step2.desc": "Pilih section dan mulai kerjakan soal dengan timer real!",
-    "howItWorks.step3.title": "TRACK",
-    "howItWorks.step3.desc": "Monitor progress kamu dengan analytics yang powerful!",
+    "howItWorks.step3.title": "REVIEW & IMPROVE",
+    "howItWorks.step3.desc": "Dapatkan hasil instant dan analisis untuk peningkatan.",
     "howItWorks.step4.title": "ACHIEVE",
     "howItWorks.step4.desc": "Raih skor TOEFL impian dan mewujudkan goal kamu!",
 
@@ -212,12 +212,12 @@ const translations: Record<Language, Record<string, string>> = {
     // How it works
     "howItWorks.title": "4 SIMPLE STEPS TO SUCCESS!",
     "howItWorks.subtitle": "Easy, Fast, Effective. 💪",
-    "howItWorks.step1.title": "SIGN UP",
-    "howItWorks.step1.desc": "Free signup in 30 seconds. NO credit card needed!",
+    "howItWorks.step1.title": "NO SIGN UP",
+    "howItWorks.step1.desc": "No registration required. Get started immediately!",
     "howItWorks.step2.title": "PRACTICE",
     "howItWorks.step2.desc": "Choose your section and start with a real timer!",
-    "howItWorks.step3.title": "TRACK",
-    "howItWorks.step3.desc": "Monitor your progress with powerful analytics!",
+    "howItWorks.step3.title": "REVIEW & IMPROVE",
+    "howItWorks.step3.desc": "Get instant results and detailed analysis to boost your score.",
     "howItWorks.step4.title": "ACHIEVE",
     "howItWorks.step4.desc": "Reach your dream TOEFL score and achieve your goals!",
 

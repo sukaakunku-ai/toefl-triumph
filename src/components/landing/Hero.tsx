@@ -53,17 +53,17 @@ export function Hero() {
           </p>
 
           {/* Buttons */}
-          <div className="flex flex-col sm:flex-row items-center gap-4 mt-8">
+          <div className="flex justify-center mt-10">
             <Link to="/dashboard">
-              <Button size="xl" className="rounded-2xl px-10 py-8 text-lg font-bold bg-primary hover:bg-primary/90 shadow-xl shadow-primary/25 transition-all hover:scale-105 active:scale-95 group">
-                {t("hero.cta")}
-                <ArrowRight className="ml-2 w-5 h-5 group-hover:translate-x-1 transition-transform" />
+              <Button size="xl" className="relative overflow-hidden rounded-[2rem] px-12 py-10 text-2xl font-black bg-orange-600 hover:bg-orange-500 text-white shadow-[0_12px_24px_-8px_rgba(249,115,22,0.5)] border-b-8 border-orange-800 transition-all hover:translate-y-1 hover:border-b-4 hover:shadow-lg active:translate-y-2 active:border-b-0 group">
+                <span className="relative z-10 flex items-center gap-3">
+                  {t("hero.cta")}
+                  <ArrowRight className="w-8 h-8 group-hover:translate-x-2 transition-transform" />
+                </span>
+                {/* Glow effect */}
+                <div className="absolute inset-0 bg-gradient-to-r from-orange-400/0 via-white/20 to-orange-400/0 -translate-x-[100%] group-hover:translate-x-[100%] transition-transform duration-1000 skew-x-12" />
               </Button>
             </Link>
-            <Button variant="outline" size="xl" className="rounded-2xl px-10 py-8 text-lg font-bold border-2 hover:bg-slate-50 transition-all">
-              <Play className="mr-2 w-5 h-5 fill-slate-900" />
-              {t("hero.secondary")}
-            </Button>
           </div>
 
           {/* Stats Cards */}

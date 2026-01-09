@@ -1,5 +1,5 @@
 import { motion } from "framer-motion";
-import { Trophy, UserPlus, PlayCircle, BarChart3, ArrowRight } from "lucide-react";
+import { Trophy, Zap, PlayCircle, Search, ArrowRight } from "lucide-react";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
@@ -9,11 +9,11 @@ export function HowItWorks() {
 
   const steps = [
     {
-      icon: UserPlus,
+      icon: Zap,
       title: t("howItWorks.step1.title"),
       desc: t("howItWorks.step1.desc"),
       number: "01",
-      color: "text-red-600 bg-red-50",
+      color: "text-orange-600 bg-orange-50",
     },
     {
       icon: PlayCircle,
@@ -23,11 +23,11 @@ export function HowItWorks() {
       color: "text-red-600 bg-red-50",
     },
     {
-      icon: BarChart3,
+      icon: Search,
       title: t("howItWorks.step3.title"),
       desc: t("howItWorks.step3.desc"),
       number: "03",
-      color: "text-purple-600 bg-purple-50",
+      color: "text-blue-600 bg-blue-50",
     },
     {
       icon: Trophy,
