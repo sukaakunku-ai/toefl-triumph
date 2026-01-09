@@ -38,12 +38,12 @@ export function Header({ isDark, toggleTheme }: HeaderProps) {
         : "bg-transparent"
         }`}
     >
-      <nav className="container mx-auto px-4 h-16 flex items-center justify-between">
+      <nav className="container mx-auto px-4 h-20 flex items-center justify-between">
         <Link to="/" className="flex items-center gap-2 group">
-          <div className="w-10 h-10 rounded-xl bg-gradient-hero flex items-center justify-center shadow-md group-hover:shadow-lg transition-transform group-hover:scale-105">
-            <BookOpen className="w-5 h-5 text-primary-foreground" />
+          <div className="w-10 h-10 rounded-xl bg-primary flex items-center justify-center shadow-md shadow-primary/20 group-hover:scale-105 transition-transform">
+            <BookOpen className="w-5 h-5 text-white" />
           </div>
-          <span className="font-black text-xl text-foreground uppercase tracking-tighter">TOEFL Rocket</span>
+          <span className="font-bold text-xl text-slate-900 tracking-tight">TOEFL Rocket</span>
         </Link>
 
         {/* Desktop Navigation */}
@@ -75,7 +75,7 @@ export function Header({ isDark, toggleTheme }: HeaderProps) {
           </Button>
 
           <Link to="/dashboard" className="hidden md:block">
-            <Button variant="hero" size="default">
+            <Button size="default" className="bg-primary hover:bg-primary/90 text-white rounded-full px-6 font-bold shadow-md shadow-primary/10">
               {t("nav.startPractice")}
             </Button>
           </Link>
@@ -120,7 +120,7 @@ export function Header({ isDark, toggleTheme }: HeaderProps) {
                 <LanguageSwitcher />
               </div>
               <Link to="/dashboard" onClick={() => setIsMobileMenuOpen(false)}>
-                <Button variant="hero" size="lg" className="w-full">
+                <Button size="lg" className="w-full bg-primary text-white rounded-full font-bold">
                   {t("nav.startPractice")}
                 </Button>
               </Link>

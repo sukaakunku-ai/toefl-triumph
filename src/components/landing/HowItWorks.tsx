@@ -1,5 +1,5 @@
 import { motion } from "framer-motion";
-import { Trophy, Gamepad2, TrendingUp, Award } from "lucide-react";
+import { Trophy, Users, Layout } from "lucide-react";
 import { useLanguage } from "@/contexts/LanguageContext";
 
 export function HowItWorks() {
@@ -7,101 +7,70 @@ export function HowItWorks() {
 
   const steps = [
     {
+      icon: Users,
+      title: t("howItWorks.step1.title"),
+      desc: t("howItWorks.step1.desc"),
+      number: 1,
+    },
+    {
+      icon: Layout,
+      title: t("howItWorks.step2.title"),
+      desc: t("howItWorks.step2.desc"),
+      number: 2,
+    },
+    {
       icon: Trophy,
-      title: "1. Tantang Diri",
-      subtitle: "Pilih Latihan",
-      progress: 30,
-      reward: "30%",
-      color: "blue",
-      bgColor: "bg-blue-50 dark:bg-blue-500/10",
-      borderColor: "border-blue-200 dark:border-blue-500/30",
-      accentColor: "bg-blue-500",
-    },
-    {
-      icon: Gamepad2,
-      title: "2. Taklukkan Tes",
-      subtitle: "Kerjakan Tes",
-      progress: 20,
-      reward: "20%",
-      color: "green",
-      bgColor: "bg-green-50 dark:bg-green-500/10",
-      borderColor: "border-green-200 dark:border-green-500/30",
-      accentColor: "bg-green-500",
-    },
-    {
-      icon: TrendingUp,
-      title: "3. Tingkatkan Level",
-      subtitle: "Analisis & Kenaikan Skor",
-      progress: 11,
-      reward: "11%",
-      color: "orange",
-      bgColor: "bg-orange-50 dark:bg-orange-500/10",
-      borderColor: "border-orange-200 dark:border-orange-500/30",
-      accentColor: "bg-orange-500",
+      title: t("howItWorks.step3.title"),
+      desc: t("howItWorks.step3.desc"),
+      number: 3,
     },
   ];
 
   return (
-    <section className="py-24 bg-background relative overflow-hidden">
+    <section className="py-24 bg-slate-50/50">
       <div className="container mx-auto px-4">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.5 }}
-          className="text-center mb-16"
+          className="text-center mb-20"
         >
-          <h2 className="text-3xl md:text-4xl font-extrabold text-foreground mb-4 uppercase tracking-tight">
+          <h2 className="text-3xl md:text-5xl font-extrabold text-slate-900 mb-6 tracking-tight">
             {t("howItWorks.title")}
           </h2>
-          <p className="text-lg text-muted-foreground max-w-2xl mx-auto font-medium">
+          <p className="text-lg text-slate-500 max-w-2xl mx-auto font-medium">
             {t("howItWorks.subtitle")}
           </p>
         </motion.div>
 
-        <div className="grid md:grid-cols-3 gap-8">
+        <div className="grid md:grid-cols-3 gap-12 max-w-6xl mx-auto">
           {steps.map((step, index) => (
             <motion.div
-              key={step.title}
+              key={index}
               initial={{ opacity: 0, y: 30 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 0.6, delay: index * 0.1 }}
-              className={`group relative rounded-[32px] p-8 border-4 ${step.borderColor} ${step.bgColor} shadow-xl hover:-translate-y-2 transition-all duration-300`}
+              className="relative"
             >
-              <div className="flex justify-between items-start mb-6">
-                <div>
-                  <h3 className="text-2xl font-black text-foreground mb-1 leading-tight">
-                    {step.title}
-                  </h3>
-                  <p className="text-sm font-bold text-muted-foreground uppercase tracking-widest">
-                    {step.subtitle}
-                  </p>
-                </div>
-                <div className={`w-16 h-16 rounded-2xl bg-white dark:bg-white/10 flex items-center justify-center shadow-lg transform rotate-3 group-hover:rotate-12 transition-transform`}>
-                  <step.icon className={`w-8 h-8 ${step.color === 'blue' ? 'text-blue-500' : step.color === 'green' ? 'text-green-500' : 'text-orange-500'}`} />
-                </div>
+              {/* Step Number Badge */}
+              <div className="absolute top-[-24px] left-1/2 -translate-x-1/2 w-12 h-12 rounded-full bg-primary flex items-center justify-center text-white font-bold text-lg shadow-lg shadow-primary/30 z-10 border-4 border-white">
+                {step.number}
               </div>
 
-              <div className="space-y-4 pt-12">
-                <div className="h-4 bg-white/50 dark:bg-black/20 rounded-full overflow-hidden p-1 border border-white/20">
-                  <motion.div
-                    initial={{ width: 0 }}
-                    whileInView={{ width: `${step.progress}%` }}
-                    transition={{ duration: 1, delay: 0.5 }}
-                    className={`h-full rounded-full ${step.accentColor} shadow-[0_0_10px_rgba(0,0,0,0.1)]`}
-                  />
+              {/* Card */}
+              <div className="bg-white rounded-[32px] p-10 pt-14 text-center border border-slate-100 shadow-xl shadow-slate-200/50 h-full flex flex-col items-center group hover:border-primary/20 transition-all duration-300">
+                <div className="w-20 h-20 rounded-2xl bg-blue-50 flex items-center justify-center mb-8 group-hover:scale-110 transition-transform duration-300">
+                  <step.icon className="w-10 h-10 text-primary" />
                 </div>
 
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-2">
-                    <span className="text-[10px] font-black text-muted-foreground uppercase tracking-tighter">Reward bonus:</span>
-                    <span className="text-xs font-black text-foreground">{step.reward}</span>
-                  </div>
-                  <div className="w-8 h-8 rounded-full bg-[#fbbf24] flex items-center justify-center shadow-md border-2 border-[#d97706] -mr-2">
-                    <Award className="w-4 h-4 text-black" />
-                  </div>
-                </div>
+                <h3 className="text-xl font-bold text-slate-900 mb-4">
+                  {step.title}
+                </h3>
+                <p className="text-slate-500 font-medium leading-relaxed">
+                  {step.desc}
+                </p>
               </div>
             </motion.div>
           ))}
@@ -110,3 +79,4 @@ export function HowItWorks() {
     </section>
   );
 }
+

@@ -1,11 +1,10 @@
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
-import { ArrowRight, Clock, User } from "lucide-react";
+import { ArrowRight, Clock, User, Book, Headphones, PenTool } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
 import { useLanguage } from "@/contexts/LanguageContext";
 
-const getLocalizedArticles = (t: (key: string) => string, lang: string) => {
+const getLocalizedArticles = (lang: string) => {
   if (lang === "id") {
     return [
       {
@@ -16,7 +15,9 @@ const getLocalizedArticles = (t: (key: string) => string, lang: string) => {
         author: "Sarah Johnson",
         date: "20 Des 2024",
         readTime: "8 menit baca",
-        image: "📚",
+        icon: Book,
+        color: "bg-green-50 text-green-600",
+        tagColor: "bg-green-50 text-green-600 border-green-100"
       },
       {
         id: 2,
@@ -26,7 +27,9 @@ const getLocalizedArticles = (t: (key: string) => string, lang: string) => {
         author: "Michael Chen",
         date: "18 Des 2024",
         readTime: "6 menit baca",
-        image: "🎧",
+        icon: Headphones,
+        color: "bg-blue-50 text-blue-600",
+        tagColor: "bg-blue-50 text-blue-600 border-blue-100"
       },
       {
         id: 3,
@@ -36,7 +39,9 @@ const getLocalizedArticles = (t: (key: string) => string, lang: string) => {
         author: "Emily Roberts",
         date: "15 Des 2024",
         readTime: "5 menit baca",
-        image: "✍️",
+        icon: PenTool,
+        color: "bg-orange-50 text-orange-600",
+        tagColor: "bg-orange-50 text-orange-600 border-orange-100"
       },
     ];
   }
@@ -49,7 +54,9 @@ const getLocalizedArticles = (t: (key: string) => string, lang: string) => {
       author: "Sarah Johnson",
       date: "Dec 20, 2024",
       readTime: "8 min read",
-      image: "📚",
+      icon: Book,
+      color: "bg-green-50 text-green-600",
+      tagColor: "bg-green-50 text-green-600 border-green-100"
     },
     {
       id: 2,
@@ -59,7 +66,9 @@ const getLocalizedArticles = (t: (key: string) => string, lang: string) => {
       author: "Michael Chen",
       date: "Dec 18, 2024",
       readTime: "6 min read",
-      image: "🎧",
+      icon: Headphones,
+      color: "bg-blue-50 text-blue-600",
+      tagColor: "bg-blue-50 text-blue-600 border-blue-100"
     },
     {
       id: 3,
@@ -69,69 +78,80 @@ const getLocalizedArticles = (t: (key: string) => string, lang: string) => {
       author: "Emily Roberts",
       date: "Dec 15, 2024",
       readTime: "5 min read",
-      image: "✍️",
+      icon: PenTool,
+      color: "bg-orange-50 text-orange-600",
+      tagColor: "bg-orange-50 text-orange-600 border-orange-100"
     },
   ];
 };
 
 export function BlogSection() {
   const { t, language } = useLanguage();
-  const articles = getLocalizedArticles(t, language);
+  const articles = getLocalizedArticles(language);
 
   return (
-    <section className="py-24 bg-gradient-subtle">
+    <section className="py-24 bg-white">
       <div className="container mx-auto px-4">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.5 }}
-          className="flex flex-col md:flex-row md:items-end justify-between mb-12"
+          className="flex flex-col md:flex-row md:items-end justify-between mb-16"
         >
-          <div>
-            <h2 className="text-3xl md:text-4xl font-bold text-foreground mb-4">
+          <div className="space-y-4 text-left">
+            <h2 className="text-3xl md:text-5xl font-extrabold text-slate-900 tracking-tight">
               {t("blog.sectionTitle")}
             </h2>
-            <p className="text-lg text-muted-foreground max-w-2xl">
+            <p className="text-lg text-slate-500 max-w-2xl font-medium">
               {t("blog.sectionSubtitle")}
             </p>
           </div>
-          <Link to="/blog" className="mt-4 md:mt-0">
-            <Button variant="outline" className="gap-2">
-              {t("blog.viewAll")}
-              <ArrowRight className="w-4 h-4" />
-            </Button>
+          <Link
+            to="/blog"
+            className="mt-6 md:mt-0 inline-flex items-center gap-2 text-sm font-bold text-slate-900 hover:text-primary transition-colors group"
+          >
+            {t("blog.viewAll")}
+            <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
           </Link>
         </motion.div>
 
-        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
           {articles.map((article, index) => (
             <motion.div
               key={article.id}
-              initial={{ opacity: 0, y: 20 }}
+              initial={{ opacity: 0, y: 30 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 0.5, delay: index * 0.1 }}
             >
-              <Card variant="interactive" className="h-full">
-                <CardContent className="p-6">
-                  <div className="text-5xl mb-4">{article.image}</div>
-                  <span className="inline-block px-3 py-1 rounded-full bg-accent text-accent-foreground text-xs font-medium mb-3">
-                    {article.category}
-                  </span>
-                  <h3 className="text-lg font-semibold text-foreground mb-2 line-clamp-2">
+              <Card variant="interactive" className="h-full border-slate-100 shadow-xl shadow-slate-200/50 rounded-[32px] overflow-hidden group">
+                <CardContent className="p-8">
+                  <div className={`w-16 h-16 rounded-2xl ${article.color} flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-300`}>
+                    <article.icon className="w-8 h-8" />
+                  </div>
+
+                  <div className="mb-4">
+                    <span className={`px-3 py-1 rounded-full text-[10px] font-bold border uppercase tracking-wider ${article.tagColor}`}>
+                      {article.category}
+                    </span>
+                  </div>
+
+                  <h3 className="text-xl font-bold text-slate-900 mb-4 line-clamp-2 leading-tight group-hover:text-primary transition-colors">
                     {article.title}
                   </h3>
-                  <p className="text-sm text-muted-foreground mb-4 line-clamp-2">
+
+                  <p className="text-slate-500 font-medium text-sm mb-8 line-clamp-2 leading-relaxed">
                     {article.excerpt}
                   </p>
-                  <div className="flex items-center gap-4 text-xs text-muted-foreground">
-                    <div className="flex items-center gap-1">
-                      <User className="w-3 h-3" />
+
+                  <div className="flex flex-col gap-3 pt-6 border-t border-slate-50">
+                    <div className="flex items-center gap-2 text-[10px] font-bold text-slate-400 uppercase tracking-widest">
+                      <User className="w-3.5 h-3.5" />
                       {article.author}
                     </div>
-                    <div className="flex items-center gap-1">
-                      <Clock className="w-3 h-3" />
+                    <div className="flex items-center gap-2 text-[10px] font-bold text-slate-400 uppercase tracking-widest">
+                      <Clock className="w-3.5 h-3.5" />
                       {article.readTime}
                     </div>
                   </div>
@@ -144,3 +164,4 @@ export function BlogSection() {
     </section>
   );
 }
+
