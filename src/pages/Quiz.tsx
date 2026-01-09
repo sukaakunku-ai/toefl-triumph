@@ -11,7 +11,12 @@ import { Loader2 } from "lucide-react";
 export default function Quiz() {
   const { testType } = useParams<{ testType: string }>();
   const [searchParams] = useSearchParams();
+
   const packageId = searchParams.get("package");
+  const listeningId = searchParams.get("listening");
+  const readingId = searchParams.get("reading");
+  const structureId = searchParams.get("structure");
+
   const navigate = useNavigate();
   const [isComplete, setIsComplete] = useState(false);
   const [results, setResults] = useState<{
@@ -27,11 +32,6 @@ export default function Quiz() {
   useEffect(() => {
     const loadPackageQuestions = async () => {
       if (!testType) return;
-
-      const packageId = searchParams.get("package");
-      const listeningId = searchParams.get("listening");
-      const readingId = searchParams.get("reading");
-      const structureId = searchParams.get("structure");
 
       if (!packageId && !listeningId && !readingId && !structureId) return;
 
@@ -90,7 +90,7 @@ export default function Quiz() {
     };
 
     loadPackageQuestions();
-  }, [searchParams, testType]);
+  }, [testType, packageId, listeningId, readingId, structureId]);
 
   if (!config) {
     navigate("/dashboard");
