@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
-import { Menu, X, Moon, Sun, BookOpen } from "lucide-react";
+import { Menu, X, Moon, Sun, Zap } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { LanguageSwitcher } from "@/components/LanguageSwitcher";
@@ -34,27 +34,29 @@ export function Header({ isDark, toggleTheme }: HeaderProps) {
   return (
     <header
       className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${isScrolled
-        ? "bg-card/95 backdrop-blur-md shadow-md border-b border-border/50"
+        ? "bg-white/95 backdrop-blur-md shadow-md border-b border-slate-100"
         : "bg-transparent"
         }`}
     >
-      <nav className="container mx-auto px-4 h-20 flex items-center justify-between">
+      <nav className="container mx-auto px-4 h-24 flex items-center justify-between">
         <Link to="/" className="flex items-center gap-2 group">
-          <div className="w-10 h-10 rounded-xl bg-primary flex items-center justify-center shadow-md shadow-primary/20 group-hover:scale-105 transition-transform">
-            <BookOpen className="w-5 h-5 text-white" />
+          <div className="w-10 h-10 rounded-xl bg-primary flex items-center justify-center shadow-lg shadow-primary/20 group-hover:scale-110 transition-transform">
+            <Zap className="w-6 h-6 text-white fill-white" />
           </div>
-          <span className="font-bold text-xl text-slate-900 tracking-tight">TOEFL Rocket</span>
+          <span className="font-black text-2xl text-slate-900 tracking-tighter uppercase">
+            TOEFL<span className="text-primary">BLAST</span>
+          </span>
         </Link>
 
         {/* Desktop Navigation */}
-        <div className="hidden md:flex items-center gap-8">
+        <div className="hidden md:flex items-center gap-10">
           {navLinks.map((link) => (
             <Link
               key={link.href}
               to={link.href}
-              className={`text-sm font-medium transition-colors hover:text-primary ${location.pathname === link.href
-                ? "text-primary"
-                : "text-muted-foreground"
+              className={`text-[10px] font-black uppercase tracking-[0.2em] transition-colors hover:text-primary ${location.pathname === link.href
+                ? "text-primary border-b-2 border-primary pb-1"
+                : "text-slate-500"
                 }`}
             >
               {link.label}
@@ -62,21 +64,23 @@ export function Header({ isDark, toggleTheme }: HeaderProps) {
           ))}
         </div>
 
-        <div className="flex items-center gap-3">
-          <LanguageSwitcher />
+        <div className="flex items-center gap-4">
+          <div className="hidden sm:block">
+            <LanguageSwitcher />
+          </div>
 
           <Button
             variant="ghost"
             size="icon"
             onClick={toggleTheme}
-            className="rounded-full"
+            className="rounded-full hover:bg-slate-100"
           >
             {isDark ? <Sun className="w-5 h-5" /> : <Moon className="w-5 h-5" />}
           </Button>
 
-          <Link to="/dashboard" className="hidden md:block">
-            <Button size="default" className="bg-primary hover:bg-primary/90 text-white rounded-full px-6 font-bold shadow-md shadow-primary/10">
-              {t("nav.startPractice")}
+          <Link to="/dashboard" className="hidden lg:block">
+            <Button size="lg" className="bg-primary hover:bg-primary/90 text-white rounded-xl px-8 font-black text-xs uppercase tracking-widest shadow-xl shadow-primary/20 transition-all hover:scale-105 active:scale-95">
+              START NOW →
             </Button>
           </Link>
 
@@ -99,31 +103,30 @@ export function Header({ isDark, toggleTheme }: HeaderProps) {
             initial={{ opacity: 0, height: 0 }}
             animate={{ opacity: 1, height: "auto" }}
             exit={{ opacity: 0, height: 0 }}
-            className="md:hidden bg-card border-b border-border"
+            className="md:hidden bg-white border-b border-slate-100"
           >
-            <div className="container mx-auto px-4 py-4 flex flex-col gap-4">
+            <div className="container mx-auto px-4 py-8 flex flex-col gap-6 text-center">
               {navLinks.map((link) => (
                 <Link
                   key={link.href}
                   to={link.href}
                   onClick={() => setIsMobileMenuOpen(false)}
-                  className={`text-sm font-medium transition-colors hover:text-primary py-2 ${location.pathname === link.href
+                  className={`text-xs font-black uppercase tracking-widest transition-colors hover:text-primary ${location.pathname === link.href
                     ? "text-primary"
-                    : "text-muted-foreground"
+                    : "text-slate-500"
                     }`}
                 >
                   {link.label}
                 </Link>
               ))}
-              <div className="flex items-center gap-4 py-2 border-t border-border mt-2">
-                <span className="text-sm font-medium text-muted-foreground">{t("common.language")}:</span>
+              <div className="flex flex-col items-center gap-6 py-4 border-t border-slate-50 mt-2">
                 <LanguageSwitcher />
+                <Link to="/dashboard" onClick={() => setIsMobileMenuOpen(false)} className="w-full">
+                  <Button size="xl" className="w-full bg-primary text-white rounded-2xl font-black uppercase tracking-widest shadow-xl shadow-primary/10">
+                    START NOW →
+                  </Button>
+                </Link>
               </div>
-              <Link to="/dashboard" onClick={() => setIsMobileMenuOpen(false)}>
-                <Button size="lg" className="w-full bg-primary text-white rounded-full font-bold">
-                  {t("nav.startPractice")}
-                </Button>
-              </Link>
             </div>
           </motion.div>
         )}

@@ -1,6 +1,6 @@
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
-import { ArrowRight, Clock, User, Book, Headphones, PenTool } from "lucide-react";
+import { ArrowRight, Clock } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import { useLanguage } from "@/contexts/LanguageContext";
 
@@ -9,78 +9,54 @@ const getLocalizedArticles = (lang: string) => {
     return [
       {
         id: 1,
-        title: "10 Strategi Penting TOEFL Reading untuk 2024",
-        excerpt: "Kuasai bagian reading dengan strategi terbukti yang digunakan oleh peraih skor tinggi.",
-        category: "Tips Membaca",
-        author: "Sarah Johnson",
-        date: "20 Des 2024",
-        readTime: "8 menit baca",
-        icon: Book,
-        color: "bg-green-50 text-green-600",
-        tagColor: "bg-green-50 text-green-600 border-green-100"
+        title: "10 STRATEGI KILLER UNTUK READING SECTION",
+        readTime: "8 MIN",
+        image: "/blog/reading.png",
+        category: "TIPS & TRICKS",
+        color: "text-red-600 bg-red-50",
       },
       {
         id: 2,
-        title: "Cara Meningkatkan Skor Listening Anda Hingga 10 Poin",
-        excerpt: "Temukan teknik untuk meningkatkan pemahaman mendengar dan keterampilan mencatat Anda.",
-        category: "Tips Mendengar",
-        author: "Michael Chen",
-        date: "18 Des 2024",
-        readTime: "6 menit baca",
-        icon: Headphones,
-        color: "bg-blue-50 text-blue-600",
-        tagColor: "bg-blue-50 text-blue-600 border-blue-100"
+        title: "CARA BOOST LISTENING SCORE DALAM 7 HARI",
+        readTime: "7 MIN",
+        image: "/blog/listening.png",
+        category: "TECHNIQUES",
+        color: "text-blue-600 bg-blue-50",
       },
       {
         id: 3,
-        title: "Kesalahan Tata Bahasa Umum yang Harus Dihindari di TOEFL",
-        excerpt: "Pelajari kesalahan tata bahasa yang paling sering merugikan peserta tes poin berharga.",
-        category: "Tips Struktur",
-        author: "Emily Roberts",
-        date: "15 Des 2024",
-        readTime: "5 menit baca",
-        icon: PenTool,
-        color: "bg-orange-50 text-orange-600",
-        tagColor: "bg-orange-50 text-orange-600 border-orange-100"
+        title: "30 DAYS CHALLENGE: TOEFL ROADMAP TO 600+",
+        readTime: "12 MIN",
+        image: "/blog/roadmap.png",
+        category: "GUIDES",
+        color: "text-purple-600 bg-purple-50",
       },
     ];
   }
   return [
     {
       id: 1,
-      title: "10 Essential TOEFL Reading Strategies for 2024",
-      excerpt: "Master the reading section with these proven strategies used by high scorers.",
-      category: "Reading Tips",
-      author: "Sarah Johnson",
-      date: "Dec 20, 2024",
-      readTime: "8 min read",
-      icon: Book,
-      color: "bg-green-50 text-green-600",
-      tagColor: "bg-green-50 text-green-600 border-green-100"
+      title: "10 KILLER STRATEGIES FOR READING SECTION",
+      readTime: "8 MIN",
+      image: "/blog/reading.png",
+      category: "TIPS & TRICKS",
+      color: "text-red-600 bg-red-50",
     },
     {
       id: 2,
-      title: "How to Improve Your Listening Score by 10 Points",
-      excerpt: "Discover techniques to enhance your listening comprehension and note-taking skills.",
-      category: "Listening Tips",
-      author: "Michael Chen",
-      date: "Dec 18, 2024",
-      readTime: "6 min read",
-      icon: Headphones,
-      color: "bg-blue-50 text-blue-600",
-      tagColor: "bg-blue-50 text-blue-600 border-blue-100"
+      title: "HOW TO BOOST LISTENING SCORE IN 7 DAYS",
+      readTime: "7 MIN",
+      image: "/blog/listening.png",
+      category: "TECHNIQUES",
+      color: "text-blue-600 bg-blue-50",
     },
     {
       id: 3,
-      title: "Common Grammar Mistakes to Avoid on TOEFL",
-      excerpt: "Learn the most frequent grammar errors that cost test-takers valuable points.",
-      category: "Structure Tips",
-      author: "Emily Roberts",
-      date: "Dec 15, 2024",
-      readTime: "5 min read",
-      icon: PenTool,
-      color: "bg-orange-50 text-orange-600",
-      tagColor: "bg-orange-50 text-orange-600 border-orange-100"
+      title: "30 DAYS CHALLENGE: TOEFL ROADMAP TO 600+",
+      readTime: "12 MIN",
+      image: "/blog/roadmap.png",
+      category: "GUIDES",
+      color: "text-purple-600 bg-purple-50",
     },
   ];
 };
@@ -97,26 +73,20 @@ export function BlogSection() {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.5 }}
-          className="flex flex-col md:flex-row md:items-end justify-between mb-16"
+          className="text-center mb-16"
         >
-          <div className="space-y-4 text-left">
-            <h2 className="text-3xl md:text-5xl font-extrabold text-slate-900 tracking-tight">
-              {t("blog.sectionTitle")}
-            </h2>
-            <p className="text-lg text-slate-500 max-w-2xl font-medium">
-              {t("blog.sectionSubtitle")}
-            </p>
+          <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-red-600 text-white text-[10px] font-black uppercase tracking-widest mb-6">
+            FREE LEARNING RESOURCES
           </div>
-          <Link
-            to="/blog"
-            className="mt-6 md:mt-0 inline-flex items-center gap-2 text-sm font-bold text-slate-900 hover:text-primary transition-colors group"
-          >
-            {t("blog.viewAll")}
-            <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
-          </Link>
+          <h2 className="text-4xl md:text-5xl font-black text-slate-900 mb-4 tracking-tighter uppercase">
+            {t("blog.sectionTitle")}
+          </h2>
+          <p className="text-lg text-slate-500 max-w-2xl mx-auto font-bold uppercase tracking-tight">
+            {t("blog.sectionSubtitle")}
+          </p>
         </motion.div>
 
-        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8 max-w-7xl mx-auto">
           {articles.map((article, index) => (
             <motion.div
               key={article.id}
@@ -125,36 +95,28 @@ export function BlogSection() {
               viewport={{ once: true }}
               transition={{ duration: 0.5, delay: index * 0.1 }}
             >
-              <Card variant="interactive" className="h-full border-slate-100 shadow-xl shadow-slate-200/50 rounded-[32px] overflow-hidden group">
+              <Card className="h-full border-2 border-slate-900 rounded-[2rem] overflow-hidden shadow-[8px_8px_0px_0px_rgba(15,23,42,1)] hover:translate-x-1 hover:translate-y-1 hover:shadow-none transition-all group">
+                <div className="aspect-[4/3] relative overflow-hidden border-b-2 border-slate-900">
+                  <img src={article.image} alt={article.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
+                  <div className={`absolute top-4 left-4 px-3 py-1 rounded-lg text-[10px] font-black uppercase tracking-widest ${article.color}`}>
+                    {article.category}
+                  </div>
+                </div>
                 <CardContent className="p-8">
-                  <div className={`w-16 h-16 rounded-2xl ${article.color} flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-300`}>
-                    <article.icon className="w-8 h-8" />
+                  <div className="flex items-center gap-2 text-[10px] font-black text-slate-400 mb-4 uppercase tracking-[0.2em]">
+                    <Clock className="w-3.5 h-3.5" />
+                    {article.readTime}
                   </div>
-
-                  <div className="mb-4">
-                    <span className={`px-3 py-1 rounded-full text-[10px] font-bold border uppercase tracking-wider ${article.tagColor}`}>
-                      {article.category}
-                    </span>
-                  </div>
-
-                  <h3 className="text-xl font-bold text-slate-900 mb-4 line-clamp-2 leading-tight group-hover:text-primary transition-colors">
+                  <h3 className="text-xl font-black text-slate-900 mb-6 leading-tight group-hover:text-primary transition-colors uppercase tracking-tight">
                     {article.title}
                   </h3>
-
-                  <p className="text-slate-500 font-medium text-sm mb-8 line-clamp-2 leading-relaxed">
-                    {article.excerpt}
-                  </p>
-
-                  <div className="flex flex-col gap-3 pt-6 border-t border-slate-50">
-                    <div className="flex items-center gap-2 text-[10px] font-bold text-slate-400 uppercase tracking-widest">
-                      <User className="w-3.5 h-3.5" />
-                      {article.author}
-                    </div>
-                    <div className="flex items-center gap-2 text-[10px] font-bold text-slate-400 uppercase tracking-widest">
-                      <Clock className="w-3.5 h-3.5" />
-                      {article.readTime}
-                    </div>
-                  </div>
+                  <Link
+                    to={`/blog/${article.id}`}
+                    className="inline-flex items-center gap-2 text-xs font-black text-primary uppercase tracking-[0.2em] group/link"
+                  >
+                    READ NOW
+                    <ArrowRight className="w-3.5 h-3.5 group-hover/link:translate-x-1 transition-transform" />
+                  </Link>
                 </CardContent>
               </Card>
             </motion.div>
@@ -164,4 +126,3 @@ export function BlogSection() {
     </section>
   );
 }
-

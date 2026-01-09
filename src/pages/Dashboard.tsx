@@ -272,10 +272,10 @@ export default function Dashboard() {
       <header className="sticky top-0 z-50 bg-white/70 dark:bg-black/40 backdrop-blur-xl border-b border-border transition-colors duration-300">
         <div className="container mx-auto px-4 h-16 flex items-center justify-between">
           <Link to="/" className="flex items-center gap-2 group">
-            <div className="w-10 h-10 rounded-xl bg-gradient-hero flex items-center justify-center shadow-md group-hover:scale-110 transition-transform">
-              <BookOpen className="w-5 h-5 text-primary-foreground" />
+            <div className="w-10 h-10 rounded-xl bg-primary flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform">
+              <Zap className="w-6 h-6 text-white fill-white" />
             </div>
-            <span className="font-black text-xl text-foreground uppercase tracking-tighter">TOEFL Rocket</span>
+            <span className="font-black text-xl text-foreground uppercase tracking-tighter">TOEFL<span className="text-primary">BLAST</span></span>
           </Link>
 
           <div className="flex items-center gap-2">

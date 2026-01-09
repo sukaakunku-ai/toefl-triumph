@@ -1,82 +1,102 @@
 import { motion } from "framer-motion";
-import { Trophy, Users, Layout } from "lucide-react";
+import { Trophy, UserPlus, PlayCircle, BarChart3, ArrowRight } from "lucide-react";
 import { useLanguage } from "@/contexts/LanguageContext";
+import { Button } from "@/components/ui/button";
+import { Link } from "react-router-dom";
 
 export function HowItWorks() {
   const { t } = useLanguage();
 
   const steps = [
     {
-      icon: Users,
+      icon: UserPlus,
       title: t("howItWorks.step1.title"),
       desc: t("howItWorks.step1.desc"),
-      number: 1,
+      number: "01",
+      color: "text-red-600 bg-red-50",
     },
     {
-      icon: Layout,
+      icon: PlayCircle,
       title: t("howItWorks.step2.title"),
       desc: t("howItWorks.step2.desc"),
-      number: 2,
+      number: "02",
+      color: "text-red-600 bg-red-50",
+    },
+    {
+      icon: BarChart3,
+      title: t("howItWorks.step3.title"),
+      desc: t("howItWorks.step3.desc"),
+      number: "03",
+      color: "text-purple-600 bg-purple-50",
     },
     {
       icon: Trophy,
-      title: t("howItWorks.step3.title"),
-      desc: t("howItWorks.step3.desc"),
-      number: 3,
+      title: t("howItWorks.step4.title"),
+      desc: t("howItWorks.step4.desc"),
+      number: "04",
+      color: "text-purple-600 bg-purple-50",
     },
   ];
 
   return (
-    <section className="py-24 bg-slate-50/50">
+    <section className="py-24 bg-white">
       <div className="container mx-auto px-4">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.5 }}
-          className="text-center mb-20"
+          className="text-center mb-16"
         >
-          <h2 className="text-3xl md:text-5xl font-extrabold text-slate-900 mb-6 tracking-tight">
+          <h2 className="text-4xl md:text-5xl font-black text-slate-900 mb-4 tracking-tighter uppercase">
             {t("howItWorks.title")}
           </h2>
-          <p className="text-lg text-slate-500 max-w-2xl mx-auto font-medium">
+          <p className="text-lg text-slate-500 max-w-2xl mx-auto font-bold">
             {t("howItWorks.subtitle")}
           </p>
         </motion.div>
 
-        <div className="grid md:grid-cols-3 gap-12 max-w-6xl mx-auto">
+        <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6 max-w-7xl mx-auto">
           {steps.map((step, index) => (
             <motion.div
               key={index}
               initial={{ opacity: 0, y: 30 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
-              transition={{ duration: 0.6, delay: index * 0.1 }}
-              className="relative"
+              transition={{ duration: 0.5, delay: index * 0.1 }}
+              className="relative group"
             >
-              {/* Step Number Badge */}
-              <div className="absolute top-[-24px] left-1/2 -translate-x-1/2 w-12 h-12 rounded-full bg-primary flex items-center justify-center text-white font-bold text-lg shadow-lg shadow-primary/30 z-10 border-4 border-white">
-                {step.number}
-              </div>
-
               {/* Card */}
-              <div className="bg-white rounded-[32px] p-10 pt-14 text-center border border-slate-100 shadow-xl shadow-slate-200/50 h-full flex flex-col items-center group hover:border-primary/20 transition-all duration-300">
-                <div className="w-20 h-20 rounded-2xl bg-blue-50 flex items-center justify-center mb-8 group-hover:scale-110 transition-transform duration-300">
-                  <step.icon className="w-10 h-10 text-primary" />
+              <div className="bg-white rounded-3xl p-8 pt-10 border-2 border-slate-900 shadow-[8px_8px_0px_0px_rgba(15,23,42,1)] h-full flex flex-col items-start transition-all hover:translate-x-1 hover:translate-y-1 hover:shadow-none">
+                {/* Step Number Badge */}
+                <div className={`px-3 py-1 rounded-lg text-[10px] font-black uppercase tracking-widest mb-6 ${step.color}`}>
+                  STEP {step.number}
                 </div>
 
-                <h3 className="text-xl font-bold text-slate-900 mb-4">
+                <div className={`w-14 h-14 rounded-2xl flex items-center justify-center mb-6 border-2 border-slate-900 shadow-[4px_4px_0px_0px_rgba(15,23,42,1)]`}>
+                  <step.icon className="w-7 h-7 text-slate-900" />
+                </div>
+
+                <h3 className="text-xl font-black text-slate-900 mb-4 uppercase tracking-tight">
                   {step.title}
                 </h3>
-                <p className="text-slate-500 font-medium leading-relaxed">
+                <p className="text-slate-500 font-bold text-sm leading-relaxed">
                   {step.desc}
                 </p>
               </div>
             </motion.div>
           ))}
         </div>
+
+        <div className="flex justify-center mt-16">
+          <Link to="/dashboard">
+            <Button size="xl" className="rounded-2xl px-10 py-8 text-lg font-bold bg-primary hover:bg-primary/90 shadow-xl shadow-primary/25 transition-all hover:scale-105 active:scale-95 group">
+              GET STARTED NOW!
+              <ArrowRight className="ml-2 w-5 h-5 group-hover:translate-x-1 transition-transform" />
+            </Button>
+          </Link>
+        </div>
       </div>
     </section>
   );
 }
-
