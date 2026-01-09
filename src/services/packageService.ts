@@ -104,3 +104,14 @@ export const seedPackages = async (): Promise<void> => {
     throw error;
   }
 };
+
+// Get package by ID
+export const getPackageById = async (packageId: string): Promise<QuestionPackage | null> => {
+  try {
+    const packages = await getAllPackages();
+    return packages.find(p => p.id === packageId) || null;
+  } catch (error) {
+    console.error("Error fetching package by ID:", error);
+    return null;
+  }
+};

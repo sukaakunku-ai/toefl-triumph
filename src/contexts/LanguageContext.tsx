@@ -1,4 +1,4 @@
-import { createContext, useContext, useState, useEffect, ReactNode } from "react";
+import { createContext, useContext, useState, useEffect, ReactNode, useCallback, useMemo } from "react";
 
 type Language = "id" | "en";
 
@@ -40,7 +40,7 @@ const translations: Record<Language, Record<string, string>> = {
     "dashboard.start": "Mulai Latihan",
 
     // Hero
-    "hero.title": "RAIH SKOR TOEFL IMPIAN KAMU!",
+    "hero.title": "ACE YOUR TOEFL EXAM!",
     "hero.subtitle": "Platform latihan TOEFL TERBAIK & GRATIS dengan 500+ soal, simulasi real test, dan tracking system yang bikin kamu UNSTOPPABLE! 🚀",
     "hero.cta": "MULAI SEKARANG!",
     "hero.secondary": "LIHAT DEMO",
@@ -356,17 +356,23 @@ export function LanguageProvider({ children }: { children: ReactNode }) {
     }
   }, []);
 
-  const setLanguage = (lang: Language) => {
+  const setLanguage = useCallback((lang: Language) => {
     setLanguageState(lang);
     localStorage.setItem("language", lang);
-  };
+  }, []);
 
-  const t = (key: string): string => {
+  const t = useCallback((key: string): string => {
     return translations[language][key] || key;
-  };
+  }, [language]);
+
+  const value = useMemo(() => ({
+    language,
+    setLanguage,
+    t
+  }), [language, setLanguage, t]);
 
   return (
-    <LanguageContext.Provider value={{ language, setLanguage, t }}>
+    <LanguageContext.Provider value={value}>
       {children}
     </LanguageContext.Provider>
   );

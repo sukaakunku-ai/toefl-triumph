@@ -1,11 +1,11 @@
 import { useState, useEffect } from "react";
-import { useParams, useNavigate, useSearchParams } from "react-router-dom";
+import { useParams, useSearchParams, useNavigate } from "react-router-dom";
+import { useTestConfig } from "@/hooks/useQuestions";
 import { QuizEngine } from "@/components/quiz/QuizEngine";
 import { ResultPage } from "@/components/quiz/ResultPage";
-import { useTestConfig } from "@/hooks/useQuestions";
-import { getPackagesByCategory } from "@/services/packageService";
-import { getAllQuestions } from "@/services/questionService";
 import { Question } from "@/data/questions";
+import { getPackageById } from "@/services/packageService";
+import { getQuestionsByIds } from "@/services/questionService";
 import { Loader2 } from "lucide-react";
 
 export default function Quiz() {
@@ -24,8 +24,8 @@ export default function Quiz() {
     timeSpent: number;
   } | null>(null);
   const [packageQuestions, setPackageQuestions] = useState<Question[] | null>(null);
-  const [packageDuration, setPackageDuration] = useState<number>(25);
-  const [isLoadingPackage, setIsLoadingPackage] = useState(!!packageId);
+  const [packageDuration, setPackageDuration] = useState<number>(0);
+  const [isLoadingPackage, setIsLoadingPackage] = useState(!!packageId || testType === "full");
 
   const { config, isLoading } = useTestConfig(testType || "");
 
@@ -33,68 +33,56 @@ export default function Quiz() {
     const loadPackageQuestions = async () => {
       if (!testType) return;
 
-      if (!packageId && !listeningId && !readingId && !structureId) return;
-
-      setIsLoadingPackage(true);
       try {
-        const allQs = await getAllQuestions();
-        let questions: Question[] = [];
-        let duration = 0;
-
-        if (testType === "full" && (listeningId || readingId || structureId)) {
-          const allPackages = await import("@/services/packageService").then(m => m.getAllPackages());
-
-          // TOEFL order: Listening, Structure, Reading
-          if (listeningId) {
-            const pkg = allPackages.find(p => p.id === listeningId);
-            if (pkg) {
-              const qs = allQs.filter(q => pkg.questionIds.includes(q.id));
-              questions = [...questions, ...qs];
-              duration += pkg.duration;
-            }
-          }
-          if (structureId) {
-            const pkg = allPackages.find(p => p.id === structureId);
-            if (pkg) {
-              const qs = allQs.filter(q => pkg.questionIds.includes(q.id));
-              questions = [...questions, ...qs];
-              duration += pkg.duration;
-            }
-          }
-          if (readingId) {
-            const pkg = allPackages.find(p => p.id === readingId);
-            if (pkg) {
-              const qs = allQs.filter(q => pkg.questionIds.includes(q.id));
-              questions = [...questions, ...qs];
-              duration += pkg.duration;
-            }
-          }
-        } else if (packageId) {
-          const packages = await getPackagesByCategory(testType);
-          const pkg = packages.find(p => p.id === packageId);
+        if (packageId) {
+          const pkg = await getPackageById(packageId);
           if (pkg) {
-            questions = allQs.filter(q => pkg.questionIds.includes(q.id));
-            duration = pkg.duration;
+            const questions = await getQuestionsByIds(pkg.questionIds);
+            setPackageQuestions(questions);
+            setPackageDuration(pkg.duration);
           }
-        }
+        } else if (testType === "full") {
+          const ids = [listeningId, readingId, structureId].filter(Boolean) as string[];
+          if (ids.length > 0) {
+            const pkgs = await Promise.all(ids.map(id => getPackageById(id)));
+            const allQuestionIds = pkgs.flatMap(p => p?.questionIds || []);
+            const questions = await getQuestionsByIds(allQuestionIds);
 
-        if (questions.length > 0) {
-          setPackageQuestions(questions);
-          setPackageDuration(duration);
+            setPackageQuestions(questions);
+            const totalDuration = pkgs.reduce((acc, p) => acc + (p?.duration || 0), 0);
+            setPackageDuration(totalDuration || 115);
+          }
         }
       } catch (error) {
-        console.error("Error loading package:", error);
+        console.error("Error loading package questions:", error);
       } finally {
         setIsLoadingPackage(false);
       }
     };
 
-    loadPackageQuestions();
+    if (packageId || testType === "full") {
+      setIsLoadingPackage(true);
+      loadPackageQuestions();
+    } else {
+      setIsLoadingPackage(false);
+    }
   }, [testType, packageId, listeningId, readingId, structureId]);
 
-  if (!config) {
+  if (!config && !isLoading) {
     navigate("/dashboard");
     return null;
+  }
+
+  if (isLoading || isLoadingPackage) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-background">
+        <div className="text-center">
+          <Loader2 className="w-12 h-12 animate-spin text-primary mx-auto mb-4" />
+          <h2 className="text-xl font-bold text-foreground">Loading Quest...</h2>
+          <p className="text-muted-foreground">Preparing your test environment</p>
+        </div>
+      </div>
+    );
   }
 
   const handleComplete = (answers: Record<number, number>, timeSpent: number) => {
@@ -102,37 +90,32 @@ export default function Quiz() {
     setIsComplete(true);
   };
 
-  if (isLoading || isLoadingPackage) {
-    return (
-      <div className="min-h-screen flex items-center justify-center bg-background">
-        <div className="flex flex-col items-center gap-4">
-          <Loader2 className="w-8 h-8 animate-spin text-primary" />
-          <p className="text-muted-foreground">Memuat soal...</p>
-        </div>
-      </div>
-    );
-  }
+  // Extract from config for type safety
+  const finalQuestions = packageQuestions || config?.questions || [];
+  const finalDuration = packageDuration || config?.duration || 25;
+  const finalTestName = config?.name || "TOEFL Practice";
 
-  const questionsToUse = packageQuestions && packageQuestions.length > 0 ? packageQuestions : config.questions;
-  const durationToUse = packageQuestions && packageQuestions.length > 0 ? packageDuration : config.duration;
-
-  if (isComplete && results) {
+  if (isComplete && results && config) {
     return (
       <ResultPage
-        questions={questionsToUse}
+        testName={finalTestName}
+        questions={finalQuestions}
         answers={results.answers}
         timeSpent={results.timeSpent}
-        testName={config.name}
       />
     );
   }
 
-  return (
-    <QuizEngine
-      testName={config.name}
-      questions={questionsToUse}
-      duration={durationToUse}
-      onComplete={handleComplete}
-    />
-  );
+  if (config) {
+    return (
+      <QuizEngine
+        testName={finalTestName}
+        questions={finalQuestions}
+        duration={finalDuration}
+        onComplete={handleComplete}
+      />
+    );
+  }
+
+  return null;
 }

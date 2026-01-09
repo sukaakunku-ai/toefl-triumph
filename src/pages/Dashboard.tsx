@@ -1,6 +1,6 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback, useMemo } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 import {
   BookOpen,
   Headphones,
@@ -10,7 +10,6 @@ import {
   Layers,
   Moon,
   Sun,
-  Database,
   Loader2,
   CheckCircle,
   Settings,
@@ -25,21 +24,13 @@ import {
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
-import {
   Dialog,
   DialogContent,
   DialogHeader,
   DialogTitle,
   DialogDescription,
 } from "@/components/ui/dialog";
-import { seedQuestions } from "@/services/questionService";
-import { getPackagesByCategory, seedPackages } from "@/services/packageService";
+import { getPackagesByCategory } from "@/services/packageService";
 import { QuestionPackage } from "@/data/packages";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { LanguageSwitcher } from "@/components/LanguageSwitcher";
@@ -59,7 +50,7 @@ interface TestType {
   rewardIcon: any;
 }
 
-const testTypes: TestType[] = [
+const TEST_TYPES: TestType[] = [
   {
     id: "full",
     icon: Gamepad2,
@@ -115,11 +106,9 @@ const testTypes: TestType[] = [
 ];
 
 export default function Dashboard() {
-  const { t } = useLanguage();
+  const { language, t } = useLanguage();
   const navigate = useNavigate();
   const [isDark, setIsDark] = useState(false);
-  const [isSeeding, setIsSeeding] = useState(false);
-  const [isSeeded, setIsSeeded] = useState(false);
   const [categoryCounts, setCategoryCounts] = useState<Record<string, number>>({});
   const [packageCounts, setPackageCounts] = useState<Record<string, number>>({});
 
@@ -141,16 +130,12 @@ export default function Dashboard() {
   useEffect(() => {
     const savedTheme = localStorage.getItem("theme");
     const prefersDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
-    const seeded = localStorage.getItem("firebase_seeded");
-
-    if (seeded) setIsSeeded(true);
 
     if (savedTheme === "dark" || (!savedTheme && prefersDark)) {
       setIsDark(true);
       document.documentElement.classList.add("dark");
     }
 
-    // Fetch real question and package counts
     const fetchCounts = async () => {
       try {
         const [allQuestions, allPackages] = await Promise.all([
@@ -158,35 +143,13 @@ export default function Dashboard() {
           import("@/services/packageService").then(m => m.getAllPackages())
         ]);
 
-        const counts: Record<string, number> = {
-          structure: 0,
-          reading: 0,
-          listening: 0,
-          full: 0
-        };
+        const counts: Record<string, number> = { structure: 0, reading: 0, listening: 0, full: 0 };
+        const pkgCounts: Record<string, number> = { structure: 0, reading: 0, listening: 0, full: 0 };
 
-        const pkgCounts: Record<string, number> = {
-          structure: 0,
-          reading: 0,
-          listening: 0,
-          full: 0
-        };
+        allQuestions.forEach(q => { if (counts[q.category] !== undefined) counts[q.category]++; });
+        allPackages.forEach(p => { if (pkgCounts[p.category] !== undefined) pkgCounts[p.category]++; });
 
-        allQuestions.forEach(q => {
-          if (counts[q.category] !== undefined) {
-            counts[q.category]++;
-          }
-        });
-
-        allPackages.forEach(p => {
-          if (pkgCounts[p.category] !== undefined) {
-            pkgCounts[p.category]++;
-          }
-        });
-
-        // Calculate 'full' simulation statistics
         counts.full = counts.listening + counts.structure + counts.reading;
-        // Number of available full combinations is the minimum number of packages in any section
         pkgCounts.full = Math.min(pkgCounts.listening || 0, pkgCounts.structure || 0, pkgCounts.reading || 0);
 
         setCategoryCounts(counts);
@@ -197,9 +160,9 @@ export default function Dashboard() {
     };
 
     fetchCounts();
-  }, [t]);
+  }, [language]);
 
-  const toggleTheme = () => {
+  const toggleTheme = useCallback(() => {
     setIsDark((prev) => {
       const newValue = !prev;
       if (newValue) {
@@ -211,9 +174,16 @@ export default function Dashboard() {
       }
       return newValue;
     });
-  };
+  }, []);
 
-  const handleTestSelect = async (test: TestType) => {
+  const handleTestSelect = useCallback(async (test: TestType, e?: React.MouseEvent) => {
+    if (e) {
+      e.preventDefault();
+      e.stopPropagation();
+    }
+
+    if (isLoadingPackages || showPackageDialog) return;
+
     setSelectedTestType(test);
     setIsLoadingPackages(true);
     setShowPackageDialog(true);
@@ -241,13 +211,16 @@ export default function Dashboard() {
       }
     } catch (error) {
       console.error("Error loading packages:", error);
-      toast.error(t("common.error"));
+      toast.error("Gagal memuat paket soal");
     } finally {
-      setIsLoadingPackages(false);
+      // Add a small delay to prevent flickering if transition is too fast
+      setTimeout(() => {
+        setIsLoadingPackages(false);
+      }, 300);
     }
-  };
+  }, [isLoadingPackages, showPackageDialog]);
 
-  const handleStartQuiz = () => {
+  const handleStartQuiz = useCallback(() => {
     if (selectedTestType) {
       if (selectedTestType.id === "full") {
         const params = new URLSearchParams();
@@ -260,16 +233,16 @@ export default function Dashboard() {
       }
       setShowPackageDialog(false);
     }
-  };
+  }, [selectedTestType, selectedListeningId, selectedReadingId, selectedStructureId, selectedPackageId, navigate]);
 
   return (
-    <div className="min-h-screen bg-wavy flex flex-col">
+    <div className="min-h-screen bg-wavy flex flex-col relative overflow-x-hidden">
       {/* Background ripples */}
-      <div className="fixed top-1/4 left-1/4 w-[600px] h-[600px] ripple -z-10" />
-      <div className="fixed bottom-1/4 right-1/4 w-[400px] h-[400px] ripple -z-10 [animation-delay:2s]" />
+      <div className="fixed top-1/4 left-1/4 w-[600px] h-[600px] ripple -z-10 brightness-150" />
+      <div className="fixed bottom-1/4 right-1/4 w-[400px] h-[400px] ripple -z-10 [animation-delay:2s] brightness-150" />
 
       {/* Header */}
-      <header className="sticky top-0 z-50 bg-white/70 dark:bg-black/40 backdrop-blur-xl border-b border-border transition-colors duration-300">
+      <header className="sticky top-0 z-[100] bg-white/70 dark:bg-black/40 backdrop-blur-xl border-b border-border transition-colors duration-300">
         <div className="container mx-auto px-4 h-16 flex items-center justify-between">
           <Link to="/" className="flex items-center gap-2 group">
             <div className="w-10 h-10 rounded-xl bg-primary flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform">
@@ -297,14 +270,14 @@ export default function Dashboard() {
         </div>
       </header>
 
-      <main className="flex-1 container mx-auto px-4 py-12">
+      <main className="flex-1 container mx-auto px-4 py-12 relative z-10">
         <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
           className="max-w-5xl mx-auto"
         >
           <div className="text-center mb-16 space-y-4">
-            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-primary/10 text-primary text-[10px] font-black uppercase tracking-[0.2em] animate-bounce">
+            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-primary/10 text-primary text-[10px] font-black uppercase tracking-[0.2em]">
               <Sparkles className="w-3 h-3" />
               Pilih Target Belajar
             </div>
@@ -317,10 +290,10 @@ export default function Dashboard() {
           </div>
 
           <div className="grid md:grid-cols-2 gap-8">
-            {testTypes.map((test, index) => (
+            {TEST_TYPES.map((test, index) => (
               <motion.div
                 key={test.id}
-                initial={{ opacity: 0, y: 30 }}
+                initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: index * 0.1 }}
               >
@@ -329,9 +302,9 @@ export default function Dashboard() {
                     "group relative rounded-[40px] p-8 border-4 transition-all duration-300 cursor-pointer overflow-hidden h-full flex flex-col justify-between",
                     test.borderColor,
                     test.bgColor,
-                    "shadow-[0_12px_0_0_rgba(0,0,0,0.05)] hover:shadow-[0_8px_0_0_rgba(0,0,0,0.05)] hover:translate-y-1 active:shadow-none active:translate-y-[6px]"
+                    "shadow-[0_12px_0_0_rgba(0,0,0,0.05)] hover:shadow-[0_8px_0_0_rgba(0,0,0,0.05)] hover:-translate-y-1 active:shadow-none active:translate-y-[2px]"
                   )}
-                  onClick={() => handleTestSelect(test)}
+                  onClick={(e) => handleTestSelect(test, e)}
                 >
                   <div className="relative z-10">
                     <div className="flex justify-between items-start mb-6">
@@ -365,7 +338,6 @@ export default function Dashboard() {
                         </div>
                       </div>
 
-                      {/* Progress visual bar */}
                       <div className="h-4 bg-white/50 dark:bg-black/20 rounded-full overflow-hidden p-1 border border-white/20">
                         <motion.div
                           initial={{ width: 0 }}
@@ -386,20 +358,12 @@ export default function Dashboard() {
                       </div>
                     </div>
                   </div>
-
-                  {/* Decorative element in card background */}
-                  <div className="absolute -bottom-10 -right-10 w-40 h-40 bg-white/30 dark:bg-black/10 rounded-full -z-0 blur-2xl group-hover:scale-150 transition-transform duration-500" />
                 </div>
               </motion.div>
             ))}
           </div>
 
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ delay: 0.6 }}
-            className="mt-20 p-8 rounded-[32px] bg-white/40 dark:bg-black/20 backdrop-blur-md border-4 border-white dark:border-white/5 text-center flex items-center justify-center gap-6"
-          >
+          <div className="mt-20 p-8 rounded-[32px] bg-white/40 dark:bg-black/20 backdrop-blur-md border-4 border-white dark:border-white/5 text-center flex items-center justify-center gap-6">
             <div className="w-16 h-16 rounded-2xl bg-[#fbbf24] flex items-center justify-center shadow-lg border-2 border-[#d97706] rotate-3">
               <Trophy className="w-8 h-8 text-black" />
             </div>
@@ -407,14 +371,16 @@ export default function Dashboard() {
               <h4 className="text-xl font-black text-foreground uppercase tracking-tighter">{t("dashboard.tip")}</h4>
               <p className="text-sm text-muted-foreground font-medium">Latihan setiap hari untuk menjaga stamina belajarmu tetap prima!</p>
             </div>
-          </motion.div>
+          </div>
         </motion.div>
       </main>
 
       {/* Package Selection Dialog */}
-      <Dialog open={showPackageDialog} onOpenChange={setShowPackageDialog}>
+      <Dialog open={showPackageDialog} onOpenChange={(open) => {
+        if (!isLoadingPackages) setShowPackageDialog(open);
+      }}>
         <DialogContent className={cn(
-          "transition-all duration-300 flex flex-col max-h-[90vh] rounded-[40px] border-4 border-white shadow-2xl bg-wavy overflow-hidden",
+          "flex flex-col max-h-[90vh] rounded-[40px] border-4 border-white shadow-2xl bg-white dark:bg-slate-900 overflow-hidden z-[200]",
           selectedTestType?.id === "full" ? "sm:max-w-2xl" : "sm:max-w-xl"
         )}>
           <DialogHeader className="p-8 pb-0 text-center">
@@ -455,7 +421,7 @@ export default function Dashboard() {
                             "px-4 py-3 rounded-2xl border-2 text-xs font-black uppercase transition-all",
                             selectedListeningId === pkg.id
                               ? "border-[#22c55e] bg-[#22c55e] text-white shadow-[0_4px_0_0_#15803d]"
-                              : "border-white bg-white/50 hover:bg-white text-muted-foreground shadow-sm"
+                              : "border-gray-200 bg-white hover:bg-gray-50 text-muted-foreground"
                           )}
                         >
                           {pkg.name}
@@ -485,7 +451,7 @@ export default function Dashboard() {
                             "px-4 py-3 rounded-2xl border-2 text-xs font-black uppercase transition-all",
                             selectedStructureId === pkg.id
                               ? "border-[#22c55e] bg-[#22c55e] text-white shadow-[0_4px_0_0_#15803d]"
-                              : "border-white bg-white/50 hover:bg-white text-muted-foreground shadow-sm"
+                              : "border-gray-200 bg-white hover:bg-gray-50 text-muted-foreground"
                           )}
                         >
                           {pkg.name}
@@ -515,7 +481,7 @@ export default function Dashboard() {
                             "px-4 py-3 rounded-2xl border-2 text-xs font-black uppercase transition-all",
                             selectedReadingId === pkg.id
                               ? "border-[#22c55e] bg-[#22c55e] text-white shadow-[0_4px_0_0_#15803d]"
-                              : "border-white bg-white/50 hover:bg-white text-muted-foreground shadow-sm"
+                              : "border-gray-200 bg-white hover:bg-gray-50 text-muted-foreground"
                           )}
                         >
                           {pkg.name}
@@ -525,57 +491,52 @@ export default function Dashboard() {
                   </div>
                 </div>
               </div>
-            ) : packages.length === 0 ? (
-              <p className="text-center font-bold text-muted-foreground py-12 uppercase tracking-widest">
-                {t("admin.noPackages")}
-              </p>
             ) : (
               <div className="grid grid-cols-1 gap-4">
-                {packages.map((pkg) => (
-                  <button
-                    key={pkg.id}
-                    onClick={() => setSelectedPackageId(pkg.id)}
-                    className={cn(
-                      "p-6 rounded-[32px] border-4 text-left transition-all duration-300 flex items-center justify-between group relative overflow-hidden",
-                      selectedPackageId === pkg.id
-                        ? "border-[#22c55e] bg-white translate-y-[-4px] shadow-[0_8px_0_0_rgba(34,197,94,0.2)]"
-                        : "border-white bg-white/50 hover:bg-white/80 shadow-sm"
-                    )}
-                  >
-                    <div className="relative z-10 space-y-1">
-                      <div className="flex items-center gap-3">
-                        <span className={cn(
-                          "font-black text-2xl uppercase tracking-tighter",
-                          selectedPackageId === pkg.id ? "text-[#22c55e]" : "text-foreground"
-                        )}>
-                          {pkg.name}
-                        </span>
-                        {selectedPackageId === pkg.id && (
-                          <div className="w-6 h-6 rounded-full bg-[#22c55e] flex items-center justify-center shadow-lg">
-                            <CheckCircle className="w-4 h-4 text-white" />
+                {packages.length === 0 ? (
+                  <p className="text-center font-bold text-muted-foreground py-12 uppercase tracking-widest italic text-xs">
+                    {t("admin.noPackages")}
+                  </p>
+                ) : (
+                  packages.map((pkg) => (
+                    <button
+                      key={pkg.id}
+                      onClick={() => setSelectedPackageId(pkg.id)}
+                      className={cn(
+                        "p-6 rounded-[32px] border-4 text-left transition-all duration-300 flex items-center justify-between group relative overflow-hidden",
+                        selectedPackageId === pkg.id
+                          ? "border-[#22c55e] bg-white translate-y-[-4px] shadow-[0_8px_0_0_rgba(34,197,94,0.2)]"
+                          : "border-gray-200 bg-white hover:bg-gray-50 shadow-sm"
+                      )}
+                    >
+                      <div className="relative z-10 space-y-1">
+                        <div className="flex items-center gap-3">
+                          <span className={cn(
+                            "font-black text-2xl uppercase tracking-tighter",
+                            selectedPackageId === pkg.id ? "text-[#22c55e]" : "text-foreground"
+                          )}>
+                            {pkg.name}
+                          </span>
+                          {selectedPackageId === pkg.id && (
+                            <div className="w-6 h-6 rounded-full bg-[#22c55e] flex items-center justify-center shadow-lg">
+                              <CheckCircle className="w-4 h-4 text-white" />
+                            </div>
+                          )}
+                        </div>
+                        <div className="flex items-center gap-4 text-[10px] font-black uppercase tracking-[0.1em] text-muted-foreground">
+                          <div className="flex items-center gap-1.5 bg-gray-100 px-2 py-0.5 rounded-full">
+                            <BookOpen className="w-3 h-3" />
+                            <span>{pkg.questionIds.length} Soal</span>
                           </div>
-                        )}
-                      </div>
-                      <div className="flex items-center gap-4 text-[10px] font-black uppercase tracking-[0.1em] text-muted-foreground">
-                        <div className="flex items-center gap-1.5 bg-accent/30 px-2 py-0.5 rounded-full">
-                          <BookOpen className="w-3 h-3" />
-                          <span>{pkg.questionIds.length} Soal</span>
-                        </div>
-                        <div className="flex items-center gap-1.5 bg-accent/30 px-2 py-0.5 rounded-full">
-                          <Clock className="w-3 h-3" />
-                          <span>{pkg.duration} MENIT</span>
+                          <div className="flex items-center gap-1.5 bg-gray-100 px-2 py-0.5 rounded-full">
+                            <Clock className="w-3 h-3" />
+                            <span>{pkg.duration} MENIT</span>
+                          </div>
                         </div>
                       </div>
-                    </div>
-
-                    <div className={cn(
-                      "w-12 h-12 rounded-2xl flex items-center justify-center transition-all",
-                      selectedPackageId === pkg.id ? "bg-[#22c55e] rotate-6" : "bg-white/60"
-                    )}>
-                      <Rocket className={cn("w-6 h-6", selectedPackageId === pkg.id ? "text-white" : "text-muted-foreground")} />
-                    </div>
-                  </button>
-                ))}
+                    </button>
+                  ))
+                )}
               </div>
             )}
           </div>
@@ -590,10 +551,10 @@ export default function Dashboard() {
                   ? (!selectedListeningId && !selectedReadingId && !selectedStructureId)
                   : !selectedPackageId)
               }
-              className="w-full bg-[#fbbf24] hover:bg-[#f59e0b] text-black font-black text-2xl py-8 rounded-[24px] shadow-[0_10px_0_0_#d97706] hover:shadow-[0_6px_0_0_#d97706] active:shadow-none translate-y-[-6px] active:translate-y-[4px] transition-all gap-4 uppercase tracking-tighter"
+              className="w-full bg-[#fbbf24] hover:bg-[#f59e0b] text-black font-black text-2xl py-8 rounded-[24px] shadow-[0_10px_0_0_#d97706] hover:shadow-[0_6px_0_0_#d97706] active:shadow-none translate-y-[-6px] active:translate-y-[4px] transition-all gap-4 uppercase tracking-tighter disabled:opacity-50 disabled:translate-y-0 disabled:shadow-none"
             >
               Mulai Misi Sekarang
-              <Rocket className="w-8 h-8 animate-bounce" />
+              <Rocket className="w-8 h-8" />
             </Button>
           </div>
         </DialogContent>

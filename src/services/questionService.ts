@@ -203,3 +203,13 @@ export const deleteQuestionAudio = async (audioUrl: string): Promise<void> => {
     throw new Error("Gagal menghapus audio: " + error.message);
   }
 };
+// Get questions by multiple IDs
+export const getQuestionsByIds = async (ids: number[]): Promise<Question[]> => {
+  try {
+    const allQs = await getAllQuestions();
+    return allQs.filter(q => ids.includes(q.id)).sort((a, b) => a.id - b.id);
+  } catch (error) {
+    console.error("Error fetching questions by IDs:", error);
+    return [];
+  }
+};
