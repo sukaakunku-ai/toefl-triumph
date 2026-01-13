@@ -342,6 +342,18 @@ export default function Admin() {
 
   const handleSaveQuestion = async () => {
     try {
+      // Duplicate check
+      const isDuplicate = questions.some(q =>
+        q.id !== editingQuestion?.id &&
+        q.question_text.trim().toLowerCase() === questionForm.question_text.trim().toLowerCase() &&
+        q.category === questionForm.category
+      );
+
+      if (isDuplicate) {
+        toast.error("Soal ini sudah ada dalam sistem (duplikat)!");
+        return;
+      }
+
       const questionData: Question = {
         id: editingQuestion?.id || Date.now(),
         category: questionForm.category as "structure" | "reading" | "listening",
@@ -532,6 +544,7 @@ export default function Admin() {
 
         let successCount = 0;
         let errorCount = 0;
+        let duplicateCount = 0;
 
         for (const row of data as any[]) {
           try {
@@ -543,6 +556,18 @@ export default function Admin() {
 
             if (!["structure", "reading"].includes(mappedCategory)) {
               errorCount++;
+              continue;
+            }
+
+            const questionText = (row["Question Text"] || row["Teks Soal"] || row["Pertanyaan"] || "").trim();
+
+            const isDuplicate = questions.some(q =>
+              q.question_text.trim().toLowerCase() === questionText.toLowerCase() &&
+              q.category === mappedCategory
+            );
+
+            if (isDuplicate) {
+              duplicateCount++;
               continue;
             }
 
@@ -566,7 +591,7 @@ export default function Admin() {
             const questionData: Question = {
               id: Date.now() + Math.floor(Math.random() * 10000),
               category: mappedCategory as "structure" | "reading",
-              question_text: row["Question Text"] || row["Teks Soal"] || row["Pertanyaan"] || "",
+              question_text: questionText,
               options,
               correct_answer: correctAnswer,
               explanation: row.Explanation || row.Penjelasan || "",
@@ -584,7 +609,11 @@ export default function Admin() {
           }
         }
 
-        toast.success(`${successCount} soal berhasil diimport! ${errorCount > 0 ? `${errorCount} gagal.` : ""}`);
+        let message = `${successCount} soal berhasil diimport!`;
+        if (duplicateCount > 0) message += ` ${duplicateCount} duplikat dilewati.`;
+        if (errorCount > 0) message += ` ${errorCount} gagal.`;
+
+        toast.success(message);
         loadQuestions();
       } catch (error) {
         toast.error("Gagal membaca file Excel");
