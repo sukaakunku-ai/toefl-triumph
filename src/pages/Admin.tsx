@@ -755,13 +755,7 @@ export default function Admin() {
 
   const filteredQuestionsForPackage = questions.filter((q) => {
     const isCorrectCategory = packageForm.category === "full" || q.category === packageForm.category;
-
-    // Check if the question is already in another package (not the one being edited)
-    const isAlreadyInOtherPackage = packages.some(
-      (pkg) => pkg.id !== editingPackage?.id && pkg.questionIds.includes(q.id)
-    );
-
-    return isCorrectCategory && !isAlreadyInOtherPackage;
+    return isCorrectCategory;
   }).sort((a, b) => b.id - a.id);
 
   return (
@@ -1287,21 +1281,31 @@ export default function Admin() {
                           <span className="text-sm font-semibold">Pilih Semua</span>
                         </div>
                       )}
-                      {filteredQuestionsForPackage.map((q, index) => (
-                        <div
-                          key={q.id}
-                          className="flex items-center gap-3 p-3 hover:bg-muted/50"
-                        >
-                          <Checkbox
-                            checked={packageForm.questionIds.includes(q.id)}
-                            onCheckedChange={() => toggleQuestionInPackage(q.id)}
-                          />
-                          <span
-                            className="text-sm truncate flex-1"
-                            dangerouslySetInnerHTML={{ __html: `${index + 1}. ${q.question_text}` }}
-                          />
-                        </div>
-                      ))}
+                      {filteredQuestionsForPackage.map((q, index) => {
+                        const otherPkg = packages.find(p => p.id !== editingPackage?.id && p.questionIds.includes(q.id));
+                        return (
+                          <div
+                            key={q.id}
+                            className="flex items-center gap-3 p-3 hover:bg-muted/50"
+                          >
+                            <Checkbox
+                              checked={packageForm.questionIds.includes(q.id)}
+                              onCheckedChange={() => toggleQuestionInPackage(q.id)}
+                            />
+                            <div className="flex-1 min-w-0">
+                              <span
+                                className="text-sm truncate block"
+                                dangerouslySetInnerHTML={{ __html: `${q.question_text}` }}
+                              />
+                              {otherPkg && (
+                                <span className="text-[10px] text-orange-500 font-medium">
+                                  Sudah ada di: {otherPkg.name}
+                                </span>
+                              )}
+                            </div>
+                          </div>
+                        );
+                      })}
                     </div>
                   )}
                 </TabsContent>
@@ -1315,7 +1319,6 @@ export default function Admin() {
                     <div className="divide-y">
                       {packageForm.questionIds.map((id, index) => {
                         const q = questions.find(question => question.id === id);
-                        if (!q) return null;
                         return (
                           <div
                             key={id}
@@ -1324,10 +1327,18 @@ export default function Admin() {
                             <span className="text-xs font-bold text-muted-foreground w-6">
                               {index + 1}
                             </span>
-                            <span
-                              className="text-sm truncate flex-1"
-                              dangerouslySetInnerHTML={{ __html: q.question_text }}
-                            />
+                            <div className="flex-1 min-w-0">
+                              {q ? (
+                                <span
+                                  className="text-sm truncate block"
+                                  dangerouslySetInnerHTML={{ __html: q.question_text }}
+                                />
+                              ) : (
+                                <span className="text-sm text-destructive italic block">
+                                  Soal tidak ditemukan (ID: {id}) - Harap hapus dari paket
+                                </span>
+                              )}
+                            </div>
                             <div className="flex items-center gap-1">
                               <Button
                                 variant="ghost"
@@ -1351,7 +1362,7 @@ export default function Admin() {
                                 variant="ghost"
                                 size="icon"
                                 className="h-8 w-8 text-destructive hover:text-destructive"
-                                onClick={() => toggleQuestionInPackage(q.id)}
+                                onClick={() => toggleQuestionInPackage(id)}
                               >
                                 <Trash2 className="w-4 h-4" />
                               </Button>
