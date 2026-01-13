@@ -19,7 +19,9 @@ import {
   Eye,
   Upload,
   VolumeX,
+  FileSpreadsheet,
 } from "lucide-react";
+import * as XLSX from "xlsx";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -161,6 +163,7 @@ export default function Admin() {
   const [selectedArticles, setSelectedArticles] = useState<Set<string>>(new Set());
   const [isUploadingAudio, setIsUploadingAudio] = useState(false);
   const [uploadProgress, setUploadProgress] = useState(0);
+  const [isImporting, setIsImporting] = useState(false);
 
   // Delete confirmation
   const [deleteConfirmOpen, setDeleteConfirmOpen] = useState(false);
@@ -511,6 +514,89 @@ export default function Admin() {
     }
   };
 
+  // Import Excel handler
+  const handleImportExcel = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    setIsImporting(true);
+    const reader = new FileReader();
+
+    reader.onload = async (evt) => {
+      try {
+        const bstr = evt.target?.result;
+        const wb = XLSX.read(bstr, { type: "binary" });
+        const wsname = wb.SheetNames[0];
+        const ws = wb.Sheets[wsname];
+        const data = XLSX.utils.sheet_to_json(ws);
+
+        let successCount = 0;
+        let errorCount = 0;
+
+        for (const row of data as any[]) {
+          try {
+            const category = (row.Category || row.Kategori || "").toLowerCase().trim();
+            // Map common Indonesian terms to database categories
+            let mappedCategory = category;
+            if (category === "struktur" || category === "structure") mappedCategory = "structure";
+            if (category === "bacaan" || category === "reading") mappedCategory = "reading";
+
+            if (!["structure", "reading"].includes(mappedCategory)) {
+              errorCount++;
+              continue;
+            }
+
+            const options = [
+              row["Option A"] || row["Pilihan A"] || row["A"] || "",
+              row["Option B"] || row["Pilihan B"] || row["B"] || "",
+              row["Option C"] || row["Pilihan C"] || row["C"] || "",
+              row["Option D"] || row["Pilihan D"] || row["D"] || "",
+            ];
+
+            let correctAnswer = 0;
+            const correctVal = row["Correct Answer"] || row["Jawaban Benar"] || row["Jawaban"] || "";
+            if (typeof correctVal === "string") {
+              const letterMap: Record<string, number> = { A: 0, B: 1, C: 2, D: 3 };
+              correctAnswer = letterMap[correctVal.toUpperCase().trim()] ?? 0;
+            } else if (typeof correctVal === "number") {
+              // If Excel is 1-indexed (1, 2, 3, 4), convert to 0-indexed
+              correctAnswer = correctVal > 0 && correctVal <= 4 ? correctVal - 1 : correctVal;
+            }
+
+            const questionData: Question = {
+              id: Date.now() + Math.floor(Math.random() * 10000),
+              category: mappedCategory as "structure" | "reading",
+              question_text: row["Question Text"] || row["Teks Soal"] || row["Pertanyaan"] || "",
+              options,
+              correct_answer: correctAnswer,
+              explanation: row.Explanation || row.Penjelasan || "",
+            };
+
+            const passage = row.Passage || row.Artikel || row.Wacana || row.Teks;
+            if (mappedCategory === "reading" && passage) {
+              questionData.passage = passage;
+            }
+
+            await saveQuestion(questionData);
+            successCount++;
+          } catch (err) {
+            errorCount++;
+          }
+        }
+
+        toast.success(`${successCount} soal berhasil diimport! ${errorCount > 0 ? `${errorCount} gagal.` : ""}`);
+        loadQuestions();
+      } catch (error) {
+        toast.error("Gagal membaca file Excel");
+      } finally {
+        setIsImporting(false);
+        e.target.value = "";
+      }
+    };
+
+    reader.readAsBinaryString(file);
+  };
+
   // Article handlers
   const handleAddArticle = () => {
     setEditingArticle(null);
@@ -843,6 +929,29 @@ export default function Admin() {
                       <Plus className="w-4 h-4" />
                       {t("admin.addQuestion")}
                     </Button>
+                    <div className="relative">
+                      <Input
+                        type="file"
+                        accept=".xlsx, .xls"
+                        onChange={handleImportExcel}
+                        className="hidden"
+                        id="excel-import"
+                        disabled={isImporting}
+                      />
+                      <Button
+                        variant="outline"
+                        onClick={() => document.getElementById("excel-import")?.click()}
+                        className="gap-2"
+                        disabled={isImporting}
+                      >
+                        {isImporting ? (
+                          <Loader2 className="w-4 h-4 animate-spin" />
+                        ) : (
+                          <FileSpreadsheet className="w-4 h-4" />
+                        )}
+                        Import Excel
+                      </Button>
+                    </div>
                   </div>
                 </CardHeader>
                 <CardContent>
