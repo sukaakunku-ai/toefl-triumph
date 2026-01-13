@@ -755,7 +755,13 @@ export default function Admin() {
 
   const filteredQuestionsForPackage = questions.filter((q) => {
     const isCorrectCategory = packageForm.category === "full" || q.category === packageForm.category;
-    return isCorrectCategory;
+
+    // Check if the question is already in another package (not the one being edited)
+    const isAlreadyInOtherPackage = packages.some(
+      (pkg) => pkg.id !== editingPackage?.id && pkg.questionIds.includes(q.id)
+    );
+
+    return isCorrectCategory && !isAlreadyInOtherPackage;
   }).sort((a, b) => b.id - a.id);
 
   return (
@@ -1282,7 +1288,6 @@ export default function Admin() {
                         </div>
                       )}
                       {filteredQuestionsForPackage.map((q, index) => {
-                        const otherPkg = packages.find(p => p.id !== editingPackage?.id && p.questionIds.includes(q.id));
                         return (
                           <div
                             key={q.id}
@@ -1297,11 +1302,6 @@ export default function Admin() {
                                 className="text-sm truncate block"
                                 dangerouslySetInnerHTML={{ __html: `${q.question_text}` }}
                               />
-                              {otherPkg && (
-                                <span className="text-[10px] text-orange-500 font-medium">
-                                  Sudah ada di: {otherPkg.name}
-                                </span>
-                              )}
                             </div>
                           </div>
                         );
