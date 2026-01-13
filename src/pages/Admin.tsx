@@ -20,6 +20,8 @@ import {
   Upload,
   VolumeX,
   FileSpreadsheet,
+  ArrowUp,
+  ArrowDown,
 } from "lucide-react";
 import * as XLSX from "xlsx";
 import { Button } from "@/components/ui/button";
@@ -624,6 +626,19 @@ export default function Admin() {
     };
 
     reader.readAsBinaryString(file);
+  };
+
+  // Move question in package
+  const moveQuestionInPackage = (index: number, direction: 'up' | 'down') => {
+    setPackageForm(prev => {
+      const newIds = [...prev.questionIds];
+      if (direction === 'up' && index > 0) {
+        [newIds[index], newIds[index - 1]] = [newIds[index - 1], newIds[index]];
+      } else if (direction === 'down' && index < newIds.length - 1) {
+        [newIds[index], newIds[index + 1]] = [newIds[index + 1], newIds[index]];
+      }
+      return { ...prev, questionIds: newIds };
+    });
   };
 
   // Article handlers
@@ -1242,40 +1257,112 @@ export default function Admin() {
                 {t("admin.selectPackage")} ({packageForm.questionIds.length}{" "}
                 {t("dashboard.questions")})
               </Label>
-              <div className="border rounded-lg max-h-64 overflow-y-auto">
-                {filteredQuestionsForPackage.length === 0 ? (
-                  <p className="text-center text-muted-foreground py-4">
-                    {t("admin.noQuestions")}
-                  </p>
-                ) : (
-                  <div className="divide-y relative">
-                    {filteredQuestionsForPackage.length > 0 && (
-                      <div className="flex items-center gap-3 p-3 bg-muted/40 sticky top-0 z-10 border-b">
-                        <Checkbox
-                          checked={filteredQuestionsForPackage.length > 0 && filteredQuestionsForPackage.every(q => packageForm.questionIds.includes(q.id))}
-                          onCheckedChange={toggleAllQuestionsInPackage}
-                        />
-                        <span className="text-sm font-semibold">Pilih Semua</span>
-                      </div>
+
+              <Tabs defaultValue="available" className="w-full">
+                <TabsList className="grid w-full grid-cols-2">
+                  <TabsTrigger value="available">Tersedia</TabsTrigger>
+                  <TabsTrigger value="selected" className="relative">
+                    Terpilih & Urutan
+                    {packageForm.questionIds.length > 0 && (
+                      <span className="absolute -top-1 -right-1 flex h-4 w-4 items-center justify-center rounded-full bg-primary text-[10px] text-primary-foreground">
+                        {packageForm.questionIds.length}
+                      </span>
                     )}
-                    {filteredQuestionsForPackage.map((q, index) => (
-                      <div
-                        key={q.id}
-                        className="flex items-center gap-3 p-3 hover:bg-muted/50"
-                      >
-                        <Checkbox
-                          checked={packageForm.questionIds.includes(q.id)}
-                          onCheckedChange={() => toggleQuestionInPackage(q.id)}
-                        />
-                        <span
-                          className="text-sm truncate flex-1"
-                          dangerouslySetInnerHTML={{ __html: `${index + 1}. ${q.question_text}` }}
-                        />
-                      </div>
-                    ))}
-                  </div>
-                )}
-              </div>
+                  </TabsTrigger>
+                </TabsList>
+
+                <TabsContent value="available" className="border rounded-lg max-h-64 overflow-y-auto mt-2">
+                  {filteredQuestionsForPackage.length === 0 ? (
+                    <p className="text-center text-muted-foreground py-4">
+                      {t("admin.noQuestions")}
+                    </p>
+                  ) : (
+                    <div className="divide-y relative">
+                      {filteredQuestionsForPackage.length > 0 && (
+                        <div className="flex items-center gap-3 p-3 bg-muted/40 sticky top-0 z-10 border-b">
+                          <Checkbox
+                            checked={filteredQuestionsForPackage.length > 0 && filteredQuestionsForPackage.every(q => packageForm.questionIds.includes(q.id))}
+                            onCheckedChange={toggleAllQuestionsInPackage}
+                          />
+                          <span className="text-sm font-semibold">Pilih Semua</span>
+                        </div>
+                      )}
+                      {filteredQuestionsForPackage.map((q, index) => (
+                        <div
+                          key={q.id}
+                          className="flex items-center gap-3 p-3 hover:bg-muted/50"
+                        >
+                          <Checkbox
+                            checked={packageForm.questionIds.includes(q.id)}
+                            onCheckedChange={() => toggleQuestionInPackage(q.id)}
+                          />
+                          <span
+                            className="text-sm truncate flex-1"
+                            dangerouslySetInnerHTML={{ __html: `${index + 1}. ${q.question_text}` }}
+                          />
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                </TabsContent>
+
+                <TabsContent value="selected" className="border rounded-lg max-h-64 overflow-y-auto mt-2">
+                  {packageForm.questionIds.length === 0 ? (
+                    <p className="text-center text-muted-foreground py-4">
+                      Belum ada soal terpilih
+                    </p>
+                  ) : (
+                    <div className="divide-y">
+                      {packageForm.questionIds.map((id, index) => {
+                        const q = questions.find(question => question.id === id);
+                        if (!q) return null;
+                        return (
+                          <div
+                            key={id}
+                            className="flex items-center gap-3 p-3 hover:bg-muted/50"
+                          >
+                            <span className="text-xs font-bold text-muted-foreground w-6">
+                              {index + 1}
+                            </span>
+                            <span
+                              className="text-sm truncate flex-1"
+                              dangerouslySetInnerHTML={{ __html: q.question_text }}
+                            />
+                            <div className="flex items-center gap-1">
+                              <Button
+                                variant="ghost"
+                                size="icon"
+                                className="h-8 w-8"
+                                disabled={index === 0}
+                                onClick={() => moveQuestionInPackage(index, 'up')}
+                              >
+                                <ArrowUp className="w-4 h-4" />
+                              </Button>
+                              <Button
+                                variant="ghost"
+                                size="icon"
+                                className="h-8 w-8"
+                                disabled={index === packageForm.questionIds.length - 1}
+                                onClick={() => moveQuestionInPackage(index, 'down')}
+                              >
+                                <ArrowDown className="w-4 h-4" />
+                              </Button>
+                              <Button
+                                variant="ghost"
+                                size="icon"
+                                className="h-8 w-8 text-destructive hover:text-destructive"
+                                onClick={() => toggleQuestionInPackage(q.id)}
+                              >
+                                <Trash2 className="w-4 h-4" />
+                              </Button>
+                            </div>
+                          </div>
+                        );
+                      })}
+                    </div>
+                  )}
+                </TabsContent>
+              </Tabs>
             </div>
           </div>
 

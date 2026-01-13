@@ -207,7 +207,10 @@ export const deleteQuestionAudio = async (audioUrl: string): Promise<void> => {
 export const getQuestionsByIds = async (ids: number[]): Promise<Question[]> => {
   try {
     const allQs = await getAllQuestions();
-    return allQs.filter(q => ids.includes(q.id)).sort((a, b) => a.id - b.id);
+    // Return questions in the exact order of IDs provided
+    return ids
+      .map(id => allQs.find(q => q.id === id))
+      .filter((q): q is FirebaseQuestion => q !== undefined);
   } catch (error) {
     console.error("Error fetching questions by IDs:", error);
     return [];
