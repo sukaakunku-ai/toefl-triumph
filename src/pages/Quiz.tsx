@@ -78,7 +78,7 @@ export default function Quiz() {
       <div className="min-h-screen flex items-center justify-center bg-background">
         <div className="text-center">
           <Loader2 className="w-12 h-12 animate-spin text-primary mx-auto mb-4" />
-          <h2 className="text-xl font-bold text-foreground">Loading Quest...</h2>
+          <h2 className="text-xl font-bold text-foreground">Loading Paket Soal...</h2>
           <p className="text-muted-foreground">Preparing your test environment</p>
         </div>
       </div>

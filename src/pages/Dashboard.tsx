@@ -334,7 +334,7 @@ export default function Dashboard() {
                           <div className="w-8 h-8 rounded-full bg-white dark:bg-white/10 flex items-center justify-center shadow-sm">
                             <Layers className="w-4 h-4 text-foreground/70" />
                           </div>
-                          <span>{packageCounts[test.id] || 0} QUESTS</span>
+                          <span>{packageCounts[test.id] || 0} PAKET SOAL</span>
                         </div>
                       </div>
 
@@ -347,13 +347,10 @@ export default function Dashboard() {
                         />
                       </div>
 
-                      <div className="flex items-center justify-between pt-2">
-                        <div className="flex items-center gap-2">
-                          <span className="text-[10px] font-black text-muted-foreground uppercase tracking-tighter">Reward Potential:</span>
-                          <span className="text-xs font-black text-foreground">XP +500</span>
-                        </div>
-                        <div className="w-10 h-10 rounded-full bg-[#fbbf24] flex items-center justify-center shadow-lg border-2 border-[#d97706] group-hover:scale-110 transition-transform">
-                          <test.rewardIcon className="w-5 h-5 text-black" />
+                      <div className="pt-4">
+                        <div className="w-full bg-[#fbbf24] group-hover:bg-[#f59e0b] text-black font-black text-sm py-3 rounded-xl shadow-[0_4px_0_0_#d97706] group-hover:shadow-[0_2px_0_0_#d97706] transition-all flex items-center justify-center gap-2 uppercase tracking-tighter">
+                          Mulai Latihan
+                          <ArrowRight className="w-4 h-4" />
                         </div>
                       </div>
                     </div>
@@ -397,7 +394,7 @@ export default function Dashboard() {
             {isLoadingPackages ? (
               <div className="flex flex-col items-center justify-center py-20 gap-4">
                 <Loader2 className="w-12 h-12 animate-spin text-primary" />
-                <span className="text-xs font-black text-muted-foreground uppercase tracking-widest">Memuat Quest...</span>
+                <span className="text-xs font-black text-muted-foreground uppercase tracking-widest">Memuat Paket Soal...</span>
               </div>
             ) : selectedTestType?.id === "full" ? (
               <div className="space-y-8">
