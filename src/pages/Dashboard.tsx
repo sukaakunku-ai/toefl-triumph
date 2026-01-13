@@ -284,9 +284,6 @@ export default function Dashboard() {
             <h1 className="text-4xl md:text-5xl lg:text-6xl font-black text-foreground uppercase tracking-tight leading-none drop-shadow-sm">
               {t("dashboard.title")}
             </h1>
-            <p className="text-lg text-muted-foreground max-w-2xl mx-auto font-medium">
-              Selesaikan misi harian dan raih poin tertinggi di setiap sezione!
-            </p>
           </div>
 
           <div className="grid md:grid-cols-2 gap-8">
