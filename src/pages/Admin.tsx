@@ -547,8 +547,9 @@ export default function Admin() {
         let successCount = 0;
         let errorCount = 0;
         let duplicateCount = 0;
+        const baseId = Date.now();
 
-        for (const row of data as any[]) {
+        for (const [index, row] of (data as any[]).entries()) {
           try {
             const category = (row.Category || row.Kategori || "").toLowerCase().trim();
             // Map common Indonesian terms to database categories
@@ -591,7 +592,7 @@ export default function Admin() {
             }
 
             const questionData: Question = {
-              id: Date.now() + Math.floor(Math.random() * 10000),
+              id: baseId + index, // Use baseId + index to ensure strictly increasing sequential ordering
               category: mappedCategory as "structure" | "reading",
               question_text: questionText,
               options,
@@ -719,7 +720,7 @@ export default function Admin() {
 
   const filteredQuestions = questions
     .filter(q => questionCategoryFilter === "all" || q.category === questionCategoryFilter)
-    .sort((a, b) => b.id - a.id);
+    .sort((a, b) => a.id - b.id);
 
   // Toggle question in package
   const toggleQuestionInPackage = (questionId: number) => {
@@ -762,7 +763,7 @@ export default function Admin() {
     );
 
     return isCorrectCategory && !isAlreadyInOtherPackage;
-  }).sort((a, b) => b.id - a.id);
+  }).sort((a, b) => a.id - b.id);
 
   return (
     <div className="min-h-screen bg-wavy">
