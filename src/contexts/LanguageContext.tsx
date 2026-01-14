@@ -179,7 +179,7 @@ const translations: Record<Language, Record<string, string>> = {
     // Testimonials
     "testimonials.badge": "TESTIMONI",
     "testimonials.title": "APA KATA MEREKA?",
-    "testimonials.subtitle": "BERGABUNG DENGAN 1,000+ LEARNERS YANG SUDAH MERASAKAN MANFAAT BELAJAR DI TOEFL TRIUMPH. 🚀",
+    "testimonials.subtitle": "BERGABUNG DENGAN 1,000+ LEARNERS YANG SUDAH MERASAKAN MANFAAT BELAJAR DI TOEFL JAGOAN. 🚀",
     "testimonials.viewAll": "LIHAT SEMUA TESTIMONI",
     "testimonials.viewLess": "LIHAT LEBIH SEDIKIT",
   },
@@ -354,7 +354,7 @@ const translations: Record<Language, Record<string, string>> = {
     // Testimonials
     "testimonials.badge": "TESTIMONIALS",
     "testimonials.title": "WHAT THEY SAY?",
-    "testimonials.subtitle": "JOIN 1,000+ LEARNERS WHO HAVE EXPERIENCED THE BENEFITS OF LEARNING AT TOEFL TRIUMPH. 🚀",
+    "testimonials.subtitle": "JOIN 1,000+ LEARNERS WHO HAVE EXPERIENCED THE BENEFITS OF LEARNING AT TOEFL JAGOAN. 🚀",
     "testimonials.viewAll": "VIEW ALL TESTIMONIALS",
     "testimonials.viewLess": "SHOW LESS",
   },

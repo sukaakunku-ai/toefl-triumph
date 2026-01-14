@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import { Zap, Twitter, Linkedin, Github, Facebook, Instagram } from "lucide-react";
+import { Trophy, Twitter, Linkedin, Github, Facebook, Instagram } from "lucide-react";
 import { useLanguage } from "@/contexts/LanguageContext";
 
 export function Footer() {
@@ -19,10 +19,10 @@ export function Footer() {
           <div className="space-y-8 col-span-1 lg:col-span-1">
             <Link to="/" className="flex items-center gap-2">
               <div className="w-10 h-10 rounded-xl bg-primary flex items-center justify-center">
-                <Zap className="w-6 h-6 text-white fill-white" />
+                <Trophy className="w-6 h-6 text-white fill-white" />
               </div>
               <span className="font-black text-2xl text-white tracking-tighter uppercase">
-                TOEFL<span className="text-primary">BLAST</span>
+                TOEFL<span className="text-primary">JAGOAN</span>
               </span>
             </Link>
             <p className="text-sm text-slate-400 leading-relaxed font-bold max-w-xs">
@@ -82,7 +82,7 @@ export function Footer() {
 
         <div className="mt-20 pt-8 border-t border-slate-800 text-center md:text-left flex flex-col md:flex-row justify-between items-center gap-4">
           <p className="text-[10px] font-black text-slate-500 uppercase tracking-widest">
-            © {new Date().getFullYear()} TOEFL BLAST. {t("footer.rights")}
+            © {new Date().getFullYear()} TOEFL JAGOAN. {t("footer.rights")}
           </p>
           <div className="flex gap-8 text-[10px] font-black text-slate-500 uppercase tracking-widest">
             <Link to="#" className="hover:text-white transition-colors">Privacy Policy</Link>

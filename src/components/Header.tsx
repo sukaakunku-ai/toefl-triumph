@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
-import { Menu, X, Moon, Sun, Zap } from "lucide-react";
+import { Menu, X, Moon, Sun, Trophy } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { LanguageSwitcher } from "@/components/LanguageSwitcher";
@@ -41,10 +41,10 @@ export function Header({ isDark, toggleTheme }: HeaderProps) {
       <nav className="container mx-auto px-4 h-24 flex items-center justify-between">
         <Link to="/" className="flex items-center gap-2 group">
           <div className="w-10 h-10 rounded-xl bg-primary flex items-center justify-center shadow-lg shadow-primary/20 group-hover:scale-110 transition-transform">
-            <Zap className="w-6 h-6 text-white fill-white" />
+            <Trophy className="w-6 h-6 text-white fill-white" />
           </div>
           <span className="font-black text-2xl text-slate-900 tracking-tighter uppercase">
-            TOEFL<span className="text-primary">BLAST</span>
+            TOEFL<span className="text-primary">JAGOAN</span>
           </span>
         </Link>
 
