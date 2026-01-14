@@ -246,9 +246,9 @@ export default function Dashboard() {
         <div className="container mx-auto px-4 h-16 flex items-center justify-between">
           <Link to="/" className="flex items-center gap-2 group">
             <div className="w-10 h-10 rounded-xl bg-primary flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform">
-              <Zap className="w-6 h-6 text-white fill-white" />
+              <Trophy className="w-6 h-6 text-white fill-white" />
             </div>
-            <span className="font-black text-xl text-foreground uppercase tracking-tighter">TOEFL<span className="text-primary">BLAST</span></span>
+            <span className="font-black text-xl text-foreground uppercase tracking-tighter">TOEFL<span className="text-primary">JAGOAN</span></span>
           </Link>
 
           <div className="flex items-center gap-2">
