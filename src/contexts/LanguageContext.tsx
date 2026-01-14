@@ -181,6 +181,7 @@ const translations: Record<Language, Record<string, string>> = {
     "testimonials.title": "APA KATA MEREKA?",
     "testimonials.subtitle": "BERGABUNG DENGAN 1,000+ LEARNERS YANG SUDAH MERASAKAN MANFAAT BELAJAR DI TOEFL TRIUMPH. 🚀",
     "testimonials.viewAll": "LIHAT SEMUA TESTIMONI",
+    "testimonials.viewLess": "LIHAT LEBIH SEDIKIT",
   },
   en: {
     // Navigation
@@ -355,6 +356,7 @@ const translations: Record<Language, Record<string, string>> = {
     "testimonials.title": "WHAT THEY SAY?",
     "testimonials.subtitle": "JOIN 1,000+ LEARNERS WHO HAVE EXPERIENCED THE BENEFITS OF LEARNING AT TOEFL TRIUMPH. 🚀",
     "testimonials.viewAll": "VIEW ALL TESTIMONIALS",
+    "testimonials.viewLess": "SHOW LESS",
   },
 };
 
