@@ -5,6 +5,7 @@ import { Hero } from "@/components/landing/Hero";
 import { HowItWorks } from "@/components/landing/HowItWorks";
 import { WhyChooseUs } from "@/components/landing/WhyChooseUs";
 import { BlogSection } from "@/components/landing/BlogSection";
+import { Testimonials } from "@/components/landing/Testimonials";
 import { CTA } from "@/components/landing/CTA";
 
 const Index = () => {
@@ -13,7 +14,7 @@ const Index = () => {
   useEffect(() => {
     const savedTheme = localStorage.getItem("theme");
     const prefersDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
-    
+
     if (savedTheme === "dark" || (!savedTheme && prefersDark)) {
       setIsDark(true);
       document.documentElement.classList.add("dark");
@@ -41,6 +42,7 @@ const Index = () => {
         <Hero />
         <HowItWorks />
         <WhyChooseUs />
+        <Testimonials />
         <BlogSection />
         <CTA />
       </main>

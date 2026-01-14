@@ -175,6 +175,12 @@ const translations: Record<Language, Record<string, string>> = {
     "footer.scoreGuide": "Score Guide",
     "footer.connect": "Connect",
     "footer.rights": "All rights reserved.",
+
+    // Testimonials
+    "testimonials.badge": "TESTIMONI",
+    "testimonials.title": "APA KATA MEREKA?",
+    "testimonials.subtitle": "BERGABUNG DENGAN 1,000+ LEARNERS YANG SUDAH MERASAKAN MANFAAT BELAJAR DI TOEFL TRIUMPH. 🚀",
+    "testimonials.viewAll": "LIHAT SEMUA TESTIMONI",
   },
   en: {
     // Navigation
@@ -343,6 +349,12 @@ const translations: Record<Language, Record<string, string>> = {
     "footer.scoreGuide": "Score Guide",
     "footer.connect": "Connect",
     "footer.rights": "All rights reserved.",
+
+    // Testimonials
+    "testimonials.badge": "TESTIMONIALS",
+    "testimonials.title": "WHAT THEY SAY?",
+    "testimonials.subtitle": "JOIN 1,000+ LEARNERS WHO HAVE EXPERIENCED THE BENEFITS OF LEARNING AT TOEFL TRIUMPH. 🚀",
+    "testimonials.viewAll": "VIEW ALL TESTIMONIALS",
   },
 };
 
