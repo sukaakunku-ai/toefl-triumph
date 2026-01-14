@@ -142,6 +142,10 @@ export default function Admin() {
   // Package selection for bulk delete
   const [selectedPackages, setSelectedPackages] = useState<Set<string>>(new Set());
 
+  // Range delete state
+  const [rangeStart, setRangeStart] = useState("");
+  const [rangeEnd, setRangeEnd] = useState("");
+
   // Input visibility state
   const [showTranscriptInput, setShowTranscriptInput] = useState(false);
   const [showQuestionAudioInput, setShowQuestionAudioInput] = useState(false);
@@ -434,6 +438,54 @@ export default function Admin() {
       }
       toast.success(`${selectedQuestions.size} soal berhasil dihapus`);
       setSelectedQuestions(new Set());
+      loadQuestions();
+    } catch (error) {
+      toast.error(t("common.error"));
+    }
+  };
+
+  // Range delete questions
+  const handleRangeDeleteQuestions = async () => {
+    const start = parseInt(rangeStart);
+    const end = parseInt(rangeEnd);
+
+    if (isNaN(start) || isNaN(end) || start <= 0 || end < start) {
+      toast.error("Range tidak valid");
+      return;
+    }
+
+    if (filteredQuestions.length === 0) {
+      toast.error("Tidak ada soal untuk dihapus");
+      return;
+    }
+
+    // Convert 1-based index to 0-based index
+    const startIndex = start - 1;
+    const endIndex = end;
+
+    if (startIndex >= filteredQuestions.length) {
+      toast.error("Range di luar jumlah soal yang ada");
+      return;
+    }
+
+    const questionsToDelete = filteredQuestions.slice(startIndex, endIndex);
+
+    if (questionsToDelete.length === 0) {
+      toast.error("Tidak ada soal dalam range tersebut");
+      return;
+    }
+
+    if (!window.confirm(`Yakin ingin menghapus ${questionsToDelete.length} soal (No. ${start} - ${Math.min(end, filteredQuestions.length)})?`)) {
+      return;
+    }
+
+    try {
+      for (const q of questionsToDelete) {
+        await deleteQuestion(q.id);
+      }
+      toast.success(`${questionsToDelete.length} soal berhasil dihapus`);
+      setRangeStart("");
+      setRangeEnd("");
       loadQuestions();
     } catch (error) {
       toast.error(t("common.error"));
@@ -950,6 +1002,36 @@ export default function Admin() {
                         ))}
                       </SelectContent>
                     </Select>
+
+                    <div className="flex items-center gap-1 border-l border-r px-2 mx-1">
+                      <Input
+                        placeholder="Dari"
+                        value={rangeStart}
+                        onChange={(e) => setRangeStart(e.target.value)}
+                        className="w-16 h-8 text-xs"
+                        type="number"
+                        min="1"
+                      />
+                      <span className="text-muted-foreground">-</span>
+                      <Input
+                        placeholder="Sampai"
+                        value={rangeEnd}
+                        onChange={(e) => setRangeEnd(e.target.value)}
+                        className="w-16 h-8 text-xs"
+                        type="number"
+                        min="1"
+                      />
+                      <Button
+                        variant="destructive"
+                        size="sm"
+                        onClick={handleRangeDeleteQuestions}
+                        className="h-8 w-8 p-0"
+                        title="Hapus Range"
+                      >
+                        <Trash2 className="w-4 h-4" />
+                      </Button>
+                    </div>
+
                     {selectedQuestions.size > 0 && (
                       <>
                         <Button
