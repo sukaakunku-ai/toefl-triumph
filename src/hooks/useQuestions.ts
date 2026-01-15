@@ -23,12 +23,13 @@ export const useQuestions = (category: string) => {
 export const useTestConfig = (testType: string) => {
   const config = testConfigs[testType as keyof typeof testConfigs];
   const { data: questions, isLoading, error } = useQuestions(testType);
-  
+
   return {
     config: config ? {
       ...config,
       questions: questions || config.questions,
     } : null,
+    duration: config?.duration || 25,
     isLoading,
     error,
   };

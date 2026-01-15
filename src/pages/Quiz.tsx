@@ -27,7 +27,7 @@ export default function Quiz() {
   const [packageDuration, setPackageDuration] = useState<number>(0);
   const [isLoadingPackage, setIsLoadingPackage] = useState(!!packageId || testType === "full");
 
-  const { config, isLoading } = useTestConfig(testType || "");
+  const { config, duration: hookDuration, isLoading } = useTestConfig(testType || "");
 
   useEffect(() => {
     const loadPackageQuestions = async () => {
@@ -92,7 +92,7 @@ export default function Quiz() {
 
   // Extract from config for type safety
   const finalQuestions = packageQuestions || config?.questions || [];
-  const finalDuration = packageDuration || config?.duration || 25;
+  const finalDuration = packageDuration || hookDuration || 25;
   const finalTestName = config?.name || "TOEFL Practice";
 
   if (isComplete && results && config) {
