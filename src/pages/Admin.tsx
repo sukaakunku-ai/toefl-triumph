@@ -582,6 +582,35 @@ export default function Admin() {
     }
   };
 
+  // Fix all package durations
+  const handleFixPackageDurations = async () => {
+    if (!window.confirm("Yakin ingin menyesuaikan semua durasi paket soal ke standar? (Reading: 55m, Listening: 35m, Structure: 25m)")) {
+      return;
+    }
+
+    try {
+      setIsLoadingPackages(true);
+      for (const pkg of packages) {
+        let standardDuration = 25;
+        if (pkg.category === "listening") standardDuration = 35;
+        if (pkg.category === "reading") standardDuration = 55;
+
+        if (pkg.duration !== standardDuration) {
+          await savePackage({
+            ...pkg,
+            duration: standardDuration
+          });
+        }
+      }
+      toast.success("Semua durasi paket berhasil disesuaikan");
+      loadPackages();
+    } catch (error) {
+      toast.error("Gagal menyesuaikan durasi");
+    } finally {
+      setIsLoadingPackages(false);
+    }
+  };
+
   // Import Excel handler
   const handleImportExcel = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -903,6 +932,15 @@ export default function Admin() {
                         Hapus ({selectedPackages.size})
                       </Button>
                     )}
+                    <Button
+                      variant="outline"
+                      onClick={handleFixPackageDurations}
+                      className="gap-2 border-yellow-500/50 text-yellow-600 hover:bg-yellow-50"
+                      title="Sesuaikan durasi semua paket ke standar"
+                    >
+                      <Clock className="w-4 h-4" />
+                      Fix Durasi
+                    </Button>
                     <Button onClick={handleAddPackage} className="gap-2">
                       <Plus className="w-4 h-4" />
                       {t("admin.addPackage")}
@@ -1304,13 +1342,19 @@ export default function Admin() {
                 <Label>{t("admin.category")}</Label>
                 <Select
                   value={packageForm.category}
-                  onValueChange={(val) =>
+                  onValueChange={(val) => {
+                    const newCat = val as Category;
+                    let newDuration = 25;
+                    if (newCat === "listening") newDuration = 35;
+                    if (newCat === "reading") newDuration = 55;
+
                     setPackageForm((prev) => ({
                       ...prev,
-                      category: val as Category,
+                      category: newCat,
+                      duration: newDuration,
                       questionIds: [],
-                    }))
-                  }
+                    }));
+                  }}
                 >
                   <SelectTrigger>
                     <SelectValue />
