@@ -352,7 +352,9 @@ export default function Admin() {
       const isDuplicate = questions.some(q =>
         q.id !== editingQuestion?.id &&
         q.question_text.trim().toLowerCase() === questionForm.question_text.trim().toLowerCase() &&
-        q.category === questionForm.category
+        q.category === questionForm.category &&
+        (q.passage || "").trim().toLowerCase() === (questionForm.passage || "").trim().toLowerCase() &&
+        JSON.stringify(q.options) === JSON.stringify(questionForm.options)
       );
 
       if (isDuplicate) {
@@ -616,16 +618,7 @@ export default function Admin() {
             }
 
             const questionText = (row["Question Text"] || row["Teks Soal"] || row["Pertanyaan"] || "").trim();
-
-            const isDuplicate = questions.some(q =>
-              q.question_text.trim().toLowerCase() === questionText.toLowerCase() &&
-              q.category === mappedCategory
-            );
-
-            if (isDuplicate) {
-              duplicateCount++;
-              continue;
-            }
+            const passage = (row.Passage || row.Artikel || row.Wacana || row.Teks || "").trim();
 
             const options = [
               row["Option A"] || row["Pilihan A"] || row["A"] || "",
@@ -633,6 +626,18 @@ export default function Admin() {
               row["Option C"] || row["Pilihan C"] || row["C"] || "",
               row["Option D"] || row["Pilihan D"] || row["D"] || "",
             ];
+
+            const isDuplicate = questions.some(q =>
+              q.question_text.trim().toLowerCase() === questionText.toLowerCase() &&
+              q.category === mappedCategory &&
+              (q.passage || "").trim().toLowerCase() === passage.toLowerCase() &&
+              JSON.stringify(q.options) === JSON.stringify(options)
+            );
+
+            if (isDuplicate) {
+              duplicateCount++;
+              continue;
+            }
 
             let correctAnswer = 0;
             const correctVal = row["Correct Answer"] || row["Jawaban Benar"] || row["Jawaban"] || "";
@@ -653,7 +658,6 @@ export default function Admin() {
               explanation: row.Explanation || row.Penjelasan || "",
             };
 
-            const passage = row.Passage || row.Artikel || row.Wacana || row.Teks;
             if ((mappedCategory === "reading" || mappedCategory === "listening") && passage) {
               questionData.passage = passage;
             }
