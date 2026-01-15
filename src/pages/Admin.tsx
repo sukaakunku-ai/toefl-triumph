@@ -607,9 +607,10 @@ export default function Admin() {
             // Map common Indonesian terms to database categories
             let mappedCategory = category;
             if (category === "struktur" || category === "structure") mappedCategory = "structure";
-            if (category === "bacaan" || category === "reading") mappedCategory = "reading";
+            if (category === "bacaan" || category === "reading" || category === "reading comprehension") mappedCategory = "reading";
+            if (category === "listening" || category === "listening comprehension" || category === "pendengaran") mappedCategory = "listening";
 
-            if (!["structure", "reading"].includes(mappedCategory)) {
+            if (!["structure", "reading", "listening"].includes(mappedCategory)) {
               errorCount++;
               continue;
             }
@@ -645,7 +646,7 @@ export default function Admin() {
 
             const questionData: Question = {
               id: baseId + index, // Use baseId + index to ensure strictly increasing sequential ordering
-              category: mappedCategory as "structure" | "reading",
+              category: mappedCategory as "structure" | "reading" | "listening",
               question_text: questionText,
               options,
               correct_answer: correctAnswer,
@@ -653,7 +654,7 @@ export default function Admin() {
             };
 
             const passage = row.Passage || row.Artikel || row.Wacana || row.Teks;
-            if (mappedCategory === "reading" && passage) {
+            if ((mappedCategory === "reading" || mappedCategory === "listening") && passage) {
               questionData.passage = passage;
             }
 
