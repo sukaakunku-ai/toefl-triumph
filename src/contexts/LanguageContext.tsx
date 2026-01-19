@@ -41,7 +41,7 @@ const translations: Record<Language, Record<string, string>> = {
 
     // Hero
     "hero.title": "ACE YOUR TOEFL EXAM!",
-    "hero.subtitle": "Platform latihan TOEFL TERBAIK & GRATIS dengan 500+ soal, simulasi real test, dan tracking system yang bikin kamu UNSTOPPABLE! 🚀",
+    "hero.subtitle": "Platform latihan TOEFL TERBAIK & GRATIS dengan 500+ soal dan simulasi real test yang bikin kamu UNSTOPPABLE! 🚀",
     "hero.cta": "MULAI SEKARANG!",
     "hero.secondary": "LIHAT DEMO",
 
@@ -58,7 +58,7 @@ const translations: Record<Language, Record<string, string>> = {
     "howItWorks.step4.desc": "Raih skor TOEFL impian dan mewujudkan goal kamu!",
 
     // Why choose us
-    "whyChooseUs.title": "SUPERCHARGE YOUR TOEFL PREP!",
+    "whyChooseUs.title": "SUPERCHARGE YOUR TOEFL PREPARATION!",
     "whyChooseUs.subtitle": "Everything you need to crush that TOEFL test! 🚀",
     "whyChooseUs.feature1.title": "READING MASTERY",
     "whyChooseUs.feature1.desc": "500+ passages dengan berbagai topik dan level difficulty.",
@@ -212,7 +212,7 @@ const translations: Record<Language, Record<string, string>> = {
 
     // Hero
     "hero.title": "ACE YOUR TOEFL EXAM!",
-    "hero.subtitle": "The BEST & FREE TOEFL practice platform with 500+ questions, real test simulations, and tracking system! 🚀",
+    "hero.subtitle": "The BEST & FREE TOEFL practice platform with 500+ questions and real test simulations! 🚀",
     "hero.cta": "START NOW!",
     "hero.secondary": "WATCH DEMO",
 
@@ -229,7 +229,7 @@ const translations: Record<Language, Record<string, string>> = {
     "howItWorks.step4.desc": "Reach your dream TOEFL score and achieve your goals!",
 
     // Why choose us
-    "whyChooseUs.title": "SUPERCHARGE YOUR TOEFL PREP!",
+    "whyChooseUs.title": "SUPERCHARGE YOUR TOEFL PREPARATION!",
     "whyChooseUs.subtitle": "Everything you need to crush that TOEFL test! 🚀",
     "whyChooseUs.feature1.title": "READING MASTERY",
     "whyChooseUs.feature1.desc": "500+ passages with various topics and difficulty levels.",
