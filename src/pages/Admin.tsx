@@ -94,6 +94,8 @@ import {
 import { QuestionPackage } from "@/data/packages";
 import { Question } from "@/data/questions";
 import { toast } from "sonner";
+import { auth } from "@/lib/firebase";
+import { signOut } from "firebase/auth";
 
 type Category = "structure" | "reading" | "listening" | "full";
 
@@ -910,9 +912,13 @@ export default function Admin() {
             </Button>
             <Button
               variant="outline"
-              onClick={() => {
-                localStorage.removeItem("adminAuth");
-                window.location.href = "/admin/login";
+              onClick={async () => {
+                try {
+                  await signOut(auth);
+                  window.location.href = "/admin/login";
+                } catch (error) {
+                  toast.error("Gagal logout");
+                }
               }}
             >
               Logout

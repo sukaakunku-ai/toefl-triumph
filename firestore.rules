@@ -1,0 +1,25 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // Allow public read access to all questions and packages
+    match /questions/{questionId} {
+      allow read: if true;
+      allow write, delete: if request.auth != null;
+    }
+    
+    match /packages/{packageId} {
+      allow read: if true;
+      allow write, delete: if request.auth != null;
+    }
+
+    match /articles/{articleId} {
+      allow read: if true;
+      allow write, delete: if request.auth != null;
+    }
+
+    // Default deny
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}
