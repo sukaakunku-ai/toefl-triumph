@@ -1,7 +1,7 @@
-import { useState, useCallback } from "react";
+import { useState, useCallback, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { motion } from "framer-motion";
-import { X, AlertTriangle } from "lucide-react";
+import { motion, AnimatePresence } from "framer-motion";
+import { X, AlertTriangle, Pause, Play } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
 import { Timer } from "./Timer";
@@ -33,7 +33,18 @@ export function QuizEngine({ testName, questions, duration, onComplete }: QuizEn
   const [flagged, setFlagged] = useState<Set<number>>(new Set());
   const [showExitDialog, setShowExitDialog] = useState(false);
   const [showSubmitDialog, setShowSubmitDialog] = useState(false);
-  const [startTime] = useState(Date.now());
+  const [isPaused, setIsPaused] = useState(false);
+  const [timeSpent, setTimeSpent] = useState(0);
+
+  useEffect(() => {
+    let interval: NodeJS.Timeout;
+    if (!isPaused) {
+      interval = setInterval(() => {
+        setTimeSpent((s) => s + 1);
+      }, 1000);
+    }
+    return () => clearInterval(interval);
+  }, [isPaused]);
 
   const currentQuestion = questions?.[currentIndex];
   const progress = questions?.length ? ((Object.keys(answers).length) / questions.length) * 100 : 0;
@@ -98,14 +109,13 @@ export function QuizEngine({ testName, questions, duration, onComplete }: QuizEn
     }
   };
 
-  const submitTest = () => {
-    const timeSpent = Math.floor((Date.now() - startTime) / 1000);
+  const submitTest = useCallback(() => {
     onComplete(answers, timeSpent);
-  };
+  }, [answers, timeSpent, onComplete]);
 
   const handleTimeUp = useCallback(() => {
-    submitTest();
-  }, []);
+    onComplete(answers, duration * 60);
+  }, [answers, duration, onComplete]);
 
   return (
     <div className="min-h-screen bg-background">
@@ -130,7 +140,18 @@ export function QuizEngine({ testName, questions, duration, onComplete }: QuizEn
               </div>
             </div>
 
-            <Timer duration={duration} onTimeUp={handleTimeUp} />
+            <div className="flex items-center gap-2">
+              <Timer duration={duration} onTimeUp={handleTimeUp} isPaused={isPaused} />
+              <Button
+                variant="outline"
+                size="icon"
+                onClick={() => setIsPaused(true)}
+                className="h-12 w-12 rounded-xl border-border hover:bg-accent transition-colors hidden sm:flex"
+                title="Pause Test"
+              >
+                <Pause className="w-5 h-5" />
+              </Button>
+            </div>
           </div>
 
           <div className="mt-4">
@@ -237,6 +258,40 @@ export function QuizEngine({ testName, questions, duration, onComplete }: QuizEn
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>
+
+      {/* Pause Overlay */}
+      <AnimatePresence>
+        {isPaused && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 z-[100] bg-background/40 backdrop-blur-xl flex items-center justify-center p-4"
+          >
+            <motion.div
+              initial={{ opacity: 0, scale: 0.9, y: 20 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              exit={{ opacity: 0, scale: 0.9, y: 20 }}
+              className="max-w-md w-full bg-card/90 border border-border p-8 rounded-3xl shadow-2xl text-center"
+            >
+              <div className="w-20 h-20 bg-primary/10 rounded-full flex items-center justify-center mx-auto mb-6">
+                <Pause className="w-10 h-10 text-primary" />
+              </div>
+              <h2 className="text-3xl font-bold text-foreground mb-2">Simulasi Di-pause</h2>
+              <p className="text-muted-foreground mb-8 text-lg">
+                Ambil nafas sejenak. Waktu dan progres Anda telah disimpan dengan aman.
+              </p>
+              <Button
+                size="lg"
+                onClick={() => setIsPaused(false)}
+                className="w-full h-14 text-lg font-bold rounded-2xl bg-gradient-hero hover:opacity-90 transition-all shadow-lg hover:shadow-primary/25"
+              >
+                <Play className="w-6 h-6 mr-2 fill-current" /> Lanjutkan Simulasi
+              </Button>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </div>
   );
 }

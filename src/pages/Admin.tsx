@@ -400,6 +400,25 @@ export default function Admin() {
     setDeleteConfirmOpen(true);
   };
 
+  const syncPackagesAfterQuestionDeletion = async (deletedIds: number[]) => {
+    try {
+      let updatedAny = false;
+      for (const pkg of packages) {
+        const initialCount = pkg.questionIds.length;
+        const newIds = pkg.questionIds.filter(id => !deletedIds.includes(id));
+        if (newIds.length !== initialCount) {
+          await savePackage({ ...pkg, questionIds: newIds });
+          updatedAny = true;
+        }
+      }
+      if (updatedAny) {
+        await loadPackages();
+      }
+    } catch (error) {
+      console.error("Error syncing packages:", error);
+    }
+  };
+
   const handleDelete = async () => {
     if (!itemToDelete) return;
 
@@ -408,8 +427,10 @@ export default function Admin() {
         await deletePackage(itemToDelete.id as string);
         loadPackages();
       } else if (itemToDelete.type === "question") {
-        await deleteQuestion(itemToDelete.id as number);
-        loadQuestions();
+        const questionId = itemToDelete.id as number;
+        await deleteQuestion(questionId);
+        await syncPackagesAfterQuestionDeletion([questionId]);
+        await loadQuestions();
       } else if (itemToDelete.type === "article") {
         await deleteArticle(itemToDelete.id as string);
         loadArticles();
@@ -436,12 +457,14 @@ export default function Admin() {
     if (selectedQuestions.size === 0) return;
 
     try {
-      for (const id of Array.from(selectedQuestions)) {
+      const deletedIds = Array.from(selectedQuestions);
+      for (const id of deletedIds) {
         await deleteQuestion(id);
       }
+      await syncPackagesAfterQuestionDeletion(deletedIds);
       toast.success(`${selectedQuestions.size} soal berhasil dihapus`);
       setSelectedQuestions(new Set());
-      loadQuestions();
+      await loadQuestions();
     } catch (error) {
       toast.error(t("common.error"));
     }
@@ -483,13 +506,15 @@ export default function Admin() {
     }
 
     try {
-      for (const q of questionsToDelete) {
-        await deleteQuestion(q.id);
+      const deletedIds = questionsToDelete.map(q => q.id);
+      for (const id of deletedIds) {
+        await deleteQuestion(id);
       }
+      await syncPackagesAfterQuestionDeletion(deletedIds);
       toast.success(`${questionsToDelete.length} soal berhasil dihapus`);
       setRangeStart("");
       setRangeEnd("");
-      loadQuestions();
+      await loadQuestions();
     } catch (error) {
       toast.error(t("common.error"));
     }
