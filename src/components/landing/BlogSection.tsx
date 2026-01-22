@@ -66,7 +66,7 @@ export function BlogSection() {
   const articles = getLocalizedArticles(language);
 
   return (
-    <section className="py-24 bg-white">
+    <section className="py-24 bg-white dark:bg-slate-950 transition-colors duration-300">
       <div className="container mx-auto px-4">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
@@ -78,10 +78,10 @@ export function BlogSection() {
           <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-red-600 text-white text-[10px] font-black uppercase tracking-widest mb-6">
             FREE LEARNING RESOURCES
           </div>
-          <h2 className="text-4xl md:text-5xl font-black text-slate-900 mb-4 tracking-tighter uppercase">
+          <h2 className="text-4xl md:text-5xl font-black text-slate-900 dark:text-white mb-4 tracking-tighter uppercase">
             {t("blog.sectionTitle")}
           </h2>
-          <p className="text-lg text-slate-500 max-w-2xl mx-auto font-bold uppercase tracking-tight">
+          <p className="text-lg text-slate-500 dark:text-slate-400 max-w-2xl mx-auto font-bold uppercase tracking-tight">
             {t("blog.sectionSubtitle")}
           </p>
         </motion.div>
@@ -95,19 +95,19 @@ export function BlogSection() {
               viewport={{ once: true }}
               transition={{ duration: 0.5, delay: index * 0.1 }}
             >
-              <Card className="h-full border-2 border-slate-900 rounded-[2rem] overflow-hidden shadow-[8px_8px_0px_0px_rgba(15,23,42,1)] hover:translate-x-1 hover:translate-y-1 hover:shadow-none transition-all group">
-                <div className="aspect-[4/3] relative overflow-hidden border-b-2 border-slate-900">
+              <Card className="h-full border-2 border-slate-900 dark:border-slate-800 bg-white dark:bg-slate-900 rounded-[2rem] overflow-hidden shadow-[8px_8px_0px_0px_rgba(15,23,42,1)] dark:shadow-[8px_8px_0px_0px_rgba(0,0,0,0.5)] hover:translate-x-1 hover:translate-y-1 hover:shadow-none transition-all group">
+                <div className="aspect-[4/3] relative overflow-hidden border-b-2 border-slate-900 dark:border-slate-800">
                   <img src={article.image} alt={article.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
-                  <div className={`absolute top-4 left-4 px-3 py-1 rounded-lg text-[10px] font-black uppercase tracking-widest ${article.color}`}>
+                  <div className={`absolute top-4 left-4 px-3 py-1 rounded-lg text-[10px] font-black uppercase tracking-widest ${article.color.replace('bg-', 'bg-').replace('-50', '-50 dark:bg-' + article.color.split('-')[1] + '-900/20')}`}>
                     {article.category}
                   </div>
                 </div>
                 <CardContent className="p-8">
-                  <div className="flex items-center gap-2 text-[10px] font-black text-slate-400 mb-4 uppercase tracking-[0.2em]">
+                  <div className="flex items-center gap-2 text-[10px] font-black text-slate-400 dark:text-slate-500 mb-4 uppercase tracking-[0.2em]">
                     <Clock className="w-3.5 h-3.5" />
                     {article.readTime}
                   </div>
-                  <h3 className="text-xl font-black text-slate-900 mb-6 leading-tight group-hover:text-primary transition-colors uppercase tracking-tight">
+                  <h3 className="text-xl font-black text-slate-900 dark:text-white mb-6 leading-tight group-hover:text-primary transition-colors uppercase tracking-tight">
                     {article.title}
                   </h3>
                   <Link

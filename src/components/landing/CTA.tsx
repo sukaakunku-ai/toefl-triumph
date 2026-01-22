@@ -8,14 +8,14 @@ export function CTA() {
   const { t } = useLanguage();
 
   return (
-    <section className="py-24 bg-white">
+    <section className="py-24 bg-white dark:bg-slate-950 transition-colors duration-300">
       <div className="container mx-auto px-4">
         <motion.div
           initial={{ opacity: 0, scale: 0.95 }}
           whileInView={{ opacity: 1, scale: 1 }}
           viewport={{ once: true }}
           transition={{ duration: 0.5 }}
-          className="relative overflow-hidden rounded-[3rem] bg-gradient-to-br from-orange-600 to-red-600 p-12 md:p-24 text-center shadow-2xl shadow-red-200"
+          className="relative overflow-hidden rounded-[3rem] bg-gradient-to-br from-orange-600 to-red-600 p-12 md:p-24 text-center shadow-2xl shadow-red-200 dark:shadow-red-900/40"
         >
           {/* Decorative Circles */}
           <div className="absolute top-[-10%] left-[-5%] w-64 h-64 bg-white/10 rounded-full blur-3xl" />

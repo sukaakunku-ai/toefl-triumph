@@ -8,9 +8,9 @@ export function Hero() {
   const { t } = useLanguage();
 
   const stats = [
-    { label: "TOEFL", value: "500+", color: "bg-white text-slate-900 border-slate-200" },
-    { label: "STUDENTS", value: "10K+", color: "bg-white text-slate-900 border-slate-200" },
-    { label: "SUCCESS", value: "96%", color: "bg-white text-slate-900 border-slate-200" },
+    { label: "TOEFL", value: "500+", color: "bg-white dark:bg-slate-900 text-slate-900 dark:text-white border-slate-200 dark:border-slate-800" },
+    { label: "STUDENTS", value: "10K+", color: "bg-white dark:bg-slate-900 text-slate-900 dark:text-white border-slate-200 dark:border-slate-800" },
+    { label: "SUCCESS", value: "96%", color: "bg-white dark:bg-slate-900 text-slate-900 dark:text-white border-slate-200 dark:border-slate-800" },
     { label: "FOREVER", value: "FREE", color: "bg-primary text-white border-primary" },
   ];
 
@@ -21,7 +21,7 @@ export function Hero() {
   ];
 
   return (
-    <section className="relative min-h-[90vh] flex flex-col items-center justify-center pt-32 pb-16 overflow-hidden bg-white">
+    <section className="relative min-h-[90vh] flex flex-col items-center justify-center pt-32 pb-16 overflow-hidden bg-white dark:bg-slate-950 transition-colors duration-300">
       {/* Background Blurs */}
       <div className="absolute top-[-10%] right-[-5%] w-[400px] h-[400px] bg-primary/10 rounded-full blur-[100px] -z-10" />
       <div className="absolute bottom-[0%] left-[-5%] w-[300px] h-[300px] bg-orange-400/10 rounded-full blur-[100px] -z-10" />
@@ -34,13 +34,13 @@ export function Hero() {
           className="flex flex-col items-center gap-6"
         >
           {/* Top Badge */}
-          <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-orange-50 border border-orange-100 text-[10px] font-bold text-orange-600 uppercase tracking-[0.2em]">
-            <Zap className="w-3 h-3 fill-orange-600" />
+          <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-orange-50 dark:bg-orange-950/30 border border-orange-100 dark:border-orange-900/50 text-[10px] font-bold text-orange-600 dark:text-orange-400 uppercase tracking-[0.2em]">
+            <Zap className="w-3 h-3 fill-orange-600 dark:fill-orange-400" />
             {t("hero.freePractice")}
           </div>
 
           {/* Main Title */}
-          <h1 className="text-5xl md:text-7xl lg:text-8xl font-black text-slate-900 leading-[1.05] tracking-tight">
+          <h1 className="text-5xl md:text-7xl lg:text-8xl font-black text-slate-900 dark:text-white leading-[1.05] tracking-tight">
             RAIH SKOR TOEFL <br />
             <span className="text-transparent bg-clip-text bg-gradient-to-r from-orange-600 to-red-600">
               IMPIAN KAMU!
@@ -48,7 +48,7 @@ export function Hero() {
           </h1>
 
           {/* Subtitle */}
-          <p className="text-lg md:text-xl text-slate-500 font-medium max-w-3xl leading-relaxed mt-4">
+          <p className="text-lg md:text-xl text-slate-500 dark:text-slate-400 font-medium max-w-3xl leading-relaxed mt-4">
             {t("hero.subtitle")}
           </p>
 
@@ -83,9 +83,9 @@ export function Hero() {
           </div>
 
           {/* Trust Badges */}
-          <div className="flex flex-wrap justify-center items-center gap-6 mt-12">
+          <div className="flex flex-wrap justify-center items-center gap-6 mt-12 text-slate-400 dark:text-slate-500">
             {trustBadges.map((badge, index) => (
-              <div key={index} className="flex items-center gap-2 text-sm font-bold text-slate-400">
+              <div key={index} className="flex items-center gap-2 text-sm font-bold">
                 <CheckCircle2 className="w-4 h-4 text-primary" />
                 {badge}
               </div>

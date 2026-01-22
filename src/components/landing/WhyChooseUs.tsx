@@ -57,7 +57,7 @@ export function WhyChooseUs() {
   ];
 
   return (
-    <section className="py-24 bg-[#fffaf0] relative overflow-hidden">
+    <section className="py-24 bg-[#fffaf0] dark:bg-slate-950 relative overflow-hidden transition-colors duration-300">
       <div className="container mx-auto px-4">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
@@ -69,10 +69,10 @@ export function WhyChooseUs() {
           <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-orange-600 text-white text-[10px] font-black uppercase tracking-widest mb-6">
             ALL-IN-ONE PREP PACKAGE
           </div>
-          <h2 className="text-4xl md:text-5xl font-black text-slate-900 mb-4 tracking-tighter uppercase">
+          <h2 className="text-4xl md:text-5xl font-black text-slate-900 dark:text-white mb-4 tracking-tighter uppercase">
             {t("whyChooseUs.title")}
           </h2>
-          <p className="text-lg text-slate-500 max-w-2xl mx-auto font-bold uppercase tracking-tight">
+          <p className="text-lg text-slate-500 dark:text-slate-400 max-w-2xl mx-auto font-bold uppercase tracking-tight">
             {t("whyChooseUs.subtitle")}
           </p>
         </motion.div>
@@ -85,18 +85,18 @@ export function WhyChooseUs() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 0.5, delay: index * 0.05 }}
-              className="group p-8 rounded-3xl border-2 border-slate-900 bg-white shadow-[8px_8px_0px_0px_rgba(15,23,42,1)] hover:translate-x-1 hover:translate-y-1 hover:shadow-none transition-all flex flex-col items-start"
+              className="group p-8 rounded-3xl border-2 border-slate-900 dark:border-slate-800 bg-white dark:bg-slate-900 shadow-[8px_8px_0px_0px_rgba(15,23,42,1)] dark:shadow-[8px_8px_0px_0px_rgba(0,0,0,0.5)] hover:translate-x-1 hover:translate-y-1 hover:shadow-none transition-all flex flex-col items-start"
             >
               <div className="flex items-center justify-between w-full mb-6">
-                <div className={`w-14 h-14 rounded-2xl border-2 border-slate-900 shadow-[4px_4px_0px_0px_rgba(15,23,42,1)] flex items-center justify-center ${feature.color}`}>
-                  <feature.icon className={`w-7 h-7 text-slate-900`} />
+                <div className={`w-14 h-14 rounded-2xl border-2 border-slate-900 dark:border-slate-800 shadow-[4px_4px_0px_0px_rgba(15,23,42,1)] dark:shadow-[4px_4px_0px_0px_rgba(0,0,0,0.5)] flex items-center justify-center ${feature.color.replace('bg-', 'bg-').replace('-50', '-50 dark:bg-' + feature.color.split('-')[1] + '-900/20')}`}>
+                  <feature.icon className={`w-7 h-7 text-slate-900 dark:text-white`} />
                 </div>
                 <span className="text-2xl">{feature.emoji}</span>
               </div>
-              <h3 className="text-xl font-black text-slate-900 mb-3 tracking-tighter uppercase">
+              <h3 className="text-xl font-black text-slate-900 dark:text-white mb-3 tracking-tighter uppercase">
                 {feature.title}
               </h3>
-              <p className="text-slate-500 font-bold text-sm leading-relaxed">
+              <p className="text-slate-500 dark:text-slate-400 font-bold text-sm leading-relaxed">
                 {feature.description}
               </p>
             </motion.div>
