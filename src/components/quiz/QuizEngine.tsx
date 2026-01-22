@@ -146,10 +146,10 @@ export function QuizEngine({ testName, questions, duration, onComplete }: QuizEn
                 variant="outline"
                 size="icon"
                 onClick={() => setIsPaused(true)}
-                className="h-12 w-12 rounded-xl border-border hover:bg-accent transition-colors hidden sm:flex"
+                className="h-10 w-10 sm:h-12 sm:w-12 rounded-xl border-border hover:bg-accent transition-colors flex"
                 title="Pause Test"
               >
-                <Pause className="w-5 h-5" />
+                <Pause className="w-4 h-4 sm:w-5 sm:h-5" />
               </Button>
             </div>
           </div>
