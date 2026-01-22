@@ -34,7 +34,7 @@ export function Header({ isDark, toggleTheme }: HeaderProps) {
   return (
     <header
       className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${isScrolled
-        ? "bg-white/95 backdrop-blur-md shadow-md border-b border-slate-100"
+        ? "bg-white/95 dark:bg-black/95 backdrop-blur-md shadow-md border-b border-slate-100 dark:border-slate-800"
         : "bg-transparent"
         }`}
     >
@@ -43,7 +43,7 @@ export function Header({ isDark, toggleTheme }: HeaderProps) {
           <div className="w-10 h-10 rounded-xl bg-primary flex items-center justify-center shadow-lg shadow-primary/20 group-hover:scale-110 transition-transform">
             <Trophy className="w-6 h-6 text-white fill-white" />
           </div>
-          <span className="font-black text-2xl text-slate-900 tracking-tighter uppercase">
+          <span className="font-black text-2xl text-slate-900 dark:text-white tracking-tighter uppercase">
             TOEFL<span className="text-primary">JAGOAN</span>
           </span>
         </Link>
@@ -56,7 +56,7 @@ export function Header({ isDark, toggleTheme }: HeaderProps) {
               to={link.href}
               className={`text-[10px] font-black uppercase tracking-[0.2em] transition-colors hover:text-primary ${location.pathname === link.href
                 ? "text-primary border-b-2 border-primary pb-1"
-                : "text-slate-500"
+                : "text-slate-500 dark:text-slate-400"
                 }`}
             >
               {link.label}
@@ -65,7 +65,7 @@ export function Header({ isDark, toggleTheme }: HeaderProps) {
         </div>
 
         <div className="flex items-center gap-4">
-          <div className="hidden sm:block">
+          <div className="hidden sm:block text-slate-900 dark:text-white">
             <LanguageSwitcher />
           </div>
 
@@ -73,7 +73,7 @@ export function Header({ isDark, toggleTheme }: HeaderProps) {
             variant="ghost"
             size="icon"
             onClick={toggleTheme}
-            className="rounded-full hover:bg-slate-100"
+            className="rounded-full hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-900 dark:text-white"
           >
             {isDark ? <Sun className="w-5 h-5" /> : <Moon className="w-5 h-5" />}
           </Button>
@@ -88,7 +88,7 @@ export function Header({ isDark, toggleTheme }: HeaderProps) {
           <Button
             variant="ghost"
             size="icon"
-            className="md:hidden"
+            className="md:hidden text-slate-900 dark:text-white"
             onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
           >
             {isMobileMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
@@ -103,7 +103,7 @@ export function Header({ isDark, toggleTheme }: HeaderProps) {
             initial={{ opacity: 0, height: 0 }}
             animate={{ opacity: 1, height: "auto" }}
             exit={{ opacity: 0, height: 0 }}
-            className="md:hidden bg-white border-b border-slate-100"
+            className="md:hidden bg-white dark:bg-black border-b border-slate-100 dark:border-slate-800"
           >
             <div className="container mx-auto px-4 py-8 flex flex-col gap-6 text-center">
               {navLinks.map((link) => (
@@ -113,13 +113,13 @@ export function Header({ isDark, toggleTheme }: HeaderProps) {
                   onClick={() => setIsMobileMenuOpen(false)}
                   className={`text-xs font-black uppercase tracking-widest transition-colors hover:text-primary ${location.pathname === link.href
                     ? "text-primary"
-                    : "text-slate-500"
+                    : "text-slate-500 dark:text-slate-400"
                     }`}
                 >
                   {link.label}
                 </Link>
               ))}
-              <div className="flex flex-col items-center gap-6 py-4 border-t border-slate-50 mt-2">
+              <div className="flex flex-col items-center gap-6 py-4 border-t border-slate-50 dark:border-slate-800 mt-2">
                 <LanguageSwitcher />
                 <Link to="/dashboard" onClick={() => setIsMobileMenuOpen(false)} className="w-full">
                   <Button size="xl" className="w-full bg-primary text-white rounded-2xl font-black uppercase tracking-widest shadow-xl shadow-primary/10">
